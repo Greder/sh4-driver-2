@@ -531,7 +531,7 @@ static int fp_version_read(char *page, char **start, off_t off, int count, int *
 
 	if (micomGetVersion() == 0)
 	{
-		len = sprintf(page, "%d\n", (ioctl_data[1] * 10) | ioctl_data[2]);
+		len = sprintf(page, "%d\n", (ioctl_data[1] * 100) + ioctl_data[2]);
 	}
 	else
 	{

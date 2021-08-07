@@ -753,7 +753,7 @@ int micomSetIcon(int which, int on)
 		return -EINVAL;
 	}
 	memset(buffer, 0, sizeof(buffer));
-	buffer[0] = which - 1;  // icon 1 is on position 0
+	buffer[0] = which;  // icon 1 is on position 0
 
 	if (on == 1)
 	{
@@ -1858,7 +1858,7 @@ static int MICOMdev_ioctl(struct inode *Inode, struct file *File, unsigned int c
 		}
 		case VFDICONDISPLAYONOFF:
 		{
-			int icon_nr = mode == 0 ? (data->data[0] & 0xf) + 1 : micom->u.icon.icon_nr;
+			int icon_nr = mode == 0 ? data->data[0] : micom->u.icon.icon_nr;
 			int on = mode == 0 ? data->data[4] : micom->u.icon.on;
 			on = on != 0 ? 1 : 0;
 
