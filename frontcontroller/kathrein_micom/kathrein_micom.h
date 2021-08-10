@@ -36,6 +36,8 @@
  * -----------------------------------------------------------------------
  * 20170312 Audioniek       Add support for dprintk(0,... (print always).
  * 20210703 Audioniek       Add support for VFDSETFAN (ufs922 only).
+ * 20210808 Audioniek       Add support for VFDGETWAKEUPTIME and
+ *                          VFDSETWAKEUPTIME.
  *
  *************************************************************************
  */
@@ -91,6 +93,8 @@ extern tFrontPanelOpen FrontPanelOpen[LASTMINOR];
 #define VFDREBOOT            0xc0425afd
 #define VFDSETLED            0xc0425afe
 #define VFDSETMODE           0xc0425aff
+#define VFDGETWAKEUPTIME     0xc0425b00
+#define VFDSETWAKEUPTIME     0xc0425b04
 
 #define NO_ACK               0
 #define NEED_ACK             1
@@ -116,120 +120,39 @@ extern tFrontPanelOpen FrontPanelOpen[LASTMINOR];
 #define CmdWriteString      0x21  //  string     length -    -     -     -     -     -      -  
 #define CmdSetRCcode        0x55  //  0x02       0xff   0x80 0x48  code  -     -     -      -
 
-struct set_brightness_s
-{
-	char level;
-};
-
-struct set_icon_s
-{
-	int icon_nr;
-	int on;
-};
-
-struct set_led_s
-{
-	int led_nr;
-	int on;
-};
-
-struct set_light_s
-{
-	int onoff;
-};
-
-#if defined(UFS922)
-struct set_fan_s
-{
-	int speed;
-};
-#endif
-
-/* time must be given as follows:
- * time[0] & time[1] = MJD
- * time[2] = hour
- * time[3] = min
- * time[4] = sec
- */
-struct set_standby_s
-{
-	char time[5];
-};
-
-struct set_time_s
-{
-	char time[5];
-};
-
-/* This will set the mode temporarily (for one ioctl)
- * to the desired mode. Currently the "normal" mode
- * is the compatible vfd mode
- */
-struct set_mode_s
-{
-	int compat; /* 0 = compatibility mode to vfd driver; 1 = micom mode */
-};
-
-struct micom_ioctl_data
-{
-	union
-	{
-		struct set_icon_s icon;
-		struct set_led_s led;
-		struct set_brightness_s brightness;
-		struct set_light_s light;
-		struct set_mode_s mode;
-		struct set_standby_s standby;
-		struct set_time_s time;
-#if defined(UFS922)
-		struct set_fan_s fan;
-#endif
-	} u;
-};
-
-struct vfd_ioctl_data
-{
-	unsigned char start_address;
-	unsigned char data[64];
-	unsigned char length;
-};
-
-struct saved_data_s
-{
-	int           length;
-	char          data[20];
-	unsigned char brightness;
-	unsigned char ledbrightness;
-	int           display_on;
-};
-
 #if defined(UFS922)
 enum
 {
-	LED_AUX = 0x1,
+	LED_AUX = 1,
+	LED_MIN = LED_AUX,
 	LED_LIST,
 	LED_POWER,
 	LED_TV_R,
 	LED_VOL,
-	LED_WHEEL
+	LED_WHEEL,
+	LED_MAX = LED_WHEEL
 };
 #endif
 
 #if defined(UFS912) || defined(UFS913)
 enum
 {
-	LED_GREEN = 0x2,
+	LED_GREEN = 2,
+	LED_MIN = LED_GREEN,
 	LED_RED,
 	LED_LEFT,
-	LED_RIGHT
+	LED_RIGHT,
+	LED_MAX = LED_RIGHT
 };
 #endif
 
 #if defined(UFC960)
 enum
 {
-	LED_GREEN = 0x2,
-	LED_RED
+	LED_GREEN = 2,
+	LED_MIN = LED_GREEN,
+	LED_RED,
+	LED_MAX = LED_RED
 };
 #endif
 
@@ -276,8 +199,101 @@ enum
 #define VFD_CHARSIZE 1
 #endif
 
+struct set_brightness_s
+{
+	char level;
+};
+
+struct set_icon_s
+{
+	int icon_nr;
+	int on;
+};
+
+struct set_led_s
+{
+	int led_nr;
+	int on;
+};
+
+struct set_light_s
+{
+	int onoff;
+};
+
+#if defined(UFS922)
+struct set_fan_s
+{
+	int speed;
+};
+#endif
+
+/* time must be given as follows:
+ * time[0] & time[1] = MJD
+ * time[2] = hour
+ * time[3] = min
+ * time[4] = sec
+ */
+struct set_standby_s
+{
+	char time[5];
+};
+
+struct set_time_s
+{
+	char time[5];
+};
+
+struct wakeup_time_s
+{
+	char time[5];
+};
+
+/* This will set the mode temporarily (for one ioctl)
+ * to the desired mode. Currently the "normal" mode
+ * is the compatible vfd mode
+ */
+struct set_mode_s
+{
+	int compat; /* 0 = compatibility mode to vfd driver; 1 = micom mode */
+};
+
+struct micom_ioctl_data
+{
+	union
+	{
+		struct set_icon_s icon;
+		struct set_led_s led;
+		struct set_brightness_s brightness;
+		struct set_light_s light;
+		struct set_mode_s mode;
+		struct set_standby_s standby;
+		struct set_time_s time;
+		struct wakeup_time_s wakeup_time;
+#if defined(UFS922)
+		struct set_fan_s fan;
+#endif
+	} u;
+};
+
+struct vfd_ioctl_data
+{
+	unsigned char start_address;
+	unsigned char data[64];
+	unsigned char length;
+};
+
+struct saved_data_s
+{
+	int           length;
+	char          data[20];
+	unsigned char brightness;
+	unsigned char ledbrightness;
+	unsigned char led[LED_MAX];
+	int           display_on;
+};
+
 extern struct saved_data_s lastdata;
-extern int rtc_offset;
 extern int micom_init_func(void);
 extern void copyData(unsigned char *data, int len);
 extern void getRCData(unsigned char *data, int *len);
@@ -285,7 +301,8 @@ void dumpValues(void);
 
 extern int errorOccured;
 extern char ioctl_data[8];
-
 extern struct file_operations vfd_fops;
+extern char *gmt_offset;  // module param, string
+extern int rtc_offset;
 #endif  // _kathrein_micom_h
 // vim:ts=4

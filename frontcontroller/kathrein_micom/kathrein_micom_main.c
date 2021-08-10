@@ -102,6 +102,20 @@
 short paramDebug = 0;
 int waitTime = 1000;
 char *gmt_offset = "3600";  // GMT offset is plus one hour as default
+int rtc_offset;
+
+#if defined CONFIG_RTC_CLASS
+#define RTC_NAME "micom-rtc"
+static struct platform_device *rtc_pdev;
+
+// place to save the alarm time set
+char al_sec;
+char al_min;
+char al_hour;
+char al_day;
+char al_month;
+char al_year;
+#endif
 
 static unsigned char expectEventData = 0;
 static unsigned char expectEventId = 1;
@@ -140,10 +154,6 @@ struct stpio_pin* fan_pin1;
 struct stpio_pin* fan_pin;
 #endif
 
-#if defined CONFIG_RTC_CLASS
-int rtc_offset = 3600;
-#define RTC_NAME "micom-rtc"
-static struct platform_device *rtc_pdev;
 
 extern int micomGetTime(void);
 extern int micomSetTime(char *time);
@@ -151,14 +161,6 @@ extern int micomSetTime(char *time);
 extern int micomSetWakeUpTime(char *time);
 int date2days(int year, int mon, int day, int *yday);
 
-// place to save the alarm time set
-char al_sec;
-char al_min;
-char al_hour;
-char al_day;
-char al_month;
-char al_year;
-#endif
 
 //----------------------------------------------
 

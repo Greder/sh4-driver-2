@@ -31,6 +31,7 @@
  * 20170313 Audioniek       Initial version based on tffpprocfs.c.
  * 20210614 Audioniek       Add /proc/stb/lcd/symbol_hdd.
  * 20210703 Audioniek       Add /proc/stb/fp/fan and fan_pwm (ufs922 only).
+ * 20210710 Audioniek       Fix /proc/stb/fp/was_timer_wakeup.
  * 
  ****************************************************************************/
 
@@ -76,17 +77,17 @@ extern int micomWriteString(char *buf, size_t len);
 extern int micomSetBrightness(int level);
 extern void clear_display(void);
 extern int micomGetTime(void);
-extern int micomGetWakeUpMode(void);
+extern int micomGetWakeUpMode(int *wakeup_mode);
 extern int micomGetVersion(void);
 extern int micomSetTime(char *time);
 extern int micomSetLED(int which, int level);
-//extern int micomGetWakeUpTime(char *time);
+extern int micomGetWakeUpTime(char *time);
 extern int micomSetWakeUpTime(char *time);
 extern int micomSetIcon(int which, int on);
 extern int micomSetDisplayOnOff(unsigned char level);
 
 /* Globals */
-extern int rtc_offset;
+//extern int rtc_offset;
 #if defined(UFS922)
 static u32 fan_onoff = 1;
 static u32 fan_pwm = 128;
@@ -265,7 +266,7 @@ static const int _ytab[2][12] =
 	{ 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 }
 };
 
-static struct tm * gmtime(register const time_t time)
+static struct tm *gmtime(register const time_t time)
 { //seconds since epoch -> struct tm
 	static struct tm fptime;
 	register unsigned long dayclock, dayno;
@@ -464,7 +465,7 @@ static int wakeup_time_write(struct file *file, const char __user *buffer, unsig
 
 		if (0 < test)
 		{
-//			calcSetMicomTime((wakeup_time + rtc_offset), wtime); //set time as u32
+//			calcSetMicomTime((wakeup_time + rtc_offset), wtime);
 			calcSetMicomTime((wakeup_time), wtime); //set time as u32 (Micom FP is in UTC)
 			ret = micomSetWakeUpTime(wtime);
 		}
@@ -478,49 +479,48 @@ out:
 	return ret;
 }
 
-#if 0
 static int wakeup_time_read(char *page, char **start, off_t off, int count, int *eof, void *data)
 {
-	int len = 0;
+	int  len = 0;
 	char wtime[5];
-	int	w_time;
+	int  w_time;
+	int  res = 0;
 
 	if (NULL != page)
 	{
 		
-		micomGetWakeUpTime(wtime);
+		res = micomGetWakeUpTime(wtime);
 		w_time = calcGetMicomTime(wtime);
 
-//		len = sprintf(page, "%u\n", w_time - rtc_offset);
+//		len = sprintf(page, "%u\n", w_time + rtc_offset);
 		len = sprintf(page, "%u\n", w_time);  // Micom FP uses UTC
 	}
 	return len;
 }
-#endif
 
 static int was_timer_wakeup_read(char *page, char **start, off_t off, int count, int *eof, void *data)
 {
 	int len = 0;
 	int res = 0;
-	int wakeup_mode = -1;
+	int *wakeup_mode;
 
 	if (NULL != page)
 	{
-		res = micomGetWakeUpMode();
+		res = micomGetWakeUpMode(wakeup_mode);
 
 		if (res == 0)
 		{
-			dprintk(10, "%s > wakeup_mode= 0x%02x\n", __func__, ioctl_data[1] & 0xff);
-			if (ioctl_data[1] & 0x0f == 0x03)  // if timer wakeup
+			dprintk(10, "%s > wakeup_mode= 0x%02x\n", __func__, *wakeup_mode & 0xff);
+			if (*wakeup_mode & 0x0f == 0x03)  // if timer wakeup
 			{
-				wakeup_mode = 1;
+				*wakeup_mode = 1;
 			}
 			else
 			{
-				wakeup_mode = 0;
+				*wakeup_mode = 0;
 			}
 		}
-		len = sprintf(page,"%d\n", wakeup_mode);
+		len = sprintf(page,"%d\n", *wakeup_mode);
 	}
 	return len;
 }

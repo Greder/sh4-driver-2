@@ -28,6 +28,9 @@
  * Kathrein UFS922
  * Kathrein UFC960
  *
+ * NOTE: All times related to the front processor are in UTC; the driver is
+ *       not aware of the local UTC offset.
+ *
  ******************************************************************************
  *
  * Changes
@@ -43,6 +46,9 @@
  *                          once (/dev/vfd only).
  * 20210624 Audioniek       Add VFDSETLED mode 0.
  * 20210701 Audioniek       VFDSETFAN IOCTL on UFS922 added.
+ * 20210808 Audioniek       Add support for VFDGETWAKEUPTIME and
+ *                          VFDSETWAKEUPTIME.
+ * 20210808 Audioniek       Fix icon number error.
  */
 
 #include <asm/io.h>
@@ -75,6 +81,7 @@ extern void micom_putc(unsigned char data);
 struct semaphore write_sem;
 int errorOccured = 0;
 char ioctl_data[8];
+char wakeup_time[5];  // for simulated VFDGETWAKEUPTIME
 tFrontPanelOpen FrontPanelOpen [LASTMINOR];
 
 struct saved_data_s lastdata;
@@ -707,6 +714,32 @@ int micomWriteCommand(char command, char *buffer, int len, int needAck)
  *
  */
 
+#if 0
+/***********************************************************
+ *
+ * Define a CGRAM dot pattern.
+ *
+ */
+static int ufs910_fp_CGRAM_Write(struct vfd_ioctl_data *data)
+{
+	unsigned char command;
+	unsigned char write_data[5];
+	int res = 0;
+
+	dprintk(100, "%s >\n", __func__);
+
+	command = (data->start_address & 0x07) | CGRAM_COMMAND;
+	if (data->length != 5)
+	{
+		dprintk(1, "%s < Error: need exactly 5 bytes (not %d)\n", __func__, data->length);
+		return -1;
+	}
+	res |= micomWriteCommand(command, data->data, data->length, 0);
+	dprintk(100, "%s <\n", __func__);
+	return i;
+}
+#endif
+
 /*******************************************************************
  *
  * micomSetRCcode: sets RC code to use.
@@ -753,16 +786,9 @@ int micomSetIcon(int which, int on)
 		return -EINVAL;
 	}
 	memset(buffer, 0, sizeof(buffer));
-	buffer[0] = which;  // icon 1 is on position 0
+	buffer[0] = which;
 
-	if (on == 1)
-	{
-		res = micomWriteCommand(CmdSetIcon, buffer, 7, NEED_ACK);
-	}
-	else
-	{
-		res = micomWriteCommand(CmdClearIcon, buffer, 7, NEED_ACK);
-	}
+	res = micomWriteCommand(on ? CmdSetIcon : CmdClearIcon, buffer, 7, NEED_ACK);
 	dprintk(100, "%s <\n", __func__);
 	return res;
 }
@@ -802,6 +828,7 @@ int micomSetLED(int which, int on)
 
 	dprintk(100, "%s > LED %d, state %s\n", __func__, which, on ? "on" : "off");
 
+#if 0
 #if defined(UFS922)
 	ledmin = LED_AUX;
 	ledmax = LED_WHEEL;
@@ -813,7 +840,8 @@ int micomSetLED(int which, int on)
 	ledmin = LED_GREEN;
 	ledmax = LED_RED;
 #endif
-	if (which < ledmin || which > ledmax)
+#endif
+	if (which < LED_MIN || which > LED_MAX)
 	{
 		dprintk(1, "LED number %d out of range (%d..%d)\n", which, ledmin, ledmax);
 		return -EINVAL;
@@ -822,6 +850,7 @@ int micomSetLED(int which, int on)
 	buffer[0] = which;
 
 	res = micomWriteCommand((on ? CmdSetLED : CmdClearLED), buffer, 7, NEED_ACK);
+	lastdata.led[which] = on;
 	dprintk(100, "%s <\n", __func__);
 	return res;
 }
@@ -955,6 +984,35 @@ int micomInitialize(void)
 
 /****************************************************************
  *
+ * micomGetWakeUpTime: gets wake up time.
+ *
+ * Time format:
+ * [0] = MJD high
+ * [1] = MJD low
+ * [2] = hours (binary)
+ * [3] = minutes (binary)
+ * [4] = seconds (binary)
+ *
+ * This is a dummy function; the front processor does not have
+ * a command to read back the wake up time set. The function
+ * returns the last time set.
+ */
+int micomGetWakeUpTime(char *time)
+{
+	char buffer[8];
+	int  res = 0;
+	int i;
+
+	for (i = 0; i < sizeof(wakeup_time); i++)
+	{
+		 time[i] = wakeup_time[i];
+	}
+	dprintk(20, "Wake up time is: %d (MJD) %02d:%02d:%02d\n", (((time[0] & 0xff) << 8) + time[1]), time[2], time[3], time[4]);
+	return res;
+}
+
+/****************************************************************
+ *
  * micomSetWakeUpTime: sets wake up time.
  *
  * Time format:
@@ -968,19 +1026,30 @@ int micomSetWakeUpTime(char *time)
 {
 	char buffer[8];
 	int  res = 0;
+	int i;
 
 	dprintk(100, "%s >\n", __func__);
 
 	if (time[0] == '\0')
 	{
 		/* clear wakeup time */
+		dprintk(20, "Clear wake up time\n");
 		res = micomWriteCommand(CmdClearWakeUpTime, buffer, 7, NEED_ACK);
+		for (i = 0; i < sizeof(wakeup_time); i++)
+		{
+			wakeup_time[i] = 0;
+		}
 	}
 	else
 	{
 		/* set wakeup time */
+		dprintk(20, "Set wake up time to: %d (MJD) %02d:%02d:%02d\n", (((time[0] & 0xff) << 8) + time[1]), time[2], time[3], time[4]);
 		memcpy(buffer, time, 5);
 		res = micomWriteCommand(CmdSetWakeUpTime, buffer, 7, NEED_ACK);
+		for (i = 0; i < sizeof(wakeup_time); i++)
+		{
+			wakeup_time[i] = time[i];
+		}
 	}
 	if (res < 0)
 	{
@@ -1010,23 +1079,23 @@ int micomSetStandby(char *time)
 
 	dprintk(100, "%s >\n", __func__);
 
-//	memset(buffer, 0, sizeof(buffer));
-//	if (time[0] == '\0')
-//	{
-//		/* clear wakeup time */
-//		res = micomWriteCommand(CmdClearWakeUpTime, buffer, 7, NEED_ACK);
-//	}
-//	else
-//	{
-//		/* set wakeup time */
-//		memcpy(buffer, time, 5);
-//		res = micomWriteCommand(CmdSetWakeUpTime, buffer, 7, NEED_ACK);
-//	}
-//	if (res < 0)
-//	{
-//		dprintk(100, "%s < res %d \n", __func__, res);
-//		return res;
-//	}
+	memset(buffer, 0, sizeof(buffer));
+	if (time[0] == '\0')
+	{
+		/* clear wakeup time */
+		res = micomWriteCommand(CmdClearWakeUpTime, buffer, 7, NEED_ACK);
+	}
+	else
+	{
+		/* set wakeup time */
+		memcpy(buffer, time, 5);
+		res = micomWriteCommand(CmdSetWakeUpTime, buffer, 7, NEED_ACK);
+	}
+	if (res < 0)
+	{
+		dprintk(100, "%s < res %d \n", __func__, res);
+		return res;
+	}
 	res = micomSetWakeUpTime(time);
 	/* enter standby */
 	memset(buffer, 0, sizeof(buffer));
@@ -1073,10 +1142,10 @@ int micomSetTime(char *time)
 int micomSetDisplayOnOff(unsigned char level)
 {
 	int           res = 0;
-//	char          buffer[6];
 	unsigned char llevel = 0;
+	int i;
 
-	dprintk(10, "%s >\n", __func__);
+	dprintk(100, "%s >\n", __func__);
 
 	if (level != 0)
 	{
@@ -1086,8 +1155,12 @@ int micomSetDisplayOnOff(unsigned char level)
 	res = micomSetBrightness(level);
 
 	res |= micomSetLedBrightness(llevel);
+	for (i = LED_MIN; i <= LED_MAX; i++)
+	{
+		res |= micomSetLED(i, lastdata.led[i]);
+	}
 	lastdata.display_on = (level ? 1 : 0);
-	dprintk(10, "%s <\n", __func__);
+	dprintk(100, "%s <\n", __func__);
 	return res;
 }
 
@@ -1124,8 +1197,7 @@ int micomGetVersion(void)
 	else
 	{
 //		/* version received ->noop here */
-//		dprintk(1, "version received\n");
-		dprintk(1, "Version data: 0x%02x 0x%02x 0x%02x\n", ioctl_data[0], ioctl_data[1], ioctl_data[2]);
+//		dprintk(1, "Version data: 0x%02x 0x%02x 0x%02x\n", ioctl_data[0], ioctl_data[1], ioctl_data[2]);
 	}
 	dprintk(100, "%s <\n", __func__);
 	return res;
@@ -1143,10 +1215,11 @@ int micomGetVersion(void)
  * [4] = seconds (binary)
  *
  */
-int micomGetTime(void)
+int micomGetTime(char *time)
 {
 	char buffer[8];
 	int  res = 0;
+	int i;
 
 	dprintk(100, "%s >\n", __func__);
 
@@ -1168,10 +1241,15 @@ int micomGetTime(void)
 	}
 	else
 	{
-//		/* time received ->noop here */
-//		dprintk(1, "time received\n");
-		dprintk(10, "FP/RTC time: %02x:%02x:%02x\n", (int)ioctl_data[2], (int)ioctl_data[1], (int)ioctl_data[0]);
-		dprintk(10, "FP/RTC date: %02x-%02x-20%02x\n", (int)ioctl_data[3], (int)ioctl_data[4], (int)ioctl_data[5]);
+		/* time received */
+		dprintk(50, "time received\n");
+		dprintk(20, "Time= 0x%04x (MJD) %02d:%02d:%02d (UTC)\n", (int)(((ioctl_data[1] & 0xff) << 8) + ioctl_data[2]),
+			(int)ioctl_data[3], (int)ioctl_data[4], (int)ioctl_data[5]);
+		
+		for (i = 0; i < 5; i++)
+		{
+			time[i] = ioctl_data[i + 1];
+		}
 	}
 	dprintk(100, "%s <\n", __func__);
 	return res;
@@ -1187,7 +1265,7 @@ int micomGetTime(void)
  * micomGetWakeUpMode: read wake up reason from front panel.
  *
  */
-int micomGetWakeUpMode(unsigned char *mode)
+int micomGetWakeUpMode(int *wakeup_mode)
 {
 	char buffer[8];
 	int  res = 0;
@@ -1206,49 +1284,46 @@ int micomGetWakeUpMode(unsigned char *mode)
 	if (errorOccured)
 	{
 		memset(ioctl_data, 0, sizeof(buffer));
-		dprintk(1, "%s: error\n", __func__);
+		*wakeup_mode = -1;
+		dprintk(1, "%s: Error receiving wake up mode\n", __func__);
 		res = -ETIMEDOUT;
 	}
 	else
 	{
-//		/* wakeup reason received ->noop here */
+		/* wakeup reason received */
 //		dprintk(1, "wakeup reason received\n");
 		/* 0xc1 = rcu power key
 		 * 0xc2 = front power key
 		 * 0xc3 = timer
 		 * 0xc4 = ac power on???
 		 */
-		dprintk(10, "Wakeup reason: 0x%02x (0x%02x, 0x%02x)\n", (int)ioctl_data[0], (int)ioctl_data[1], (int)ioctl_data[2]);
-#if 0
-		switch (ioctl_data[0])
+//		dprintk(70, "ioctl_data[0] = 0x%02x ioctl_data[1] = 0x%02x\n", ioctl_data[0],ioctl_data[1]);
+//		Convert FP answer to standard values
+		switch ((unsigned char)ioctl_data[1])
 		{
 			case 0xc1:  // RC power key
 			case 0xc2:  // front panel
 			{
-				*mode = 4;
+				*wakeup_mode = 4;
 				break;
 			}
 			case 0xc3:  // timer
 			{
-				*mode = 3;
+				*wakeup_mode = 3;
 				break;
 			}
 			case 0xc4:  // AC power on
-			default:
 			{
-				*mode = 1;
+				*wakeup_mode = 1;
 				break;
 			}
 			default:
 			{
-				*mode = 0;  // Unknown
+				*wakeup_mode = 0;  // Unknown
 				break;
 			}
 		}
-		dprintk(20, "Wake up: %s\n", wakeupreason[*mode]);
-#else
-		*mode = ioctl_data[0]; // TODO: convert to standard values
-#endif
+		dprintk(20, "Wake up reason: %d (%s)\n", *wakeup_mode, wakeupreason[*wakeup_mode]);
 	}
 	dprintk(100, "%s <\n", __func__);
 	return res;
@@ -1482,21 +1557,44 @@ int micom_init_func(void)
 
 	msleep(10);
 #if defined(UFS922)
-	res |= micomSetLED(3, 0);  // power LED off
-	res |= micomSetLED(1, 1);  // AUX key on
-	res |= micomSetLED(4, 1);  // TV/R key on
+	res |= micomSetLED(LED_POWER, 0);  // power LED off
+	res |= micomSetLED(LED_AUX, 1);  // AUX key on
+	res |= micomSetLED(LED_TV_R, 1);  // TV/R key on
+#endif
+#if defined(UFS912) \
+ || defined(UFS913) \
+ || defined(UFC960)
+	res |= micomSetLED(LED_RED, 0);  // Red LED off
+	res |= micomSetLED(LED_GREEN, 1);  // Green LED on
 #endif
 
-//#if VFD_LENGTH < 16
-//	micomWriteString(" T D T  ", strlen(" T D T  "));
-//#else
-//	micomWriteString("Team Ducktales", strlen("Team Ducktales"));
-//#endif
-//	msleep(10);
+#if 0
+#if VFD_LENGTH < 16
+	micomWriteString(" T D T  ", strlen(" T D T  "));
+#else
+	micomWriteString("Team Ducktales", strlen("Team Ducktales"));
+#endif
+	msleep(10);
+#endif
 
+	// all icons off
 	for (vLoop = ICON_MIN + 1; vLoop < ICON_MAX; vLoop++)
 	{
 		res |= micomSetIcon(vLoop, 0);
+	}
+
+	// set initial wakeup time to Linux epoch
+	wakeup_time[0] = 40587 >> 8;
+	wakeup_time[1] = 40587 & 0xff;
+	wakeup_time[2] = 0;
+	wakeup_time[3] = 0;
+	wakeup_time[4] = 0;
+
+	// Handle initial GMT offset (may be changed by writing to /proc/stb/fp/rtc_offset)
+	res = strict_strtol(gmt_offset, 10, (long *)&rtc_offset);
+	if (res && gmt_offset[0] == '+')
+	{
+		res = strict_strtol(gmt_offset + 1, 10, (long *)&rtc_offset);
 	}
 	dprintk(100, "%s <\n", __func__);
 	return res;
@@ -1774,7 +1872,7 @@ int MICOMdev_close(struct inode *inode, struct file *filp)
 
 	if (FrontPanelOpen[minor].fp == NULL)
 	{
-		dprintk(1, "EUSER\n");
+		dprintk(1, "%s < -EUSERS\n");
 		return -EUSERS;
 	}
 	FrontPanelOpen[minor].fp = NULL;
@@ -1937,34 +2035,47 @@ static int MICOMdev_ioctl(struct inode *Inode, struct file *File, unsigned int c
 		{
 			if (micom->u.time.time != 0)
 			{
-//				dprintk(10, "Set frontpanel time to (MJD=) %d - %02d:%02d:%02d (UTC)\n", (micom->u.time.time[0] & 0xff) * 256 + (micom->u.time.time[1] & 0xff),
-//					micom->u.time.time[2], micom->u.time.time[3], micom->u.time.time[4]);
+				dprintk(20, "Set frontpanel time to (MJD=) %d - %02d:%02d:%02d (UTC)\n", (micom->u.time.time[0] & 0xff) * 256 + (micom->u.time.time[1] & 0xff),
+					micom->u.time.time[2], micom->u.time.time[3], micom->u.time.time[4]);
 				res = micomSetTime(micom->u.time.time);
 			}
 			break;
 		}
 		case VFDGETTIME:
 		{
-			res = micomGetTime();
-//			dprintk(10, "Get frontpanel time: (MJD=) %d - %02d:%02d:%02d (UTC)\n", (ioctl_data[1] & 0xff) * 256 + (ioctl_data[2] & 0xff),
-//				ioctl_data[3], ioctl_data[4], ioctl_data[5]);
-			copy_to_user((void *)arg, &ioctl_data, sizeof(ioctl_data));
+			char time[5];
+
+			res = micomGetTime(time);
+			dprintk(20, "Get frontpanel time: (MJD=) %d - %02d:%02d:%02d (UTC)\n", (time[0] & 0xff) * 256 + (time[1] & 0xff),
+				time[2], time[3], time[4]);
+			copy_to_user((void *)arg, &time, sizeof(time));
 			break;
 		}
-		case VFDGETVERSION:
+		case VFDGETWAKEUPTIME:
 		{
-			res = micomGetVersion();
-//			dprintk(10, "Get frontpanel version info %02x, %02x\n", ioctl_data[1] & 0xff, ioctl_data[2] & 0xff);
-			copy_to_user((void *)arg, &ioctl_data, sizeof(ioctl_data));
+			res = micomGetWakeUpTime(micom->u.wakeup_time.time);
+			dprintk(20, "Wake up time: (MJD=) %d - %02d:%02d:%02d (UTC)\n", (micom->u.wakeup_time.time[0] & 0xff) * 256 + (micom->u.wakeup_time.time[1] & 0xff),
+					micom->u.wakeup_time.time[2], micom->u.wakeup_time.time[3], micom->u.wakeup_time.time[4]);
+			copy_to_user((void *)arg, &micom->u.wakeup_time.time, sizeof(micom->u.wakeup_time.time));
+			break;
+		}
+		case VFDSETWAKEUPTIME:
+		{
+			if (micom->u.wakeup_time.time != 0)
+			{
+				dprintk(20, "Set wake up time: (MJD=) %d - %02d:%02d:%02d (UTC)\n", (micom->u.wakeup_time.time[0] & 0xff) * 256 + (micom->u.wakeup_time.time[1] & 0xff),
+					micom->u.wakeup_time.time[2], micom->u.wakeup_time.time[3], micom->u.wakeup_time.time[4]);
+				res = micomSetWakeUpTime(micom->u.wakeup_time.time);
+			}
 			break;
 		}
 		case VFDGETWAKEUPMODE:
 		{
-			unsigned char *mode;
+			int wakeup_mode = -1;
 
-			res = micomGetWakeUpMode(mode);
-			dprintk(10, "Get wakeupmode info: %02x\n", *mode);
-			copy_to_user((void *)arg, &mode, sizeof(mode));
+			res = micomGetWakeUpMode(&wakeup_mode);
+			dprintk(20, "Wake up mode = %d\n", wakeup_mode);
+			res |= copy_to_user((void *)arg, &wakeup_mode, 1);
 			break;
 		}
 		case VFDDISPLAYCHARS:
@@ -2024,6 +2135,24 @@ static int MICOMdev_ioctl(struct inode *Inode, struct file *File, unsigned int c
 			break;
 		}
 #endif
+#if 0
+		case VFDCGRAMWRITE1:
+		case VFDCGRAMWRITE2:
+		{
+#if defined(UFS922)
+			micomCGRAM_Write(data);
+			mode = 0;
+#endif
+			break;
+		}
+#endif
+		case VFDGETVERSION:
+		{
+			res = micomGetVersion();
+			dprintk(10, "Get frontpanel version info %02x, %02x\n", ioctl_data[1] & 0xff, ioctl_data[2] & 0xff);
+			copy_to_user((void *)arg, &ioctl_data, sizeof(ioctl_data));
+			break;
+		}
 		case 0x5305:
 		case VFDCGRAMWRITE1:
 		case VFDCGRAMWRITE2:
