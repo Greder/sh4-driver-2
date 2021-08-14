@@ -42,6 +42,9 @@
  *                          BSKA/BXZB.
  * 20200505 Audioniek       Fix handling of BZZB with box_variant; boxvariant
  *                          values changed so that bit 1 signals dual tuner.
+ * 20210810 Audioniek       Fix: BSLA and BZZB could not control fan.
+ * 20210810 Audioniek       Add stb/fp/fan and stb/fp/fan_pwm entries for E2
+ *                          compatiblity.
  * 
  ****************************************************************************/
 
@@ -67,18 +70,20 @@
  *
  *  /proc/stb/fan/
  *             |
- *             +--- fan_ctrl (rw)           Control of fan speed
+ *             +--- fan_ctrl (rw)           Control of fan speed (deprecated, use /proc/stb/fp/fan_pwm)
  *
  *  /proc/stb/fp/
  *             |
- *             +--- rtc (rw)                RTC time (UTC, seconds since Unix epoch)) (not yet implemented)
- *             +--- rtc_offset (rw)         RTC offset in seconds from UTC (not yet implemented)
+ *             +--- fan (rw)                Control of fan (on/off)
+ *             +--- fan_pwm (rw)            Control of fan speed
  *             +--- led0_pattern (rw)       Blink pattern for LED 1 (currently limited to on (0xffffffff) or off (0))
  *             +--- led1_pattern (rw)       Blink pattern for LED 2 (currently limited to on (0xffffffff) or off (0))
  *             +--- led2_pattern (rw)       Blink pattern for LED 3 (currently limited to on (0xffffffff) or off (0))
  *             +--- led3_pattern (rw)       Blink pattern for LED 4 (currently limited to on (0xffffffff) or off (0))
  *             +--- led_patternspeed (rw)   Blink speed for pattern (not implemented)
  *             +--- oled_brightness (w)     Direct control of display brightness
+ *             +--- rtc (rw)                RTC time (UTC, seconds since Unix epoch)) (not yet implemented)
+ *             +--- rtc_offset (rw)         RTC offset in seconds from UTC (not yet implemented)
  *             +--- text (w)                Direct writing of display text
  *
  *  /proc/stb/info/
@@ -99,10 +104,8 @@ extern int pt6958_ShowBuf(unsigned char *data, unsigned char len, int utf8_flag)
 extern void pt6302_set_brightness(int level);
 extern void pt6958_set_brightness(int level);
 extern void clear_display(void);
-//extern int micomGetTime(char *time);
-//extern int micomSetTime(char *time);
 extern void pt6958_set_led(int led_nr, int level);
-//extern int micomGetWakeUpTime(char *time);
+extern int adb_setFan(int speed);
 //extern int micomSetWakeUpTime(char *time);
 //extern int micomGetWakeUpMode(int *wakeup_mode);
 //extern int micomGetVersion(unsigned int *data);
@@ -120,9 +123,14 @@ static u32 led2_pattern = 0;
 static u32 led3_pattern = 0;
 static int led_pattern_speed = 20;
 extern unsigned long fan_registers;
+static int fan_onoff = 1;
+extern int fan_pwm;
 extern struct stpio_pin* fan_pin;
 extern tIconState spinner_state;
 extern tIconState icon_state;
+// for fan (BSLA/BZZB only)
+//extern unsigned long fan_registers;
+//extern struct stpio_pin* fan_pin;
 
 static int progress_write(struct file *file, const char __user *buf, unsigned long count, void *data)
 {
@@ -833,7 +841,50 @@ static int adb_variant_read(char *page, char **start, off_t off, int count, int 
 	return len;
 }
 
-int fan_ctrl_write(struct file *file, const char __user *buf, unsigned long count, void *data)
+static int fan_write(struct file *file, const char __user *buf, unsigned long count, void *data)
+{
+	char *page;
+	int ret = -ENOMEM;
+	unsigned int value;
+
+	page = (char *)__get_free_page(GFP_KERNEL);
+
+	if (page)
+	{
+		ret = -EFAULT;
+		if (copy_from_user(page, buf, count) == 0)
+		{
+			page[count - 1] = '\0';
+			fan_onoff = (unsigned int)simple_strtol(page, NULL, 10);
+
+			if (fan_onoff != 0)
+			{
+				fan_onoff = 1;
+			}
+			if (box_variant & 0x01)  // BSLA or BZZB
+			{
+//				dprintk(50, "%s Fan value: %d\n", __func__, value);
+				ctrl_outl((fan_onoff ? fan_pwm : 0), fan_registers + 0x04);
+			}
+			ret = count;
+		}
+		free_page((unsigned long)page);
+	}
+	return ret;
+}
+
+static int fan_read(char *page, char **start, off_t off, int count, int *eof, void *data)
+{
+	int len = 0;
+
+	if (NULL != page)
+	{
+		len = sprintf(page,"%d", fan_onoff);
+	}
+	return len;
+}
+
+int fan_pwm_write(struct file *file, const char __user *buf, unsigned long count, void *data)
 {
 	char *page;
 	char *myString;
@@ -848,16 +899,20 @@ int fan_ctrl_write(struct file *file, const char __user *buf, unsigned long coun
 		if (copy_from_user(page, buf, count) == 0)
 		{
 			page[count - 1] = '\0';
-			value = (unsigned int)simple_strtol(page, NULL, 10);
+			fan_pwm = (unsigned int)simple_strtol(page, NULL, 10);
 
-			if (value > 255)
+			if (fan_pwm > 255)
 			{
-				value = 255;
+				fan_pwm = 255;
+			}
+			if (fan_pwm < 0)
+			{
+				fan_pwm = 0;
 			}
 			if (box_variant & 0x01)  // BSLA or BZZB
 			{
-//				dprintk(50, "%s Fan value: %d\n", __func__, value);
-				ctrl_outl(value, fan_registers + 0x04);
+//				dprintk(50, "%s Fan PWM value: %d\n", __func__, value);
+				ctrl_outl(fan_pwm, fan_registers + 0x04);
 			}
 			ret = count;
 		}
@@ -866,7 +921,7 @@ int fan_ctrl_write(struct file *file, const char __user *buf, unsigned long coun
 	return ret;
 }
 
-int fan_ctrl_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+int fan_pwm_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
 {
 	int      len = 0;
 	unsigned int value;
@@ -877,7 +932,7 @@ int fan_ctrl_read(char *page, char **start, off_t off, int count, int *eof, void
 	{
 		if (box_variant & 0x01)  // BSLA or BZZB
 		{
-			value = ctrl_inl(fan_registers + 0x4);
+			value = fan_pwm;
 		}
 		else
 		{
@@ -903,7 +958,9 @@ struct fp_procs
 } fp_procs[] =
 {
 	{ "progress", progress_read, progress_write },
-	{ "stb/info/adb_variant", adb_variant_read, NULL },
+	{ "stb/fan/fan_ctrl", fan_pwm_read, fan_pwm_write },
+	{ "stb/fp/fan", fan_read, fan_write },
+	{ "stb/fp/fan_pwm", fan_pwm_read, fan_pwm_write },
 //	{ "stb/fp/rtc", read_rtc, write_rtc },
 //	{ "stb/fp/rtc_offset", read_rtc_offset, write_rtc_offset },
 	{ "stb/fp/led0_pattern", led0_pattern_read, led0_pattern_write },
@@ -913,8 +970,8 @@ struct fp_procs
 	{ "stb/fp/led_pattern_speed", led_pattern_speed_read, led_pattern_speed_write },
 	{ "stb/fp/oled_brightness", NULL, oled_brightness_write },
 	{ "stb/fp/text", NULL, text_write },
+	{ "stb/info/adb_variant", adb_variant_read, NULL },
 	{ "stb/lcd/symbol_circle", symbol_circle_read, symbol_circle_write },
-	{ "stb/fan/fan_ctrl", fan_ctrl_read, fan_ctrl_write },
 //	{ "stb/fp/wakeup_time", wakeup_time_read, wakeup_time_write },
 //	{ "stb/fp/was_timer_wakeup", was_timer_wakeup_read, NULL },
 //	{ "stb/fp/version", fp_version_read, NULL },

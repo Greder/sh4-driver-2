@@ -93,7 +93,7 @@ int   rec_key     = -1;  // module parameter default: front panel keyboard layou
 int   key_layout;        // active front panel key layout: 0=MENU/EPG/RES, 1=EPG/REC/RES
 unsigned long fan_registers;
 struct stpio_pin* fan_pin;
-
+int fan_pwm = 0xc0;  // default fan speed
 tIconState spinner_state;
 tIconState icon_state;
 
@@ -279,7 +279,7 @@ static int __init init_fan_module(void)
 	ctrl_outl(0x200, fan_registers + 0x50);
 	
 	// set a default speed, because otherwise the default is zero
-	ctrl_outl(0xaa, fan_registers + 0x04);
+	ctrl_outl(fan_pwm, fan_registers + 0x04);
 	return 0;
 }
 
@@ -600,8 +600,10 @@ static void fp_module_exit(void)
 	dprintk(50, "All threads stopped\n");
 
 	// fan driver
-	cleanup_fan_module();
-
+	if (box_variant & 0x01)  // BSLA or BZZB
+	{
+		cleanup_fan_module();
+	}
 	dprintk(50, "Unregister character device %d\n", VFD_MAJOR);
 	unregister_chrdev(VFD_MAJOR, "vfd");
 	stpio_free_irq(key_int);
@@ -631,7 +633,7 @@ static int __init fp_module_init(void)
 	}
 
 	// fan driver
-	if (box_variant & 0x02)  // BSLA or BZZB
+	if (box_variant & 0x01)  // BSLA or BZZB
 	{
 		init_fan_module();
 	}

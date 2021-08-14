@@ -73,7 +73,8 @@
  * 20200425 Audioniek       Fix PT6302 UTF8 support.
  * 20200504 Audioniek       Removed dual display capability.
  * 20200505 Audioniek       Fix handling of BZZB with box_variant; boxvariant
- *                          values changed so that bit 1 signals dual tuner.
+ *                          values changed so that bit 0 signals dual tuner.
+ * 20210810 Audioniek       VFDSETFAN improved.
  *
  ****************************************************************************************/
 #include <asm/io.h>
@@ -109,6 +110,11 @@ char led3 = 0;  // at
 char led4 = 0;  // alert
 
 spinlock_t mr_lock = SPIN_LOCK_UNLOCKED;
+
+// for fan (BSLA/BZZB only)
+extern unsigned long fan_registers;
+extern struct stpio_pin* fan_pin;
+extern int fan_pwm;
 
 static struct fp_driver fp;
 
@@ -1857,6 +1863,25 @@ int stb0899_read_reg_box_variant(unsigned int reg, unsigned char nr)
 	return result;
 }
 
+/******************************************************
+ *
+ * Set fan speed (BSLA and BZZB only).
+ *
+ */
+int adb_setFan(int speed)
+{
+	int res = 0;
+
+	dprintk(100, "%s >\n", __func__);
+
+	// fan stops at about PWM = 0x80
+	fan_pwm = (speed > 1) + 0x80;
+	dprintk(20, "Set fan PWM to 0x%02x\n", fan_pwm);
+	ctrl_outl(fan_pwm, fan_registers + 0x04);
+	dprintk(100, "%s <\n", __func__);
+	return res;
+}
+
 /****************************************
  *
  * Determine box variant
@@ -2101,6 +2126,24 @@ int adb_5800_fp_init_func(void)
 	}
 	lastdata.icon_count = 0;
 
+#if 0
+	// initialize fan on BSLA/BZZB
+	if (box_variant & 0x01)
+	{
+		fan_registers = (unsigned long)ioremap(0x18010000, 0x100);
+//		dprintk(10, "fan_registers = 0x%.8lx\n\t", fan_registers);
+
+		fan_pin = stpio_request_pin(4, 7, "fan ctrl", STPIO_ALT_OUT);
+
+//		dprintk(1, "fan pin %p\n", fan_pin);
+
+		// not sure if first one is necessary
+		ctrl_outl(0x200, fan_registers + 0x50);
+	
+		// set a default speed, because default is zero
+		ctrl_outl(0xaa, fan_registers + 0x04);
+	}
+#endif
 	dprintk(50, "ADB ITI-5800S(X) front panel driver initialization successful\n");
 	dprintk(150, "%s <\n", __func__);
 	return 0;
@@ -2909,9 +2952,12 @@ icon_exit:
 				{
 					adb_box_fp->u.fan.speed = 255;
 				}
+				if (adb_box_fp->u.fan.speed < 0)
+				{
+					adb_box_fp->u.fan.speed = 0;
+				}
 //				dprintk(10, "Set fan speed to: %d\n", adb_box_fp->u.fan.speed);
-				ctrl_outl(adb_box_fp->u.fan.speed, fan_registers + 0x04);
-				ret = 0;
+				ret = adb_setFan(adb_box_fp->u.fan.speed);
 			}
 			else
 			{
