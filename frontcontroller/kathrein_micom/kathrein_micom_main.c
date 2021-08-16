@@ -21,8 +21,8 @@
  *
  * Description:
  *
- * Kathrein UFS922 MICOM Kernelmodule ported from MARUSYS uboot source,
- * from vfd driver and from tf7700 frontpanel handling.
+ * Kathrein UFS912/913/922 MICOM Kernelmodule ported from MARUSYS
+ * uboot source, from vfd driver and from tf7700 frontpanel handling.
  *
  * Devices:
  *  - /dev/vfd (vfd ioctls and read/write function)
@@ -87,10 +87,10 @@
 //----------------------------------------------
 #define EVENT_BTN                  0xd1
 #define EVENT_RC                   0xd2
-#define EVENT_ERR                  0xF5
-#define EVENT_OK1                  0xFA
-#define EVENT_OK2                  0xF1
-#define EVENT_ANSWER_GETTIME       0xB9
+#define EVENT_ERR                  0xf5
+#define EVENT_OK1                  0xfa
+#define EVENT_OK2                  0xf1
+#define EVENT_ANSWER_GETTIME       0xb9
 #define EVENT_ANSWER_WAKEUP_REASON 0x77
 #define EVENT_ANSWER_VERSION       0x85
 
@@ -154,13 +154,12 @@ struct stpio_pin* fan_pin1;
 struct stpio_pin* fan_pin;
 #endif
 
-
 extern int micomGetTime(void);
 extern int micomSetTime(char *time);
 //extern int micomGetWakeUpTime(char *time);
 extern int micomSetWakeUpTime(char *time);
 int date2days(int year, int mon, int day, int *yday);
-
+extern u32 fan_pwm;
 
 //----------------------------------------------
 
@@ -686,7 +685,7 @@ static int __init init_fan_module(void)
 	ctrl_outl(0x200, fan_registers + 0x50);
 	
 	// set a default speed, because default is zero
-	ctrl_outl(130, fan_registers + 0x4);
+	ctrl_outl(fan_pwm, fan_registers + 0x4);
 	return 0;
 }
 

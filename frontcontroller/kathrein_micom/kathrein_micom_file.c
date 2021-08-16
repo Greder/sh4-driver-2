@@ -42,7 +42,7 @@
  * 20170312 Audioniek       Displaybrightness scale converted from 5..1 to
  *                          the customary 0..7.
  * 20170313 Audioniek       Display on/off implemented.
- * 20170313 Audioniek       Texts longer than the displaylength are scrolled
+ * 20170313 Audioniek       Texts longer than the display length are scrolled
  *                          once (/dev/vfd only).
  * 20210624 Audioniek       Add VFDSETLED mode 0.
  * 20210701 Audioniek       VFDSETFAN IOCTL on UFS922 added.
@@ -1297,7 +1297,7 @@ int micomGetWakeUpMode(int *wakeup_mode)
 		 * 0xc3 = timer
 		 * 0xc4 = ac power on???
 		 */
-//		dprintk(70, "ioctl_data[0] = 0x%02x ioctl_data[1] = 0x%02x\n", ioctl_data[0],ioctl_data[1]);
+		dprintk(50, "ioctl_data[0] = 0x%02x ioctl_data[1] = 0x%02x\n", ioctl_data[0],ioctl_data[1]);
 //		Convert FP answer to standard values
 		switch ((unsigned char)ioctl_data[1])
 		{

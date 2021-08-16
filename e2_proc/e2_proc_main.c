@@ -289,27 +289,27 @@ static int info_model_read(char *page, char **start, off_t off, int count, int *
 #if defined(CUBEREVO)
 	int len = sprintf(page, "cuberevo\n");
 #elif defined(CUBEREVO_MINI)
-	int len = sprintf(page, "cuberevo_mini\n");
+	int len = sprintf(page, "cuberevo-mini\n");
 #elif defined(CUBEREVO_MINI2)
-	int len = sprintf(page, "cuberevo_mini2\n");
+	int len = sprintf(page, "cuberevo-mini2\n");
 #elif defined(CUBEREVO_250HD)
-	int len = sprintf(page, "cuberevo_250hd\n");
+	int len = sprintf(page, "cuberevo-250hd\n");
 #elif defined(CUBEREVO_MINI_FTA)
-	int len = sprintf(page, "cuberevo_mini_fta\n");
+	int len = sprintf(page, "cuberevo-mini-fta\n");
 #elif defined(CUBEREVO_2000HD)
-	int len = sprintf(page, "cuberevo_2000hd\n");
+	int len = sprintf(page, "cuberevo-2000hd\n");
 #elif defined(CUBEREVO_9500HD)
-	int len = sprintf(page, "cuberevo_9500hd\n");
+	int len = sprintf(page, "cuberevo-9500hd\n");
 #elif defined(CUBEREVO_3000HD)
-	int len = sprintf(page, "cuberevo_3000hd\n");
+	int len = sprintf(page, "cuberevo-3000hd\n");
 #elif defined(TF7700)
-	int len = sprintf(page, "tf7700\n");
+	int len = sprintf(page, "tf7700hdpvr\n");
 #elif defined(HL101)
 	int len = sprintf(page, "hl101\n");
 #elif defined(VIP1_V1)
-	int len = sprintf(page, "vip1_v1\n");
+	int len = sprintf(page, "vip1-v1\n");
 #elif defined(VIP1_V2)
-	int len = sprintf(page, "vip1_v2\n");
+	int len = sprintf(page, "vip1-v2\n");
 #elif defined(VIP2)
 	int len = sprintf(page, "vip2\n");
 #elif defined(UFS910)
@@ -326,12 +326,12 @@ static int info_model_read(char *page, char **start, off_t off, int count, int *
 	int len = sprintf(page, "spark\n");
 #elif defined(SPARK7162)
 	int len = sprintf(page, "spark7162\n");
-#elif defined(FORTIS_HDBOX)
-	int len = sprintf(page, "fortis_hdbox\n");
-#elif defined(OCTAGON1008)
-	int len = sprintf(page, "octagon1008\n");
-#elif defined(ATEVIO7500)
-	int len = sprintf(page, "atevio7500\n");
+#elif defined(FS9000)
+	int len = sprintf(page, "fs9000\n");
+#elif defined(HS9510)
+	int len = sprintf(page, "hs9510\n");
+#elif defined(HS8200)
+	int len = sprintf(page, "hs8200\n");
 #elif defined(HS7110)
 	int len = sprintf(page, "hs7110\n");
 #elif defined(HS7119)
@@ -366,30 +366,6 @@ static int info_model_read(char *page, char **start, off_t off, int count, int *
 	int len = sprintf(page, "pace7241\n");
 #elif defined(OPT9600)
 	int len = sprintf(page, "opt9600\n");
-#elif defined(ADB_2850)
-	int len = sprintf(page, "adb_2850\n");
-#elif defined(QBOXHD)
-	int len = sprintf(page, "qboxhd\n");
-#elif defined(QBOXHD_MINI)
-	int len = sprintf(page, "qboxhd_mini\n");
-#elif defined(HOMECAST5101)
-	int len = sprintf(page, "hs5101\n");
-#elif defined(FOREVER_NANOSMART)
-	int len = sprintf(page, "forever_nanosmart\n");
-#elif defined(FOREVER_9898HD)
-	int len = sprintf(page, "forever_9898hd\n");
-#elif defined(DP7001)
-	int len = sprintf(page, "dp7001\n");
-#elif defined(FOREVER_3434HD)
-	int len = sprintf(page, "forever_3434hd\n");
-#elif defined(FOREVER_2424HD)
-	int len = sprintf(page, "forever_2424hd\n");
-#elif defined(GPV8000)
-	int len = sprintf(page, "gpv8000\n");
-#elif defined(EP8000)
-	int len = sprintf(page, "ep8000\n");
-#elif defined(EPP8000)
-	int len = sprintf(page, "epp8000\n");
 #else
 	int len = sprintf(page, "unknown\n");
 #endif
@@ -698,14 +674,14 @@ static int info_chipset_read(char *page, char **start, off_t off, int count, int
 #if defined(UFS910) \
  || defined(ADB_BOX)
 	int len = sprintf(page, "STi7100\n");
-#elif defined(ATEVIO7500) \
+#elif defined(HS8200) \
  || defined(UFS913) \
  || defined(SAGEMCOM88) \
  || defined(PACE7241)
 	int len = sprintf(page, "STi7105\n");
-#elif defined(FORTIS_HDBOX) \
+#elif defined(FS9000) \
  || defined(HL101) \
- || defined(OCTAGON1008) \
+ || defined(HS9510) \
  || defined(TF7700) \
  || defined(UFS922) \
  || defined(UFC960) \
@@ -736,17 +712,10 @@ static int info_chipset_read(char *page, char **start, off_t off, int count, int
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
  || defined(SPARK) \
- || defined(VITAMIN_HD5000) \
- || defined(ADB_2850)
+ || defined(VITAMIN_HD5000)
 	int len = sprintf(page, "STi7111\n");
 #elif defined(SPARK7162)
 	int len = sprintf(page, "STi7162\n");
-#elif defined(FOREVER_NANOSMART) || defined(FOREVER_9898HD) || defined(DP7001) || defined(FOREVER_2424HD) || defined(FOREVER_3434HD)
-	int len = sprintf(page, "STiH237 (Cardiff)\n");
-#elif defined(EP8000) || defined(EPP8000)
-	int len = sprintf(page, "STiH239 (Newport)\n");
-#elif defined(GPV8000)
-	int len = sprintf(page, "STiH253 (Firenze)\n");
 #else
 	int len = sprintf(page, "unknown\n");
 #endif
@@ -1015,9 +984,9 @@ struct ProcStructure_s e2Proc[] =
 #if defined(ADB_BOX)
 	{cProcEntry, "stb/info/adb_variant",                                             NULL, NULL, NULL, NULL, ""},
 #endif
-#if defined(FORTIS_HDBOX) \
- || defined(OCTAGON1008) \
- || defined(ATEVIO7500) \
+#if defined(FS9000) \
+ || defined(HS9510) \
+ || defined(HS8200) \
  || defined(HS7110) \
  || defined(HS7119) \
  || defined(HS7420) \
@@ -1027,14 +996,10 @@ struct ProcStructure_s e2Proc[] =
  || defined(SPARK) \
  || defined(SPARK7162) \
  || defined(UFS910) \
- || defined(FOREVER_NANOSMART) \
- || defined(FOREVER_9898HD) \
- || defined(DP7001) \
- || defined(FOREVER_3434HD) \
- || defined(FOREVER_2424HD) \
- || defined(GPV8000) \
- || defined(EP8000) \
- || defined(EPP8000)
+ || defined(UFS912) \
+ || defined(UFS913) \
+ || defined(UFS922) \
+ || defined(UFC960)
 	{cProcEntry, "stb/info/OEM",                                                     NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/info/brand",                                                   NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/info/model_name",                                              NULL, NULL, NULL, NULL, ""},
@@ -1057,8 +1022,8 @@ struct ProcStructure_s e2Proc[] =
 #if defined(ADB_BOX) \
  || defined(CUBEREVO) \
  || defined(CUBEREVO_9500HD) \
- || defined(FORTIS_HDBOX) \
- || defined(ATEVIO7500) \
+ || defined(FS9000) \
+ || defined(HS8200) \
  || defined(SPARK7162) \
  || defined(TF7700) \
  || defined(VITAMIN_HD5000) \
@@ -1081,14 +1046,13 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/lcd/symbol_hdd",                                               NULL, NULL, NULL, NULL, ""},
 #endif
 #if defined(ADB_BOX) \
- || defined(FORTIS_HDBOX) \
- || defined(ATEVIO7500) \
+ || defined(FS9000) \
+ || defined(HS8200) \
  || defined(CUBEREVO) \
  || defined(CUBEREVO_MINI) \
  || defined(CUBEREVO_MINI2) \
  || defined(CUBEREVO_2000HD) \
  || defined(CUBEREVO_3000HD) \
- || defined(SPARK) \
  || defined(SPARK7162) \
  || defined(TF7700) \
  || defined(HL101) \
@@ -1106,9 +1070,6 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/video/hdmi_colorspace_choices",                                NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/video/force_dvi",                                              NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/video/policy",                                                 NULL, NULL, NULL, NULL, ""},
-#if defined(QBOXHD) || defined(QBOXHD_MINI)
-	{cProcEntry, "stb/video/policy2"                                                , NULL, NULL, NULL, NULL, ""},
-#endif
 	{cProcEntry, "stb/video/policy_choices",                                         NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/video/videomode",                                              NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/video/3d_mode",                                                NULL, three_d_mode_read, three_d_mode_write, NULL, ""},
@@ -1168,23 +1129,15 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/fp/wakeup_time",                                               NULL, wakeup_time_read, wakeup_time_write, NULL, ""},
 	{cProcEntry, "stb/fp/was_timer_wakeup",                                          NULL, NULL, NULL, NULL, ""},
 
-#if defined(FORTIS_HDBOX) \
- || defined(OCTAGON1008) \
- || defined(ATEVIO7500) \
+#if defined(FS9000) \
+ || defined(HS9510) \
+ || defined(HS8200) \
  || defined(HS7110) \
  || defined(HS7119) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
- || defined(HS7819) \
- || defined(FOREVER_NANOSMART) \
- || defined(FOREVER_9898HD) \
- || defined(DP7001) \
- || defined(FOREVER_3434HD) \
- || defined(FOREVER_2424HD) \
- || defined(GPV8000) \
- || defined(EP8000) \
- || defined(EPP8000)
+ || defined(HS7819)
 	{cProcEntry, "stb/fp/resellerID",                                                NULL, NULL, NULL, NULL, ""},
 #endif
 
@@ -1206,6 +1159,7 @@ struct ProcStructure_s e2Proc[] =
  || defined(VIP2)
 	{cProcEntry, "stb/power/standbyled",                                             NULL, NULL, NULL, NULL, ""},
 #endif
+
    	{cProcDir,   "stb/tsmux",                                                        NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/tsmux/input0",                                                 NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/tsmux/input1",                                                 NULL, NULL, NULL, NULL, ""},
@@ -1283,7 +1237,7 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/video/plane/psi_apply",                                        NULL, NULL, NULL, NULL, "psi_apply"},
 #if defined(UFS912) \
  || defined(UFS913) \
- || defined(ATEVIO7500) \
+ || defined(HS8200) \
  || defined(HS7110) \
  || defined(HS7119) \
  || defined(ATEMIO520) \
@@ -1296,15 +1250,7 @@ struct ProcStructure_s e2Proc[] =
  || defined(SPARK7162) \
  || defined(SAGEMCOM88) \
  || defined(VITAMIN_HD5000) \
- || defined(OPT9600) \
- || defined(FOREVER_NANOSMART) \
- || defined(FOREVER_9898HD) \
- || defined(DP7001) \
- || defined(FOREVER_3434HD) \
- || defined(FOREVER_2424HD) \
- || defined(GPV8000) \
- || defined(EP8000) \
- || defined(EPP8000)
+ || defined(OPT9600)
 	{cProcDir,   "stb/cec",                                                          NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/cec/state_activesource",                                       NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/cec/state_standby",                                            NULL, NULL, NULL, NULL, ""},
@@ -1315,9 +1261,9 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/cec/send",                                                     NULL, NULL, NULL, NULL, ""},
 #endif
 	/* dagobert: the dei settings can be used for all 7109 architectures to affect the de-interlacer */
-#if defined(FORTIS_HDBOX) \
+#if defined(FS9000) \
  || defined(HL101) \
- || defined(OCTAGON1008) \
+ || defined(HS9510) \
  || defined(TF7700) \
  || defined(UFS922) \
  || defined(UFC960) \
@@ -1349,7 +1295,8 @@ struct ProcStructure_s e2Proc[] =
 #endif
 
 // Enigma2 implementation of fan control, doubles the historic various SH4 ones... (TODO: add these)
-#if defined(CUBEREVO) \
+#if defined(ADB_BOX) \
+ || defined(CUBEREVO) \
  || defined(CUBEREVO_9500HD) \
  || defined(IPBOX9900) \
  || defined(IPBOX99) \
@@ -1358,6 +1305,7 @@ struct ProcStructure_s e2Proc[] =
  || defined(SAGEMCOM88) \
  || defined(PACE7241)
 	{cProcEntry, "stb/fp/fan",                                                       NULL, NULL, NULL, NULL, ""},
+	{cProcEntry, "stb/fp/fan_choices",                                               NULL, NULL, NULL, NULL, ""},
 #endif
 #if defined(ADB_BOX) \
  || defined(CUBEREVO) \
