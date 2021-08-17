@@ -112,9 +112,13 @@
  *  |
  *  ---------- info
  *  |           |
+ *  |           --------- OEM
+ *  |           |
+ *  |           --------- brand
+ *  |           |
  *  |           --------- model_name
  *  |
- *  ---------- fp (this is wrong used for e2 I think. on dm800 this is frontprocessor and there is another proc entry for frontend)
+ *  ---------- fp (this is wrongly used for e2 I think. on dm800 this is frontprocessor and there is another proc entry for frontend)
  *  |           |
  *  |           --------- lnb_sense1
  *  |           |
@@ -984,7 +988,15 @@ struct ProcStructure_s e2Proc[] =
 #if defined(ADB_BOX)
 	{cProcEntry, "stb/info/adb_variant",                                             NULL, NULL, NULL, NULL, ""},
 #endif
-#if defined(FS9000) \
+#if defined(CUBEREVO) \
+ || defined(CUBEREVO_MINI) \
+ || defined(CUBEREVO_MINI2) \
+ || defined(CUBEREVO_250HD) \
+ || defined(CUBEREVO_MINI_FTA) \
+ || defined(CUBEREVO_2000HD) \
+ || defined(CUBEREVO_3000HD) \
+ || defined(CUBEREVO_9500HD) \
+ || defined(FS9000) \
  || defined(HS9510) \
  || defined(HS8200) \
  || defined(HS7110) \

@@ -2,7 +2,7 @@
  * cuberevo_micom_procfs.c
  *
  * (c) ? Gustav Gans
- * (c) 2019 Audioniek
+ * (c) 2019-2021 Audioniek
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,11 +36,12 @@
  * 20210606 Audioniek       /proc/stb/power support added.
  * 20210704 Audioniek       /proc/stb/fp_fan_pwm added (CubeRevo
  *                          & 9500HD only).
+ * 20210717 Audioniek       Add /proc/stb/info/OEM, brand and model_name.
  * 
  ****************************************************************************/
 
-#include <linux/proc_fs.h>      /* proc fs */
-#include <asm/uaccess.h>        /* copy_from_user */
+#include <linux/proc_fs.h>  /* proc fs */
+#include <asm/uaccess.h>    /* copy_from_user */
 #include <linux/time.h>
 #include <linux/delay.h>
 #include <linux/kernel.h>
@@ -69,6 +70,12 @@
  *             +--- led_patternspeed (rw)   Blink speed for pattern (not implemented)
  *             +--- oled_brightness (w)     Direct control of display brightness
  *             +--- text (w)                Direct writing of display text
+ *
+ *  /proc/stb/info
+ *             |
+ *             +--- OEM (r)                 Name of OEM manufacturer
+ *             +--- brand (r)               Name of reseller
+ *             +--- model_name (r)          Model name of reseller
  *
  *  /proc/stb/lcd/
  *             |
@@ -927,8 +934,8 @@ static int fan_pwm_write(struct file *file, const char __user *buf, unsigned lon
 
 			// Note: On CubeRevo & 9500HD the fan can only be switched on or off;
 		    //       the frontprocessor however automatically controls the speed.
-			//       This functions always returns the value written before, although
-		    //       this does not control the actual fan speed.
+			//       This function switches the fan off for value 0, other values
+		    //       switch the fan on.
 			fan_pwm = simple_strtol(page, NULL, 10);
 			micomSetFan(fan_pwm == 0 ? 0 : 1);
 			ret = count;
@@ -938,6 +945,63 @@ static int fan_pwm_write(struct file *file, const char __user *buf, unsigned lon
 	return ret;
 }
 #endif
+
+static int oem_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+{
+	int len = 0;
+
+	if (NULL != page)
+	{
+		len = sprintf(page, "DGStation\n");
+	}
+	return len;
+}
+
+static int brand_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+{  // TODO: detect ABcom/Vyzion versions
+	int len = 0;
+	
+	dprintk(50, "%s >\n", __func__);
+
+	if (NULL != page)
+	{
+		len = sprintf(page, "%s\n", "CubeRevo");
+	}
+	dprintk(50, "%s < %d\n", __func__, len);
+	return len;
+}
+
+static int model_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+{  // TODO: detect ABcom/Vyzion versions
+	int len = 0;
+	
+	dprintk(50, "%s >\n", __func__);
+
+	if (NULL != page)
+	{
+#if defined(CUBEREVO)
+		len = sprintf(page, "%s\n", "CubeRevo");
+#elif defined(CUBEREVO_MINI_FTA)
+		len = sprintf(page, "%s\n", "200HD");
+#elif defined(CUBEREVO_250HD)
+		len = sprintf(page, "%s\n", "250HD");
+#elif defined(CUBEREVO_MINI)
+		len = sprintf(page, "%s\n", "900HD");
+#elif defined(CUBEREVO_MINI2)
+		len = sprintf(page, "%s\n", "910HD");
+#elif defined(CUBEREVO_2000HD)
+		len = sprintf(page, "%s\n", "2000HD");
+#elif defined(CUBEREVO_3000HD)
+		len = sprintf(page, "%s\n", "3000HD");
+#elif defined(CUBEREVO_9500HD)
+		len = sprintf(page, "%s\n", "9500HD");
+#else
+		len = sprintf(page, "%s\n", "unknown");
+#endif
+	}
+	dprintk(50, "%s < %d\n", __func__, len);
+	return len;
+}
 
 /*
 static int null_write(struct file *file, const char __user *buf, unsigned long count, void *data)
@@ -972,7 +1036,10 @@ struct fp_procs
 	{ "stb/fp/wakeup_time", wakeup_time_read, wakeup_time_write },
 	{ "stb/fp/was_timer_wakeup", was_timer_wakeup_read, NULL },
 	{ "stb/fp/version", fp_version_read, NULL },
-#if defined(CUBEREVO) \
+	{ "stb/info/OEM", oem_name_read, NULL },
+	{ "stb/info/brand", brand_name_read, NULL },
+	{ "stb/info/model_name", model_name_read, NULL },
+	#if defined(CUBEREVO) \
  || defined(CUBEREVO_9500HD)
 	{ "stb/lcd/symbol_circle", symbol_circle_read, symbol_circle_write },
 #endif
