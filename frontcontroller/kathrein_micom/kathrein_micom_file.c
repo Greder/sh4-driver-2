@@ -823,27 +823,12 @@ int micomSetLED(int which, int on)
 {
 	char buffer[8];
 	int  res = 0;
-	int  ledmin;
-	int  ledmax;
 
 	dprintk(100, "%s > LED %d, state %s\n", __func__, which, on ? "on" : "off");
 
-#if 0
-#if defined(UFS922)
-	ledmin = LED_AUX;
-	ledmax = LED_WHEEL;
-#elif defined(UFS912) \
- ||   defined(UFS913)
-	ledmin = LED_GREEN;
-	ledmax = LED_RIGHT;
-#else  // UFC960
-	ledmin = LED_GREEN;
-	ledmax = LED_RED;
-#endif
-#endif
 	if (which < LED_MIN || which > LED_MAX)
 	{
-		dprintk(1, "LED number %d out of range (%d..%d)\n", which, ledmin, ledmax);
+		dprintk(1, "LED number %d out of range (%d..%d)\n", which, LED_MIN, LED_MAX);
 		return -EINVAL;
 	}
 	memset(buffer, 0, sizeof(buffer));
@@ -872,7 +857,7 @@ int micomSetBrightness(char level)
 
 	if (level < 0 || level > 7)
 	{
-		dprintk(1, "Brightness level %d out of range (valid 0-7)\n", level);
+		dprintk(1, "Brightness level %d out of range (valid 0..7)\n", level);
 		return -EINVAL;
 	}
 	if (level != 0)
@@ -910,7 +895,7 @@ int micomSetLedBrightness(unsigned char level)
 
 	if (level < 0 || level > 7)
 	{
-		dprintk(1, "LED brightness %d out of range (valid 0-7)\n", (int)level);
+		dprintk(1, "LED brightness %d out of range (valid 0..7)\n", (int)level);
 		return -EINVAL;
 	}
 	if (level != 0)
@@ -962,9 +947,10 @@ int micomInitialize(void)
 	/* unknown command:
 	 * modifications of most of the values lead to a
 	 * not working fp which can only be fixed by switching
-	 * the receiver off. value 0x46 can be modified and reset.
+	 * the receiver off. Value 0x46 can be modified and reset.
 	 * changing the values behind 0x46 has no effect for me.
 	 */
+#if 0
 	memset(buffer, 0, sizeof(buffer));
 	buffer[0] = 0x02;
 	buffer[1] = 0xff;
@@ -972,6 +958,9 @@ int micomInitialize(void)
 	buffer[3] = 0x48;
 	buffer[4] = 0x01;	// RC code 1 to 4
 	res = micomWriteCommand(CmdSetRCcode, buffer, 7, NO_ACK);
+#else
+	res = micomSetRCcode(1);
+#endif
 
 	memset(buffer, 0, sizeof(buffer));
 	buffer[0] = 0x2;
@@ -1097,7 +1086,7 @@ int micomSetStandby(char *time)
 		return res;
 	}
 	res = micomSetWakeUpTime(time);
-	/* enter standby */
+	/* enter deep standby */
 	memset(buffer, 0, sizeof(buffer));
 	res = micomWriteCommand(CmdSetDeepStandby, buffer, 7, NO_ACK);
 
@@ -1168,9 +1157,6 @@ int micomSetDisplayOnOff(unsigned char level)
  *
  * micomGetVersion: get version of front processor.
  *
- * Note: leaves version number in variables micom_ver,
- *       micom_major and micom_minor.
- *
  */
 int micomGetVersion(void)
 {
@@ -1197,7 +1183,7 @@ int micomGetVersion(void)
 	else
 	{
 //		/* version received ->noop here */
-//		dprintk(1, "Version data: 0x%02x 0x%02x 0x%02x\n", ioctl_data[0], ioctl_data[1], ioctl_data[2]);
+		dprintk(20, "Version data: 0x%02x 0x%02x 0x%02x\n", ioctl_data[0], ioctl_data[1], ioctl_data[2]);
 	}
 	dprintk(100, "%s <\n", __func__);
 	return res;
@@ -1297,7 +1283,7 @@ int micomGetWakeUpMode(int *wakeup_mode)
 		 * 0xc3 = timer
 		 * 0xc4 = ac power on???
 		 */
-		dprintk(50, "ioctl_data[0] = 0x%02x ioctl_data[1] = 0x%02x\n", ioctl_data[0],ioctl_data[1]);
+		dprintk(50, "ioctl_data[0] = 0x%02x ioctl_data[1] = 0x%02x\n", ioctl_data[0], ioctl_data[1]);
 //		Convert FP answer to standard values
 		switch ((unsigned char)ioctl_data[1])
 		{
@@ -1336,7 +1322,8 @@ int micomGetWakeUpMode(int *wakeup_mode)
  *
  * Please note that this does not set the wakeup time.
  *
- */int micomReboot(void)
+ */
+int micomReboot(void)
 {
 	char buffer[8];
 	int  res = 0;
@@ -1430,37 +1417,37 @@ int micomWriteString(unsigned char *aBuf, int len)
 				int newVal = 0;
 				switch (bBuf[j])
 				{
-					case 0x84: //0x80, a-umlaut
+					case 0x84:  // 0x80, a-umlaut
 					{
 						newVal = VFD_CHARTABLE[0x80];
 						break;
 					}
-					case 0x94: //0x81, o-umlaut
+					case 0x94:  // 0x81, o-umlaut
 					{
 						newVal = VFD_CHARTABLE[0x81];
 						break;
 					}
-					case 0x81: //0x82, u-umlaut
+					case 0x81:  // 0x82, u-umlaut
 					{
 						newVal = VFD_CHARTABLE[0x82];
 						break;
 					}
-					case 0x8e: //0x83, A-umlaut
+					case 0x8e:  // 0x83, A-umlaut
 					{
 						newVal = VFD_CHARTABLE[0x83];
 						break;
 					}
-					case 0x99: //0x84, O-umlaut
+					case 0x99:  // 0x84, O-umlaut
 					{
 						newVal = VFD_CHARTABLE[0x84];
 						break;
 					}
-					case 0x9a: //0x85, U-umlaut
+					case 0x9a:  // 0x85, U-umlaut
 					{
 						newVal = VFD_CHARTABLE[0x85];
 						break;
 					}
-					case 0xb1: //0x86, sz-estset
+					case 0xb1:  // 0x86, sz-estset
 					{
 						newVal = VFD_CHARTABLE[0x86];
 						break;
@@ -1650,7 +1637,7 @@ static ssize_t MICOMdev_write(struct file *filp, const char *buff, size_t len, l
 	}
 	dprintk(70, "minor = %d\n", minor);
 
-	/* do not write to the remote control */
+	/* Do not write to the remote control */
 	if (minor == FRONTPANEL_MINOR_RC)
 	{
 		return -EOPNOTSUPP;
@@ -1659,7 +1646,7 @@ static ssize_t MICOMdev_write(struct file *filp, const char *buff, size_t len, l
 
 	if (kernel_buf == NULL)
 	{
-		dprintk(1, "%s returns no mem <\n", __func__);
+		dprintk(1, "%s returns no memory <\n", __func__);
 		return -ENOMEM;
 	}
 
@@ -1761,7 +1748,7 @@ static ssize_t MICOMdev_read(struct file *filp, char __user *buff, size_t len, l
 		dprintk(1, "%s: Error: Bad Minor\n", __func__);
 		return -EUSERS;
 	}
-	dprintk(70, "minor = %d\n", minor);
+	dprintk(70, "%s: Minor = %d\n", __func__, minor);
 
 	if (minor == FRONTPANEL_MINOR_RC)
 	{
@@ -1840,11 +1827,11 @@ int MICOMdev_open(struct inode *inode, struct file *filp)
 	}
 	minor = MINOR(inode->i_rdev);
 
-	dprintk(70, "open minor %d\n", minor);
+	dprintk(70, "Open minor %d\n", minor);
 
 	if (FrontPanelOpen[minor].fp != NULL)
 	{
-		dprintk(1, "EUSER\n");
+		dprintk(1, "%s: < -EUSER\n", __func__);
 		up(&write_sem);
 		return -EUSERS;
 	}
@@ -1868,7 +1855,7 @@ int MICOMdev_close(struct inode *inode, struct file *filp)
 
 	minor = MINOR(inode->i_rdev);
 
-	dprintk(70, "close minor %d\n", minor);
+	dprintk(70, "Close minor %d\n", minor);
 
 	if (FrontPanelOpen[minor].fp == NULL)
 	{

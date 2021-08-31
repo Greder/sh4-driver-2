@@ -306,3 +306,4 @@ extern char *gmt_offset;  // module param, string
 extern int rtc_offset;
 #endif  // _kathrein_micom_h
 // vim:ts=4
+

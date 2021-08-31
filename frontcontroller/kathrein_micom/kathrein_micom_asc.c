@@ -45,18 +45,14 @@
 #if defined(UFS922) || defined(UFC960)
 unsigned int InterruptLine = 120;
 unsigned int ASCXBaseAddress = ASC3BaseAddress;
-#else
-#ifdef UFS912
+#elif defined(UFS912)
 unsigned int InterruptLine = 121;
 unsigned int ASCXBaseAddress = ASC2BaseAddress;
-#else
-#ifdef UFS913
+#elif defined(UFS913)
 unsigned int InterruptLine = 120;
 unsigned int ASCXBaseAddress = ASC3BaseAddress;
 #else
 #error Not supported!
-#endif
-#endif
 #endif
 
 //-------------------------------------
@@ -65,8 +61,8 @@ void serial_init(void)
 {
 #if defined(UFS922) || defined(UFC960)
 	// Configure the PIO pins
-	stpio_request_pin(5, 0,  "ASC3_TX", STPIO_ALT_OUT); /* Tx */
-	stpio_request_pin(5, 1,  "ASC3_RX", STPIO_IN);      /* Rx */
+	stpio_request_pin(5, 0,  "ASC3_TX", STPIO_ALT_OUT);  /* Tx */
+	stpio_request_pin(5, 1,  "ASC3_RX", STPIO_IN);       /* Rx */
 
 	*(unsigned int *)(PIO5BaseAddress + PIO_CLR_PnC0) = 0x07;
 	*(unsigned int *)(PIO5BaseAddress + PIO_CLR_PnC1) = 0x06;
@@ -75,7 +71,7 @@ void serial_init(void)
 #endif
 
 	// Configure the asc input/output settings
-	*(unsigned int *)(ASCXBaseAddress + ASC_INT_EN)   = 0x00000000; // TODO: Why do we set here the INT_EN again ???
+	*(unsigned int *)(ASCXBaseAddress + ASC_INT_EN)   = 0x00000000;  // TODO: Why do we set here the INT_EN again ???
 	*(unsigned int *)(ASCXBaseAddress + ASC_CTRL)     = 0x00001589;
 	*(unsigned int *)(ASCXBaseAddress + ASC_TIMEOUT)  = 0x00000010;
 	*(unsigned int *)(ASCXBaseAddress + ASC_BAUDRATE) = 0x000000c9;
@@ -102,3 +98,4 @@ int serial_putc(char Data)
 	return 1;
 }
 // vim:ts=4
+

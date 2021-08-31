@@ -234,14 +234,14 @@ static int text_write(struct file *file, const char __user *buf, unsigned long c
 /*
 struct tm
 {
-	int	tm_sec      //seconds after the minute 0-61*
-	int	tm_min      //minutes after the hour   0-59
-	int	tm_hour     //hours since midnight     0-23
-	int	tm_mday     //day of the month         1-31
-	int	tm_mon      //months since January     0-11
-	int	tm_year     //years since 1900
-	int	tm_wday     //days since Sunday        0-6
-	int	tm_yday   	//days since January 1     0-365
+	int	tm_sec      // seconds after the minute 0-61*
+	int	tm_min      // minutes after the hour   0-59
+	int	tm_hour     // hours since midnight     0-23
+	int	tm_mday     // day of the month         1-31
+	int	tm_mon      // months since January     0-11
+	int	tm_year     // years since 1900
+	int	tm_wday     // days since Sunday        0-6
+	int	tm_yday   	// days since January 1     0-365
 	* leap second is provided for
 }
 
@@ -283,7 +283,7 @@ static struct tm *gmtime(register const time_t time)
 	fptime.tm_sec = dayclock % 60;
 	fptime.tm_min = (dayclock % 3600) / 60;
 	fptime.tm_hour = dayclock / 3600;
-	fptime.tm_wday = (dayno + 4) % 7;       /* day 0 was a thursday */
+	fptime.tm_wday = (dayno + 4) % 7;       /* day 0 was a Thursday */
 	while (dayno >= YEARSIZE(year))
 	{
 		dayno -= YEARSIZE(year);
@@ -435,6 +435,7 @@ static int write_rtc_offset(struct file *file, const char __user *buffer, unsign
 		/* always return count to avoid endless loop */
 		ret = count;
 	}
+
 out:
 	free_page((unsigned long)page);
 	kfree(myString);
@@ -476,6 +477,7 @@ static int wakeup_time_write(struct file *file, const char __user *buffer, unsig
 		/* always return count to avoid endless loop */
 		ret = count;
 	}
+
 out:
 	free_page((unsigned long)page);
 	kfree(myString);
@@ -492,7 +494,6 @@ static int wakeup_time_read(char *page, char **start, off_t off, int count, int 
 
 	if (NULL != page)
 	{
-		
 		res = micomGetWakeUpTime(wtime);
 		w_time = calcGetMicomTime(wtime);
 
@@ -514,7 +515,7 @@ static int was_timer_wakeup_read(char *page, char **start, off_t off, int count,
 
 		if (res == 0)
 		{
-			dprintk(10, "%s > wakeup_mode= 0x%02x\n", __func__, wakeup_mode & 0xff);
+			dprintk(50, "%s > wakeup_mode= 0x%02x\n", __func__, wakeup_mode & 0xff);
 			if (wakeup_mode & 0x0f == 0x03)  // if timer wakeup
 			{
 				wakeup_mode = 1;
@@ -612,6 +613,7 @@ static int led1_pattern_read(char *page, char **start, off_t off, int count, int
 	}
 	return len;
 }
+
 static int led1_pattern_write(struct file *file, const char __user *buf, unsigned long count, void *data)
 {
 	return led_pattern_write(file, buf, count, data, 1);
@@ -789,6 +791,7 @@ static int brand_name_read(char *page, char **start, off_t off, int count, int *
 	dprintk(50, "%s < %d\n", __func__, len);
 	return len;
 }
+
 static int model_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
 {
 	int len = 0;
@@ -866,3 +869,4 @@ void remove_proc_fp(void)
 	}
 }
 // vim:ts=4
+

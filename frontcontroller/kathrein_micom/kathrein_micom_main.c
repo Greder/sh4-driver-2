@@ -21,8 +21,8 @@
  *
  * Description:
  *
- * Kathrein UFS912/913/922 MICOM Kernelmodule ported from MARUSYS
- * uboot source, from vfd driver and from tf7700 frontpanel handling.
+ * Kathrein UFS912/913/922 & UFC960 MICOM Kernelmodule ported from MARUSYS
+ * uboot source, from UFS910 vfd driver and from tf7700 frontpanel handling.
  *
  * Devices:
  *  - /dev/vfd (vfd ioctls and read/write function)
@@ -83,8 +83,8 @@
 #include "kathrein_micom.h"
 #include "kathrein_micom_asc.h"
 
-
 //----------------------------------------------
+
 #define EVENT_BTN                  0xd1
 #define EVENT_RC                   0xd2
 #define EVENT_ERR                  0xf5
@@ -129,7 +129,7 @@ static unsigned char expectEventId = 1;
 
 #define cMinimumSize         6
 
-#define BUFFERSIZE           256     //must be 2 ^ n
+#define BUFFERSIZE           256  // must be 2 ^ n
 
 static unsigned char RCVBuffer [BUFFERSIZE];
 static int           RCVBufferStart = 0, RCVBufferEnd = 0;
@@ -768,7 +768,7 @@ static int rtc_time2tm(char *time, struct rtc_time *tm)
 	int hour, min, sec;
 
 	dprintk(100, "%s >\n", __func__);
-	dprintk(5, "Time to convert: %02x-%02x-20%02x %02x:%02x:%02x\n", (int)time[3],(int)time[4], (int)time[5], (int)time[2], (int)time[1], (int)time[0]);
+	dprintk(50, "Time to convert: %02x-%02x-20%02x %02x:%02x:%02x\n", (int)time[3],(int)time[4], (int)time[5], (int)time[2], (int)time[1], (int)time[0]);
 	// calculate the number of days since 01-01-1970 (Linux epoch)
 	// the RTC starts at 01-01-2000 as it has no century
 	year        = ((time[5] >> 4) * 10) + (time[5] & 0x0f);
@@ -779,28 +779,28 @@ static int rtc_time2tm(char *time, struct rtc_time *tm)
 	tm->tm_hour = ((time[2] >> 4) * 10) + (time[2] & 0x0f);
 	tm->tm_min  = ((time[1] >> 4) * 10) + (time[1] & 0x0f);
 	tm->tm_sec  = ((time[0] >> 4) * 10) + (time[0] & 0x0f);
-	dprintk(5, "Date: %02d-%02d-%04d, time: %02d:%02d:%02d\n", tm->tm_mday, tm->tm_mon + 1, tm->tm_year + 1900, tm->tm_hour, tm->tm_min, tm->tm_sec);
 
 	// calculate the number of days since linux epoch (00:00:00 UTC 01/01/1970)
 	days = date2days(tm->tm_year, mon, tm->tm_mday, &yday);
 	tm->tm_wday = (days + 4) % 7; // 01-01-1970 was a Thursday
 	tm->tm_yday = yday;
 	tm->tm_isdst = -1;
-	dprintk(5, "%s weekday = %1d, yearday = %3d\n", __func__, tm->tm_wday, tm->tm_yday);
+	dprintk(50, "Date: %02d-%02d-%04d, time: %02d:%02d:%02d\n", tm->tm_mday, tm->tm_mon + 1, tm->tm_year + 1900, tm->tm_hour, tm->tm_min, tm->tm_sec);
+	dprintk(50, "Weekday = %1d, Yearday = %3d\n", tm->tm_wday, tm->tm_yday);
 	dprintk(100, "%s <\n", __func__);
 	return 0;	
 }
 
 static int tm2rtc_time(char *uTime, struct rtc_time *tm)
 { // struct rtc_time -> 6 bytes YMDhms
-	dprintk(5, "Time to convert: %02d-%02d-20%02d %02d:%02d:%02dx\n", tm->tm_mday, tm->tm_mon + 1, tm->tm_year - 100, tm->tm_hour, tm->tm_min, tm->tm_sec);
+	dprintk(50, "Time to convert: %02d-%02d-20%02d %02d:%02d:%02dx\n", tm->tm_mday, tm->tm_mon + 1, tm->tm_year - 100, tm->tm_hour, tm->tm_min, tm->tm_sec);
 	uTime[0] = ((tm->tm_sec / 10) << 4) + tm->tm_sec % 10;
 	uTime[1] = ((tm->tm_min / 10) << 4) + tm->tm_min % 10;
 	uTime[2] = ((tm->tm_hour / 10) << 4) + tm->tm_hour % 10;
 	uTime[3] = ((tm->tm_mday / 10) << 4) + tm->tm_mday % 10;
 	uTime[4] = (((tm->tm_mon + 1) / 10) << 4) + (tm->tm_mon + 1) % 10;
 	uTime[5] = (((tm->tm_year - 100) / 10) << 4) + (tm->tm_year - 100) % 10;
-	dprintk(5, "Converted time: %02x-%02x-20%02x %02x:%02x:%02x\n", (int)uTime[3],(int)uTime[4], (int)uTime[5], (int)uTime[2], (int)uTime[1], (int)uTime[0]);
+	dprintk(50, "Converted time: %02x-%02x-20%02x %02x:%02x:%02x\n", (int)uTime[3], (int)uTime[4], (int)uTime[5], (int)uTime[2], (int)uTime[1], (int)uTime[0]);
 	return 0;
 }
 
@@ -808,12 +808,12 @@ static int micom_rtc_read_time(struct device *dev, struct rtc_time *tm)
 {
 	int res = 0;
 	
-	dprintk(5, "%s >\n", __func__);
+	dprintk(100, "%s >\n", __func__);
 	res = micomGetTime();	
-	dprintk(10, "FP/RTC time: %02x:%02x:%02x\n", (int)ioctl_data[2], (int)ioctl_data[1], (int)ioctl_data[0]);
-	dprintk(10, "FP/RTC date: %02x-%02x-20%02x\n", (int)ioctl_data[3], (int)ioctl_data[4], (int)ioctl_data[5]);
+	dprintk(20, "FP/RTC time: %02x:%02x:%02x\n", (int)ioctl_data[2], (int)ioctl_data[1], (int)ioctl_data[0]);
+	dprintk(20, "FP/RTC date: %02x-%02x-20%02x\n", (int)ioctl_data[3], (int)ioctl_data[4], (int)ioctl_data[5]);
 	rtc_time2tm(ioctl_data, tm);
-	dprintk(5, "%s <\n", __func__);
+	dprintk(100, "%s <\n", __func__);
 	return 0;
 }
 
@@ -824,7 +824,7 @@ static int micom_rtc_set_time(struct device *dev, struct rtc_time *tm)
 
 	res = tm2rtc_time(uTime, tm);
 	res |= micomSetTime(uTime);
-	dprintk(5, "%s < res: %d\n", __func__, res);
+	dprintk(100, "%s < res: %d\n", __func__, res);
 	return res;
 }
 
@@ -841,7 +841,7 @@ struct rtc_wkalrm
 	char a_time[6];
 	//int res = 0;
 
-	dprintk(5, "%s >\n", __func__);
+	dprintk(100, "%s >\n", __func__);
 //	res = micomGetWakeUpTime(a_time);
 
 	a_time[0] = al_sec;
@@ -855,7 +855,7 @@ struct rtc_wkalrm
 	{
 		rtc_time2tm(a_time, &al->time);
 	}
-	dprintk(5, "%s < Enabled: %d RTC alarm time: %d time: %d\n", __func__, al->enabled, (int)&a_time, a_time);
+	dprintk(100, "%s < Enabled: %d RTC alarm time: %d time: %d\n", __func__, al->enabled, (int)&a_time, a_time);
 	return 0;
 }
 
@@ -864,7 +864,7 @@ static int micom_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *al)
 	char a_time[6];
 	int res = 0;
 
-	dprintk(5, "%s >\n", __func__);
+	dprintk(100, "%s >\n", __func__);
 	if (al->enabled)
 	{
 		res |= tm2rtc_time(a_time, &al->time);
@@ -881,7 +881,7 @@ static int micom_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *al)
 		al_month = a_time[4];
 		al_year  = a_time[5];
 	}
-	dprintk(5, "%s < Enabled: %d alarm time: %02d-%02d-20%02d %02d:%02d:%02d\n", __func__,	(int)al->enabled, (int)al_day, (int)al_month, (int)al_year, (int)al_hour, (int)al_min, (int)al_sec);
+	dprintk(100, "%s < Enabled: %d alarm time: %02d-%02d-20%02d %02d:%02d:%02d\n", __func__,	(int)al->enabled, (int)al_day, (int)al_month, (int)al_year, (int)al_hour, (int)al_min, (int)al_sec);
 	return 0;
 }
 
@@ -899,7 +899,7 @@ static int __devinit micom_rtc_probe(struct platform_device *pdev)
 
 	/* I have no idea where the pdev comes from, but it needs the can_wakeup = 1
 	 * otherwise we don't get the wakealarm sysfs attribute... :-) */
-	dprintk(5, "%s >\n", __func__);
+	dprintk(100, "%s >\n", __func__);
 	printk("Micom front panel real time clock\n");
 	pdev->dev.power.can_wakeup = 1;
 	rtc = rtc_device_register("micom", &pdev->dev, &micom_rtc_ops, THIS_MODULE);
@@ -908,17 +908,18 @@ static int __devinit micom_rtc_probe(struct platform_device *pdev)
 		return PTR_ERR(rtc);
 	}
 	platform_set_drvdata(pdev, rtc);
-	dprintk(5, "%s < %p\n", __func__, rtc);
+	dprintk(100, "%s < %p\n", __func__, rtc);
 	return 0;
 }
 
 static int __devexit micom_rtc_remove(struct platform_device *pdev)
 {
 	struct rtc_device *rtc = platform_get_drvdata(pdev);
-	dprintk(5, "%s %p >\n", __func__, rtc);
+
+	dprintk(100, "%s %p >\n", __func__, rtc);
 	rtc_device_unregister(rtc);
 	platform_set_drvdata(pdev, NULL);
-	dprintk(5, "%s <\n", __func__);
+	dprintk(100, "%s <\n", __func__);
 	return 0;
 }
 
