@@ -3,9 +3,9 @@
  *
  * (c) ? Gustav Gans
  * (c) 2014 skl
- * (c) 2015-2020 Audioniek
+ * (c) 2015-2021 Audioniek
  *
- * Version for Edision Argus VIP2
+ * Version for Edision Argus VIP version 2 and VIP2
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@
  *                          for Spark.
  * 20200703 Audioniek       /proc/stb/lcd/symbol_circle support added.
  * 20200703 Audioniek       /proc/stb/lcd/symbol_timeshift support added.
+ * 20210902 Audioniek       Add /proc/stb/info/OEM, brand, model_name and
+ *                          stb_id.
  * 
  ****************************************************************************/
 
@@ -65,6 +67,13 @@
  *             +--- displaytype (r)         Type of display (0=LED, 1=VFD, 2=DVFD)
  *             +--- timemode (rw)           Time display on/off (write on DVFD only)
  *             +--- text (w)                Direct writing of display text
+ *
+ *  /proc/stb/info
+ *             |
+ *             +--- OEM (r)                 Name of OEM manufacturer
+ *             +--- brand (r)               Name of reseller
+ *             +--- model_name (r)          Model name of reseller
+ *             +--- stb_id (r)              Reseller STB ID
  *
  *  /proc/stb/lcd/
  *             |
@@ -1006,6 +1015,120 @@ static int timemode_write(struct file *file, const char __user *buf, unsigned lo
 }
 #endif
 
+static int oem_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+{
+	int len = 0;
+
+	if (NULL != page)
+	{
+		len = sprintf(page, "Fulan\n");
+	}
+	return len;
+}
+
+static int brand_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+{  // TODO: detect ABcom/Vyzion versions
+	int len = 0;
+	
+	dprintk(50, "%s >\n", __func__);
+
+	if (NULL != page)
+	{
+		len = sprintf(page, "%s\n", "Edision");
+	}
+	dprintk(50, "%s < %d\n", __func__, len);
+	return len;
+}
+
+static int model_name_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
+{  // TODO: detect ABcom/Vyzion versions
+	int len = 0;
+	
+	dprintk(50, "%s >\n", __func__);
+
+	if (NULL != page)
+	{
+#if defined(VIP1_V2)
+		len = sprintf(page, "%s\n", "argus VIP (version 2)");
+#elif defined(VIP2)
+		len = sprintf(page, "%s\n", "argus VIP2");
+#else
+		len = sprintf(page, "%s\n", "unknown");
+#endif
+	}
+	dprintk(50, "%s < %d\n", __func__, len);
+	return len;
+}
+
+static unsigned char *get_stb_id(void)
+{
+	struct file *file;
+	mm_segment_t fs;
+	unsigned char procCmdLine[1024];
+	unsigned char *id_string;
+	unsigned char *VendorStbId = "00:00:00:00:00:00:00\0";
+ 	int len;
+
+	file = filp_open("/proc/cmdline", O_RDONLY, 0);
+	if (file == NULL)
+	{
+		dprintk(1, "Error opening /proc/cmdline\n");
+		return NULL;
+	}
+	else
+	{
+		// Get current segment descriptor
+		fs = get_fs();
+		// Set segment descriptor associated to kernel space
+		set_fs(get_ds());
+		// Read the file
+		file->f_op->read(file, procCmdLine, sizeof(procCmdLine), &file->f_pos);
+		// Restore segment descriptor
+		set_fs(fs);
+	}
+	filp_close(file, NULL);
+
+	for (len = 0; len < sizeof(procCmdLine); len++)
+	{
+		if (procCmdLine[len] == 0x0a)
+		{
+			procCmdLine[len] = 0;
+			break;
+		}
+	}
+	if (len > 0 && len < sizeof(procCmdLine))
+	{
+		id_string = strstr(procCmdLine, "STB_ID=");
+		if (id_string != NULL)
+		{
+			strncpy(VendorStbId, id_string + 7, 20);
+		}
+		else
+		{
+			dprintk(1, "No STB_ID found, defaulting to 00:00:00:00:00:00:00\n");
+		}
+	}
+//	dprintk(10, "STB_ID = %s\n", VendorStbId);
+	return VendorStbId;
+}
+
+static int stb_id_read(char *page, char **start, off_t off, int count, int *eof, void *data)
+{
+	int len = 0;
+	unsigned char *stb_id;
+
+	stb_id = get_stb_id();
+
+	if (stb_id != NULL)
+	{
+		if (page)
+		{
+			len = sprintf(page, "%s\n", stb_id);
+		}
+	}
+	return len;
+}
+
 #if 0
 static int null_write(struct file *file, const char __user *buf, unsigned long count, void *data)
 {
@@ -1040,6 +1163,10 @@ struct fp_procs
 	{ "stb/fp/wakeup_time", wakeup_time_read, wakeup_time_write },
 	{ "stb/fp/was_timer_wakeup", was_timer_wakeup_read, NULL },
 	{ "stb/fp/version", fp_version_read, NULL },
+	{ "stb/info/OEM", oem_name_read, NULL },
+	{ "stb/info/brand", brand_name_read, NULL },
+	{ "stb/info/model_name", model_name_read, NULL },
+	{ "stb/info/stb_id", stb_id_read, NULL },
 	{ "stb/lcd/symbol_circle", symbol_circle_read, symbol_circle_write },
 	{ "stb/lcd/symbol_timeshift", symbol_timeshift_read, symbol_timeshift_write },
 	{ "stb/lcd/symbol_hdd", symbol_hdd_read, symbol_hdd_write },
