@@ -20,7 +20,12 @@
  *
  *****************************************************************************
  *
- * Spider-Box HL101 / Edision argus VIP (fixed tuner) frontpanel driver.
+ * Front panel driver for the following receivers all made by Fulan:
+ * Golden Interstar GI-S 890 CRCI HD
+ * Opticum 9500HD PVR 2CI2CXE
+ * Spider-Box HL101 (Delta HD HL-101)
+ * Edision argus VIP (fixed tuner)
+ * and possibly others.
  *
  * Devices:
  *	- /dev/vfd (vfd ioctls and read/write function)
@@ -188,6 +193,8 @@ static int draw_thread_status = THREAD_STATUS_STOPPED;
   segment n = A0   2 0x02
   segment p = A0   4 0x04
   segment r = A0   8 0x08
+
+ TODO: make full ASCII
 */
 unsigned char ASCII[48][2] =
 {  //              Char offs ASCII
@@ -247,7 +254,7 @@ unsigned char ASCII[48][2] =
 /**************************************************
  *
  * Character table, digits
- * (for 7-segment main text field)
+ * (for 7-segment clock field)
  *
  * First byte : even digits
  * Second byte: odd digits
@@ -295,7 +302,7 @@ unsigned char NumLib[10][2] =
  * Bit-bang routines to drive PT6311
  *
  */
-// Set Pio data pin direction
+// Set PIO data pin direction
 static int PROTONfp_Set_PIO_Mode(PIO_Mode_t Mode_PIO)
 {
 	int ret = 0;
@@ -894,7 +901,7 @@ unsigned char PROTONfp_Scan_Keyboard(unsigned char read_num)
 	unsigned char i = 0, ret;
 
 	VFD_CS_CLR();
-	ret = VFD_Set_Mode(VFDREADMODE);  // Set read from to PT6311 data
+	ret = VFD_Set_Mode(VFDREADMODE);  // Set read from PT6311 data
 	if (ret)
 	{
 		dprintk(1, "%s DEVICE BUSY!\n", __func__);
@@ -907,7 +914,7 @@ unsigned char PROTONfp_Scan_Keyboard(unsigned char read_num)
 	}
 	VFD_CS_SET();
 
-	ret = VFD_Set_Mode(VFDWRITEMODE);  // SET write to PT6311 RAM
+	ret = VFD_Set_Mode(VFDWRITEMODE);  // Set write to PT6311 RAM
 	if (ret)
 	{
 		dprintk(1, "%s DEVICE BUSY!\n", __func__);
