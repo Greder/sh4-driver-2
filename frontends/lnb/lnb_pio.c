@@ -108,7 +108,7 @@ int lnb_pio_init(void)
 		}
 		else
 		{
-			dprintk(10, "Error requesting LNB power pin\n");
+			dprintk(1, "Error requesting LNB power pin\n");
 		}
 
 		if (lnb_13_18 != NULL)
@@ -117,7 +117,7 @@ int lnb_pio_init(void)
 		}
 		else
 		{
-			dprintk(10, "Error requesting LNB 13/18 pin\n");
+			dprintk(1, "Error requesting LNB 13/18 pin\n");
 		}
 
 		if (lnb_14_19 != NULL)
@@ -126,7 +126,7 @@ int lnb_pio_init(void)
 		}
 		else
 		{
-			dprintk(10, "Error requesting lnb 14/19 pin\n");
+			dprintk(1, "Error requesting lnb 14/19 pin\n");
 		}
 		return -EIO;
 	}
@@ -142,7 +142,7 @@ int lnb_pio_init(void)
 		}
 		else
 		{
-			dprintk(10, "Error requesting LNB power pin\n");
+			dprintk(1, "Error requesting LNB power pin\n");
 		}
 
 		if (lnb_13_18 != NULL)
@@ -151,7 +151,7 @@ int lnb_pio_init(void)
 		}
 		else
 		{
-			dprintk(10, "Error requesting LNB 13/18 pin\n");
+			dprintk(1, "Error requesting LNB 13/18 pin\n");
 		}
 		return -EIO;
 	}

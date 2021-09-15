@@ -1,5 +1,5 @@
 /*
- *   lnb_core.c - LNB power control driver
+ * lnb_core.c - LNB power control driver
  */
 
 #include "lnb_core.h"
@@ -181,6 +181,8 @@ static struct file_operations lnb_fops =
 static int lnb_detect(struct i2c_client *client, int kind, struct i2c_board_info *info)
 {
 	const char *name = "";
+
+	dprintk(50, "%s >\n", __func__);
 	if (kind == 0)
 	{
 		name = "a8293";
@@ -229,8 +231,10 @@ static int lnb_detect(struct i2c_client *client, int kind, struct i2c_board_info
 			return -ENODEV;
 		}
 	}
+	dprintk(20, "Using kind %s\n", name);
 	devType = kind;
 	strlcpy(info->type, name, I2C_NAME_SIZE);
+	dprintk(50, "%s <\n", __func__);
 	return 0;
 }
 
@@ -262,6 +266,8 @@ int __init lnb_init(void)
 	const char *name;
 
 	struct i2c_board_info info;
+
+	dprintk(50, "%s >\n", __func__);
 	err = lnb_detect(NULL, -1, &info);
 	name = info.type;
 
@@ -288,15 +294,13 @@ int __init lnb_init(void)
 			dprintk(1, "Adding i2c driver failed\n");
 			return res;
 		}
+		if (!lnb_client)
+		{
+			dprintk(1, "No client found\n");
+			i2c_del_driver(&lnb_i2c_driver);
+			return -EIO;
+		}
 	}
-
-	if (!lnb_client)
-	{
-		dprintk(1, "No client found\n");
-		i2c_del_driver(&lnb_i2c_driver);
-		return -EIO;
-	}
-
 	if (register_chrdev(LNB_MAJOR, "LNB", &lnb_fops) < 0)
 	{
 		dprintk(1, "Unable to register device\n");
@@ -311,6 +315,7 @@ int __init lnb_init(void)
 		return -EIO;
 	}
 	dprintk(1, "module lnb loaded, type: %s\n", name);
+	dprintk(50, "%s <\n", __func__);
 	return 0;
 }
 
@@ -333,4 +338,4 @@ MODULE_PARM_DESC(paramDebug, "Debug Output 0=disabled >0=enabled(debuglevel)");
 MODULE_AUTHOR("Open Vision developers");
 MODULE_DESCRIPTION("Multiplatform LNB power control driver");
 MODULE_LICENSE("GPL");
-
+// vim:ts=4
