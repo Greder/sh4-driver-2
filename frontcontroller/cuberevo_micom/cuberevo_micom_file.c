@@ -88,6 +88,8 @@
  *                          working as intended.
  * 20210707 Audioniek       12 and 14 character models now use calculated
  *                          character values in stead of tables.
+ * 20210922 Audioniek       Fix non working display on 13 and 4 character
+ *                          models; improve handling overlength texts.
  */
 
 #include <asm/io.h>
@@ -1550,7 +1552,7 @@ int micomVfdTest(unsigned char *data)
  * on the front panel display. This is used when showing texts
  * using /dev/vfd: the scrolling text is always shown left
  * aligned, the final text will be centered depending on the
- * #define CENTERED_DISPLAY in cuberevo_micon.h.
+ * #define CENTERED_DISPLAY in cuberevo_micom.h.
  * This code was added as some Neutrino versions always center
  * the texts they send, even if they are longer than the
  * display width. This resulted in a strange 'dancing around
@@ -1630,16 +1632,13 @@ int micomWriteString(unsigned char *aBuf, int len, int center_flag)
 		if (aBuf[i] < 0x80)
 		{
 			// handle backslash on PT6302-003
-			if (front_seg_num == 12 || front_seg_num == 14)
+			if ((front_seg_num == 12 || front_seg_num == 14) && aBuf[i] == 0x5c)
 			{
-				if (aBuf[i] == 0x5c)
-				{
-					bBuf[j] = 0xa0;
-				}
-				else
-				{
-					bBuf[j] = aBuf[i];
-				}
+				bBuf[j] = 0xa0;
+			}
+			else
+			{
+				bBuf[j] = aBuf[i];
 			}
 			j++;
 		}
@@ -1676,6 +1675,7 @@ int micomWriteString(unsigned char *aBuf, int len, int center_flag)
 			i++;  // skip lead in byte
 			if (UTF_Char_Table)  // if an applicable table there
 			{
+				dprintk(1, "%s: UTF-8 table found\n", __func__);
 				if (UTF_Char_Table[aBuf[i] & 0x3f] != 0)  // if character is printable
 				{
 					bBuf[j] = UTF_Char_Table[aBuf[i] & 0x3f];  // get character from table
@@ -1715,6 +1715,10 @@ int micomWriteString(unsigned char *aBuf, int len, int center_flag)
 		}
 	}		
 	len = j;
+	if (len > front_seg_num)
+	{
+		len = front_seg_num;
+	}
 	bBuf[len] = '\0';  // terminate string
 	memcpy(aBuf, bBuf, len);
 	dprintk(50, "%s Non-UTF-8 text: [%s], len = %d\n", __func__, bBuf, len);
