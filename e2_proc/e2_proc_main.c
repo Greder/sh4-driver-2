@@ -1003,9 +1003,9 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "boxtype",                                                          NULL, NULL, NULL, NULL, ""},
 #endif
 	{cProcEntry, "progress",                                                         NULL, NULL, NULL, NULL, ""},
-
 	{cProcEntry, "bus/nim_sockets",                                                  NULL, NULL, NULL, NULL, ""},
 	{cProcDir,   "stb",                                                              NULL, NULL, NULL, NULL, ""},
+
 	{cProcDir,   "stb/audio",                                                        NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/audio/ac3",                                                    NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/audio/audio_delay_pcm",                                        NULL, NULL, NULL, NULL, ""},
@@ -1046,6 +1046,7 @@ struct ProcStructure_s e2Proc[] =
  || defined(UFC960) \
  || defined(VIP1_V2) \
  || defined(VIP2) \
+ || defined(OPT9600) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
  || defined(DP7001) \
@@ -1064,7 +1065,6 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/info/stb_id",                                                  NULL, NULL, NULL, NULL, ""},
 #endif
 #endif
-
 	{cProcDir,   "stb/ir",                                                           NULL, NULL, NULL, NULL, ""},
 	{cProcDir,   "stb/ir/rc",                                                        NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/ir/rc/type",                                                   NULL, info_rctype_read, info_rctype_write, NULL, ""},
@@ -1074,7 +1074,6 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/lcd/scroll_delay",                                             NULL, info_scroll_delay_read, info_scroll_delay_write, NULL, ""},
 	{cProcEntry, "stb/lcd/initial_scroll_delay",                                     NULL, info_initial_scroll_delay_read, info_initial_scroll_delay_write, NULL, ""},
 	{cProcEntry, "stb/lcd/final_scroll_delay",                                       NULL, info_final_scroll_delay_read, info_final_scroll_delay_write, NULL, ""},
-
 #if defined(ADB_BOX) \
  || defined(CUBEREVO) \
  || defined(CUBEREVO_9500HD) \
@@ -1118,7 +1117,6 @@ struct ProcStructure_s e2Proc[] =
  || defined(VIP2)
 	{cProcEntry, "stb/lcd/symbol_timeshift",                                         NULL, NULL, NULL, NULL, ""},
 #endif
-
 	{cProcDir,   "stb/video",                                                        NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/video/alpha",                                                  NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/video/aspect",                                                 NULL, NULL, NULL, NULL, ""},
@@ -1188,7 +1186,6 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/fp/version",                                                   NULL, zero_read, NULL, NULL, ""},
 	{cProcEntry, "stb/fp/wakeup_time",                                               NULL, wakeup_time_read, wakeup_time_write, NULL, ""},
 	{cProcEntry, "stb/fp/was_timer_wakeup",                                          NULL, NULL, NULL, NULL, ""},
-
 #if defined(FORTIS_HDBOX) \
  || defined(OCTAGON1008) \
  || defined(ATEVIO7500) \
@@ -1208,7 +1205,6 @@ struct ProcStructure_s e2Proc[] =
  || defined(EPP8000)
 	{cProcEntry, "stb/fp/resellerID",                                                NULL, NULL, NULL, NULL, ""},
 #endif
-
 #if defined(SPARK) \
  || defined(SPARK7162) \
  || defined(VIP1_V1) \
@@ -1240,8 +1236,8 @@ struct ProcStructure_s e2Proc[] =
  || defined(VIP1_V1)
 	{cProcEntry, "stb/misc/12V_output",                                              NULL, proc_misc_12V_output_read, proc_misc_12V_output_write, NULL, ""},
 #endif
-
 	{cProcDir,   "stb/vmpeg",                                                        NULL, NULL, NULL, NULL, ""},
+
 	{cProcDir,   "stb/vmpeg/0",                                                      NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/vmpeg/0/dst_apply",                                            NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/vmpeg/0/dst_left",                                             NULL, NULL, NULL, NULL, ""},
@@ -1363,12 +1359,10 @@ struct ProcStructure_s e2Proc[] =
 	{cProcEntry, "stb/video/plane/dei_mode",                                         NULL, NULL, NULL, NULL, "dei_mode"},
 	{cProcEntry, "stb/video/plane/dei_ctrl",                                         NULL, NULL, NULL, NULL, "dei_ctrl"},
 #endif
-
 #if defined(IPBOX9900) \
  || defined(IPBOX99)
 	{cProcEntry, "stb/misc/fan",                                                     NULL, NULL, NULL, NULL, ""},
 #endif
-
 // Enigma2 implementation of fan control, doubles the historic various SH4 ones... (TODO: add these)
 #if defined(ADB_BOX) \
  || defined(CUBEREVO) \
@@ -1390,7 +1384,6 @@ struct ProcStructure_s e2Proc[] =
  || defined(UFS922)
 	{cProcEntry, "stb/fp/fan_pwm",                                                   NULL, NULL, NULL, NULL, ""},
 #endif
-
 #if defined(ADB_BOX) \
  || defined(SAGEMCOM88)
 	{cProcDir,   "stb/fan",                                                          NULL, NULL, NULL, NULL, ""},
@@ -1402,7 +1395,6 @@ struct ProcStructure_s e2Proc[] =
 #elif defined(ARIVALINK200)
 	{cProcEntry, "stb/hdmi/cec",                                                     NULL, NULL, NULL, NULL, ""},
 #endif
-
 	{cProcDir,   "stb/player",                                                       NULL, NULL, NULL, NULL, ""},
 	{cProcEntry, "stb/player/version",                                               NULL, get_player_version, NULL, NULL, ""}
 };
