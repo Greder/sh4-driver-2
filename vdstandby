@@ -1,7 +1,7 @@
 #!/bin/sh
 
-brandcheck=`cat /etc/openvision/brand`
-modelcheck=`cat /etc/openvision/model`
+BRANDCHECK=`sed -En 's|^brand=(.+)$|\1|p' /usr/lib/enigma.info`
+MODELCHECK=`sed -En 's|^model=(.+)$|\1|p' /usr/lib/enigma.info`
 
 if [ $# -eq 1 ]; then
    if [ "$1" = "-a" ]; then
@@ -18,49 +18,49 @@ if [ $# -eq 1 ]; then
        echo "end standby..."
        #enable hdmi
        stfbcontrol he
-       if [ $modelcheck == "spark" ]; then
+       if [ $MODELCHECK == "spark" ]; then
           fp_control -c #everthing off
           fp_control -l 0 0
           fp_control -e
           echo "0" > /proc/progress
        fi
-       if [ $modelcheck == "spark7162" ]; then
+       if [ $MODELCHECK == "spark7162" ]; then
           fp_control -sst
           fp_control -tm 1
           fp_control -e
           fp_control -l 0 0
           echo "0" > /proc/progress
        fi
-       if [ $brandcheck == "cuberevo" ]; then
+       if [ $BRANDCHECK == "cuberevo" ]; then
           fp_control -l 0 0
           fp_control -dt 0
           fp_control -e
           echo "0" > /proc/progress
        fi
-       if [ $brandcheck == "ipbox" ]; then
+       if [ $BRANDCHECK == "ipbox" ]; then
           #mkdir -p /dev/dbox
           #mknod /dev/dbox/vfd c 147 0
           vfdctl cleardisplay #clear text in display
           vfdctl standby
           vfdctl deep #halt display to deep standby
        fi
-       if [ $brandcheck == "fortis" ] || [ $brandcheck == "hs" ] || [ $modelcheck == "octagon1008" ]; then
+       if [ $BRANDCHECK == "fortis" ] || [ $BRANDCHECK == "hs" ] || [ $MODELCHECK == "octagon1008" ]; then
           fp_control -sst
           fp_control -e
        fi
-       if [ $brandcheck == "atemio" ] || [ $modelcheck == "vitamin_hd5000" ]; then
+       if [ $BRANDCHECK == "atemio" ] || [ $MODELCHECK == "vitamin_hd5000" ]; then
           fp_control -e
        fi
-       if [ $modelcheck == "adb_box" ]; then
+       if [ $MODELCHECK == "adb_box" ]; then
           fp_control -l 1 1
           echo "OFF" > /dev/vfd
        fi
-       if [ $modelcheck == "tf7700" ]; then
+       if [ $MODELCHECK == "tf7700" ]; then
           tffpctl --brightness 5
           tffpctl --cleardisplay
           tffpctl --poweroff
        fi
-       if [ $modelcheck == "ufs912" ] || [ $modelcheck == "ufs913" ]; then
+       if [ $MODELCHECK == "ufs912" ] || [ $MODELCHECK == "ufs913" ]; then
           #green green off
           fp_control -l 2 0
           #green red on
@@ -69,7 +69,7 @@ if [ $# -eq 1 ]; then
           fp_control -led 5
           fp_control -e
        fi
-       if [ $modelcheck == "ufs910" ] || [ $modelcheck == "ufs922" ] || [ $modelcheck == "ufc960" ]; then
+       if [ $MODELCHECK == "ufs910" ] || [ $MODELCHECK == "ufs922" ] || [ $MODELCHECK == "ufc960" ]; then
           fp_control -e
           echo "0" > /proc/progress
        fi

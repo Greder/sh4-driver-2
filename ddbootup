@@ -1,7 +1,6 @@
 #!/bin/sh
 
-brandcheck=`cat /etc/openvision/brand`
-modelcheck=`cat /etc/openvision/model`
+BRANDCHECK=`sed -En 's|^brand=(.+)$|\1|p' /usr/lib/enigma.info`
 
 # Load coprocessor firmware
 if [ $brandcheck == "forever" ]; then
@@ -29,7 +28,7 @@ fi
 # Flush eth0 device which is set by kernel cmdline
 ip addr flush dev eth0 scope global
 
-if [ $brandcheck == "forever" ]; then
+if [ $BRANDCHECK == "forever" ]; then
 	if [ ! -e /boot/companion_h205_audio.bin ] ; then
 		echo "Audio firmware missing!"
 		echo "Audio FW missing!" > /dev/vfd
