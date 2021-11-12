@@ -36,6 +36,7 @@ static struct stv090x_config tt1600_stv090x_config =
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK)
 	.device         = STX7111,
 	.demod_mode     = STV090x_DUAL,
@@ -120,6 +121,7 @@ static struct dvb_frontend *frontend_init(struct core_config *cfg, int i)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -250,6 +252,7 @@ static struct dvb_frontend *init_stv090x_device(struct dvb_adapter *adapter, str
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
  || defined(DP7001) \
@@ -327,6 +330,7 @@ struct plat_tuner_config tuner_resources[] =
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
  || defined(DP7001) \

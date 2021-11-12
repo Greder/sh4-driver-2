@@ -770,6 +770,7 @@ void pti_hal_init ( struct stpti *pti , struct dvb_demux* demux, void (*_demulti
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88)
   start = 0xfe230000;

@@ -1285,6 +1285,7 @@ static int SCI_SetClockSource(SCI_CONTROL_BLOCK *sci)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(UFS912) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
@@ -1321,6 +1322,7 @@ static int SCI_SetClockSource(SCI_CONTROL_BLOCK *sci)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \

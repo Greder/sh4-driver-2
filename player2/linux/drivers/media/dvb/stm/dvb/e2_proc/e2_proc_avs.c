@@ -123,6 +123,7 @@ static int current_input = ENCODER;
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(IPBOX9900) \
  || defined(IPBOX99) \
  || defined(IPBOX55) \
@@ -208,6 +209,7 @@ int proc_avs_0_volume_write(struct file *file, const char __user *buf, unsigned 
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(IPBOX9900) \
  || defined(IPBOX99) \
  || defined(IPBOX55) \

@@ -202,3 +202,7 @@ endif
 ifdef OPT9600
 obj-y += opt9600_fp/
 endif
+
+ifdef OPT9600MINI
+obj-y += cn_micom/
+endif

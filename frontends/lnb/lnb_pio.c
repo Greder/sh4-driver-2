@@ -130,7 +130,7 @@ int lnb_pio_init(void)
 		}
 		return -EIO;
 	}
-#elif defined(ATEMIO520) || defined(ATEMIO530)
+#elif defined(ATEMIO520) || defined(ATEMIO530) || defined(OPT9600MINI)
 	lnb_power = stpio_request_pin(6, 2, "lnb_power", STPIO_OUT);
 	lnb_13_18 = stpio_request_pin(6, 3, "lnb_13/18", STPIO_OUT);
 

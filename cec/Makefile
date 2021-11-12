@@ -103,4 +103,8 @@ ifdef PACE7241
 EXTRA_CFLAGS += -DSTx7105
 endif
 
+ifdef OPT9600MINI
+EXTRA_CFLAGS += -DSTx7111
+endif
+
 endif

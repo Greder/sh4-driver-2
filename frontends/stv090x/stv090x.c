@@ -5,16 +5,16 @@
  * Copyright (C) ST Microelectronics
  *
  * Version for:
- * Fortis HDBOX/9200 (STV0903) Tuner STV6110X
- * Fortis HS7110      (STX7111) Tuner STV6110X
- * Fortis HS7119      (STX7111) Tuner STV6110X
- * Fortis HS7420      (STX7111) Tuner STV6110X
- * Fortis HS7429      (STX7111) Tuner STV6110X
- * Fortis HS7810A     (STX7111) Tuner STV6110X
- * Fortis HS7819      (STX7111) Tuner STV6110X
- * Atemio 520         (STX7111) Tuner STV6110X?
- * Atemio 530         (STX7111) Tuner STV6110X?
- * Kathrein UFS912    (STX7111) Tuner STV6110X?
+ * Fortis FS9000/9200    (STV0903) Tuner STV6110X
+ * Fortis HS7110         (STX7111) Tuner STV6110X
+ * Fortis HS7119         (STX7111) Tuner STV6110X
+ * Fortis HS7420         (STX7111) Tuner STV6110X
+ * Fortis HS7429         (STX7111) Tuner STV6110X
+ * Fortis HS7810A        (STX7111) Tuner STV6110X
+ * Fortis HS7819         (STX7111) Tuner STV6110X
+ * Atemio AM 520 HD      (STX7111) Tuner STV6110X
+ * Opticum HD 9600 Mini  (STX7111) Tuner STV6110X
+ * Kathrein UFS912       (STX7111) Tuner STV6110X?
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@
  && !defined(HS7819) \
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
+ && !defined(OPT9600MINI) \
  && !defined(UFS912)
 #warning: Wrong receiver model!
 #endif
@@ -8331,6 +8332,7 @@ static int stv090x_setup(struct dvb_frontend *fe)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -8370,6 +8372,7 @@ static int stv090x_setup(struct dvb_frontend *fe)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -8639,6 +8642,7 @@ static int hdbox_set_voltage(struct dvb_frontend *fe, enum fe_sec_voltage voltag
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -8818,6 +8822,7 @@ static struct dvb_frontend_ops stv090x_ops =
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -8871,6 +8876,7 @@ struct dvb_frontend *stv090x_attach(const struct stv090x_config *config,
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(SPARK) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \

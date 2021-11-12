@@ -169,6 +169,9 @@ endif
 ifdef OPT9600
 CCFLAGSY += -DOPT9600
 endif
+ifdef OPT9600MINI
+CCFLAGSY += -DOPT9600MINI
+endif
 ifdef ARIVALINK200
 CCFLAGSY += -DARIVALINK200
 endif
@@ -488,6 +491,11 @@ obj-y += fan_pace7241/
 endif
 
 ifdef OPT9600
+obj-y += smartcard/
+endif
+
+ifdef OPT9600MINI
+obj-y += cec/
 obj-y += smartcard/
 endif
 

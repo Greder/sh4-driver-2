@@ -62,8 +62,12 @@
 unsigned int InterruptLine   = 120;
 unsigned int ASCXBaseAddress = ASC3BaseAddress;
 
-//-------------------------------------
-
+/*******************************************
+ *
+ * Code to communicate with the
+ * front processor.
+ *
+ */
 void serial_init(void)
 {
 	/* Configure the PIO pins */
@@ -72,7 +76,7 @@ void serial_init(void)
 	stpio_request_pin(5, 1,  "ASC_RX", STPIO_IN);      /* Rx */
 
 	// Configure the ASC input/output settings
-	*(unsigned int *)(ASCXBaseAddress + ASC_INT_EN)   = 0x00000000;  // TODO: Why do we set here the INT_EN again ???
+	*(unsigned int *)(ASCXBaseAddress + ASC_INT_EN)   = 0x00000000;  // TODO: Why do we set the INT_EN again here ?
 	*(unsigned int *)(ASCXBaseAddress + ASC_CTRL)     = 0x00000589;  // mode 0
 	*(unsigned int *)(ASCXBaseAddress + ASC_TIMEOUT)  = 0x00000010;
 	*(unsigned int *)(ASCXBaseAddress + ASC_BAUDRATE) = 0x0000028b;  // 9600 baud
@@ -85,15 +89,16 @@ int serial_putc(char Data)
 {
 	char          *ASCn_TX_BUFF = (char *)(ASCXBaseAddress + ASC_TX_BUFF);
 	unsigned int  *ASCn_INT_STA = (unsigned int *)(ASCXBaseAddress + ASC_INT_STA);
-	unsigned long Counter = 200000;
+	unsigned long Counter = 200000;  // timeout is 200 seconds?
 
-	while (((*ASCn_INT_STA & ASC_INT_STA_THE) == 0) && --Counter)  // baseaddress + 0x14, wait for bit 1 (0x02) set
+//	while (((*ASCn_INT_STA & ASC_INT_STA_THE) == 0) && --Counter)  // baseaddress + 0x14, wait for bit 1 (0x02) clear
+	while (((*ASCn_INT_STA & ASC_INT_STA_TF) == 0) && --Counter)  // baseaddress + 0x14, wait for bit 9 (0x0200) clear
 	{
 		mdelay(1);
 	}
 	if (Counter == 0)
 	{
-		dprintk(1, "%s Error writing char\n", __func__);
+		dprintk(1, "%s Timeout writing byte.\n", __func__);
 	}
 	*ASCn_TX_BUFF = Data;
 	return 1;

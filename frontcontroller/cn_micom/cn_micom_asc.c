@@ -38,7 +38,7 @@
 #include <linux/time.h>
 #include <linux/poll.h>
 
-#include "cn_micom.h"
+#include "cn_micom_fp.h"
 #include "cn_micom_asc.h"
 
 //-------------------------------------

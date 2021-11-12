@@ -50,7 +50,7 @@ static struct stmcore_display_pipeline_data platform_data[] =
 		.hdmi_irq                 = 158,
 #if defined(CONFIG_SH_ST_MB442) || defined(CONFIG_SH_ST_HMP7100) || defined(CONFIG_SH_ST_MB411)
 		.hdmi_i2c_adapter_id      = 1,
-#elif defined(CONFIG_SH_ST_HMS1) || defined(QBOXHD) || defined(QBOXHD_MINI)
+#elif defined(CONFIG_SH_ST_HMS1) || defined(QBOXHD) || defined(QBOXHD_MINI) || defined(FORTIS_HDBOX) || || defined(OCTAGON1008) || defined(OPT9600)
 		.hdmi_i2c_adapter_id      = 2,
 #else
 		.hdmi_i2c_adapter_id      = 0, /* Add your board definition here */
@@ -121,6 +121,7 @@ static struct stmcore_display_pipeline_data platform_data[] =
 #if defined(CONFIG_SH_STB7100_REF) \
  || defined(CONFIG_SH_ST_MB442) \
  || defined(CONFIG_SH_RELOOK511) \
+ || defined(ADB_BOX) \
  || defined(CUBEREVO) \
  || defined(CUBEREVO_MINI) \
  || defined(CUBEREVO_MINI2) \
@@ -136,10 +137,9 @@ static struct stmcore_display_pipeline_data platform_data[] =
  || defined(HL101) \
  || defined(VIP1_V1) \
  || defined(VIP1_V2) \
- || defined(VIP2) \
- || defined(OPT9600)
+ || defined(VIP2)
 		.hdmi_i2c_adapter_id      = 1,
-#elif defined(CONFIG_SH_STB7109E_REF) || defined(CONFIG_SH_ST_MB448) || defined(UFS922) || defined(FORTIS_HDBOX) || defined(OCTAGON1008) || defined(QBOXHD) || defined(QBOXHD_MINI)
+#elif defined(CONFIG_SH_STB7109E_REF) || defined(CONFIG_SH_ST_MB448) || defined(UFS922) || defined(FORTIS_HDBOX) || defined(OCTAGON1008) || defined(QBOXHD) || defined(QBOXHD_MINI) || defined(OPT9600)
 /* Dagobert: for stlinux23 this is mb422 but i2c is on bus 2 instead! */
 		.hdmi_i2c_adapter_id      = 2,
 #elif defined(CONFIG_SH_STB7100_MBOARD) \

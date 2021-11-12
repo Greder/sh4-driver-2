@@ -57,7 +57,7 @@
 #include <linux/stm/pio.h>
 
 #include "pace_7241_fp.h"
-#include "../vfd/utf.h"
+#include "../ufs910_fp/utf.h"
 
 static char *button_driver_name = "Pace HDS-7241 front panel buttons";
 static struct input_dev *button_dev;

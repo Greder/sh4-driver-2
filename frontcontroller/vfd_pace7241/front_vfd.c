@@ -14,7 +14,7 @@
 #include <linux/stm/gpio.h>
 #include <linux/stm/pio.h>
 
-#include "../vfd/utf.h"
+#include "../ufs910_fp/utf.h"
 
 #define LED1 stm_gpio(4, 0)
 #define LED2 stm_gpio(4, 1)

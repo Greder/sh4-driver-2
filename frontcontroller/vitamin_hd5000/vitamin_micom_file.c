@@ -65,7 +65,7 @@
 
 #include "vitamin_micom.h"
 #include "vitamin_micom_asc.h"
-#include "../vfd/utf.h"
+#include "../ufs910_fp/utf.h"
 
 extern void ack_sem_up(void);
 extern int  ack_sem_down(void);

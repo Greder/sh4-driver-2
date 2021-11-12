@@ -23,6 +23,7 @@
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000))
 #define USE_FS1_FOR_SD
 

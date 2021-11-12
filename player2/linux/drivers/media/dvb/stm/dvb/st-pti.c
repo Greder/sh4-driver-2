@@ -122,6 +122,7 @@ extern void fe_core_register_frontend(struct dvb_adapter *dvb_adap);
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
  || defined(PACE7241) \
@@ -590,6 +591,7 @@ void ptiInit(struct DeviceContext_s *pContext)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -688,6 +690,7 @@ void ptiInit(struct DeviceContext_s *pContext)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
  || defined(PACE7241) \

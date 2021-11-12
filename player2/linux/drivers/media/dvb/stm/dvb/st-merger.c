@@ -62,6 +62,7 @@ MODULE_PARM_DESC(camRouting, "Enable camRouting 0=disabled 1=enabled");
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
  || defined(FOREVER_NANOSMART) \
@@ -151,6 +152,7 @@ MODULE_PARM_DESC(camRouting, "Enable camRouting 0=disabled 1=enabled");
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
  || defined(FOREVER_NANOSMART) \
@@ -629,6 +631,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(HS7819) \
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
+ && !defined(OPT9600MINI) \
  && !defined(CUBEREVO) \
  && !defined(CUBEREVO_MINI2) \
  && !defined(CUBEREVO_MINI) \
@@ -835,6 +838,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(HS7819) \
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
+ && !defined(OPT9600MINI) \
  && !defined(VITAMIN_HD5000) \
  && !defined(FOREVER_NANOSMART) \
  && !defined(FOREVER_9898HD) \
@@ -913,6 +917,7 @@ void stm_tsm_init(int use_cimax)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(IPBOX9900) \
  || defined(ARIVALINK200) \
  || defined(VITAMIN_HD5000) \
@@ -977,7 +982,8 @@ void stm_tsm_init(int use_cimax)
 #elif defined(HS7110) \
  || defined(HS7119) \
  || defined(ATEMIO520) \
- || defined(ATEMIO530)
+ || defined(ATEMIO530) \
+ || defined(OPT9600MINI)
 		/* RAM partitioning of streams */
 		ctrl_outl(0x0, tsm_io + TSM_STREAM0_CFG); //448kb (8*64)
 		ctrl_outl(0x800, tsm_io + TSM_STREAM1_CFG); //448kb (6*64)
@@ -1174,6 +1180,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(HS7819) \
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
+ && !defined(OPT9600MINI) \
  && !defined(IPBOX9900) \
  && !defined(ARIVALINK200) \
  && !defined(VITAMIN_HD5000) \
@@ -1195,6 +1202,7 @@ void stm_tsm_init(int use_cimax)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ ||   defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -1243,6 +1251,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(HS7819) \
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
+ && !defined(OPT9600MINI) \
  && !defined(IPBOX9900) \
  && !defined(ARIVALINK200) \
  && !defined(VITAMIN_HD5000) \
@@ -1493,7 +1502,8 @@ void stm_tsm_init(int use_cimax)
 #elif defined(HS7110) \
  || defined(HS7119) \
  || defined(ATEMIO520) \
- || defined(ATEMIO530)
+ || defined(ATEMIO530) \
+ || defined(OPT9600MINI)
 		/* route stream 0 to PTI */
 		ret = ctrl_inl(tsm_io + TSM_PTI_SEL);
 		ctrl_outl(ret | 0x1, tsm_io + TSM_PTI_SEL);
@@ -1513,6 +1523,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(HS7119) \
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
+ && !defined(OPT9600MINI) \
  && !defined(UFS913) /* Dagobert: set-up swts */
 		ctrl_outl(TSM_SWTS_REQ_TRIG(128 / 16) | 0x10, tsm_io + TSM_SWTS_CFG(0));
 		/* SWTS0 to PTI */
@@ -1539,6 +1550,7 @@ void stm_tsm_init(int use_cimax)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -1629,6 +1641,7 @@ void stm_tsm_init(int use_cimax)
  || defined(HS7119) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88)
 			tsm_io = ioremap(/* config->tsm_base_address */ TSMergerBaseAddress, 0x1000);
@@ -1730,7 +1743,8 @@ void stm_tsm_init(int use_cimax)
 #elif defined(HS7110) \
  || defined(HS7119) \
  || defined(ATEMIO520) \
- || defined(ATEMIO530)
+ || defined(ATEMIO530) \
+ || defined(OPT9600MINI)
 		/* RAM partitioning of streams */
 		ctrl_outl(0x0, tsm_io + TSM_STREAM0_CFG); //448kb (8*64)
 		ctrl_outl(0x800, tsm_io + TSM_STREAM1_CFG); //448kb (6*64)

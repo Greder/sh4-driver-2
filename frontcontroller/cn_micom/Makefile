@@ -5,6 +5,7 @@ else
     cn_micom-objs += cn_micom_file.o
     cn_micom-objs += cn_micom_asc.o
     cn_micom-objs += cn_micom_main.o
+    cn_micom-objs += cn_micom_procfs.o
 
     obj-m += cn_micom.o
 
