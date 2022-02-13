@@ -107,4 +107,8 @@ ifdef OPT9600MINI
 EXTRA_CFLAGS += -DSTx7111
 endif
 
+ifdef OPT9600PRIMA
+EXTRA_CFLAGS += -DSTx7105
+endif
+
 endif

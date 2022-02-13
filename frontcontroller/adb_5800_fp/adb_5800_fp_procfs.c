@@ -37,7 +37,7 @@
  * 20190813 Audioniek       /proc/stb/lcd/symbol_circle added.
  * 20190813 Audioniek       /proc/stb/fan/fan_ctrl added.
  * 20200504 Audioniek       Removed dual display capability.
- * 20200504 Audioniek       /proc/stb/fan/fan always reports 0 on BSKA/BXZB.
+ * 20200504 Audioniek       /proc/stb/fan/fan_ctrl always reports 0 on BSKA/BXZB.
  * 20200504 Audioniek       /proc/stb/lcd/symbol_circle always reports 0 on
  *                          BSKA/BXZB.
  * 20200505 Audioniek       Fix handling of BZZB with box_variant; boxvariant

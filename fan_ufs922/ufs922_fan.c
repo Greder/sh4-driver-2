@@ -22,7 +22,7 @@
 /* 
  * Description:
  *
- * ufs922 fan controller controlling driver
+ * ufs922 fan controller driver
  */
 
 #include <linux/proc_fs.h>  /* proc fs */ 
@@ -83,8 +83,8 @@ int proc_fan_write(struct file *file, const char __user *buf, unsigned long coun
 		 * 255:  (255 >> 2) + 128 = 127 +128 -> 255
 		 */
 		value = ((speed > 1) + 128);
-		//maruapp: 0xff = 1500, 0xaa = 1000, 0x73 = 500 U/min
-		//we are a little bit more nervy ;)
+		// maruapp: 0xff = 1500, 0xaa = 1000, 0x73 = 500 U/min
+		// we are a little bit more nervy ;)
 //		if (value >= 50 && value <= 255)
 //		{
 		ctrl_outl(value, fan_registers + 0x4);
@@ -136,10 +136,10 @@ static int __init init_fan_module(void)
 	fan_pin = stpio_request_pin (4, 7, "fan ctrl", STPIO_ALT_OUT);
 #endif
 
-	//not sure if first one is necessary
+	// not sure if first one is necessary
 	ctrl_outl(0x200, fan_registers + 0x50);
 	
-	//set a default speed, because default is zero
+	// set a default speed, because default is zero
 	ctrl_outl(130, fan_registers + 0x4);
 	return 0;
 }
@@ -157,7 +157,7 @@ static void __exit cleanup_fan_module(void)
 	{
 		stpio_set_pin(fan_pin, 0);
 		stpio_free_pin (fan_pin);
-	}	
+	}
 #else      
 	if (fan_pin != NULL)
 	{
@@ -169,7 +169,7 @@ static void __exit cleanup_fan_module(void)
 module_init(init_fan_module);
 module_exit(cleanup_fan_module);
 
-MODULE_DESCRIPTION("ufs922 fan controlling");
+MODULE_DESCRIPTION("ufs922 fan control");
 MODULE_AUTHOR("Open Vision developers");
 MODULE_LICENSE("GPL");
 // vim:ts=4

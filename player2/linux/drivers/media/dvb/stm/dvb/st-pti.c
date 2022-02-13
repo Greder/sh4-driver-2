@@ -151,7 +151,8 @@ extern void fe_core_register_frontend(struct dvb_adapter *dvb_adap);
  || defined(CUBEREVO_3000HD)
 extern void socket_register_adapter(struct dvb_adapter *dvb_adap);
 #elif defined(OCTAGON1008) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 extern void avl2108_register_frontend(struct dvb_adapter *dvb_adap);
 #elif defined(ATEVIO7500)
 extern void socket_register_adapter(struct dvb_adapter *dvb_adap);
@@ -592,6 +593,7 @@ void ptiInit(struct DeviceContext_s *pContext)
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
  || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA) \
  || defined(VITAMIN_HD5000) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -671,7 +673,8 @@ void ptiInit(struct DeviceContext_s *pContext)
  || defined(ADB_BOX) \
  || defined(UFS913) \
  || defined(SAGEMCOM88) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		pti_hal_init(&pti, &pContext->DvbDemux, demultiplexDvbPackets, 2);
 #elif defined(SPARK7162) \
  || defined(PACE7241)
@@ -721,7 +724,8 @@ void ptiInit(struct DeviceContext_s *pContext)
  || defined(CUBEREVO_3000HD)
 		socket_register_adapter(&pContext->DvbContext->DvbAdapter);
 #elif defined(OCTAGON1008) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		avl2108_register_frontend(&pContext->DvbContext->DvbAdapter);
 #elif defined(ATEVIO7500)
 		socket_register_adapter(&pContext->DvbContext->DvbAdapter);

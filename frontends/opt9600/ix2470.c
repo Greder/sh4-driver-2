@@ -4,7 +4,7 @@
 	Parts Copyright (C) Manu Abraham <abraham.manu@gmail.com>
 	Parts Copyright (C) Malcom Priestley
 
-	Adapted for Opticum HD (TS) 9600 by Audioniek
+	Adapted for Opticum HD (TS) 9600 and HD (TS) 9600 PRIMA by Audioniek
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
 #include "dvb_frontend.h"
 #include "ix2470.h"
 
-#define I2C_ADDR_IX2470  (0xc0)
+#define I2C_ADDR_IX2470  (0xc0)  // TODO: use value from platform definition
 
 #if defined TAGDEBUG
 #undef TAGDEBUG
@@ -90,8 +90,8 @@ static const struct ix2470_cfg ix2470va_cfg =
 	.name       = "Sharp IX2470VA",
 	.addr       = I2C_ADDR_IX2470,
 	.step_size 	= IX2470_STEP_1000,
-	.bb_gain    = IX2470_GAIN_2dB,  // -2db Attenuation
-	.c_pump     = IX2470_CP_1200uA,  // datasheet says always use this value (C1=1, C0=1 -> 1.2mA)
+	.bb_gain    = IX2470_GAIN_2dB,  // -2dB Attenuation
+	.c_pump     = IX2470_CP_1200uA,  // Sharp BS2F7VZ7700 frontend datasheet says always use this value (C1=1, C0=1 -> 1.2mA)
 	.t_lock     = 0  // use default wait time for lock (200ms)
 };
 
@@ -235,7 +235,7 @@ u16 ix2470_tuner_lock(struct dvb_frontend *fe, u32 freq, u32 srate, u32 lpf)
 	}
 	else
 	{
-		bb_gain = IX2470_GAIN_2dB;  // default -2db Attenuation
+		bb_gain = IX2470_GAIN_2dB;  // default -2dB attenuation
 	}
 
 	// set charge pump
@@ -279,7 +279,7 @@ u16 ix2470_tuner_lock(struct dvb_frontend *fe, u32 freq, u32 srate, u32 lpf)
 
 	// determine REF (step size)
 	REF = (freq > 1024000 ? 0 : 1);
-//	REF = 1;  // datasheet says always use this value
+//	REF = 1;  // Sharp BS2F7VZ7700 frontend datasheet says always use this value?
 
 	// determine band, P(SC), DIV and BA210
 	for (i = 0; i < ARRAY_SIZE(losc_sel); i++)

@@ -172,6 +172,9 @@ endif
 ifdef OPT9600MINI
 CCFLAGSY += -DOPT9600MINI
 endif
+ifdef OPT9600PRIMA
+CCFLAGSY += -DOPT9600PRIMA
+endif
 ifdef ARIVALINK200
 CCFLAGSY += -DARIVALINK200
 endif
@@ -495,6 +498,11 @@ obj-y += smartcard/
 endif
 
 ifdef OPT9600MINI
+obj-y += cec/
+obj-y += smartcard/
+endif
+
+ifdef OPT9600PRIMA
 obj-y += cec/
 obj-y += smartcard/
 endif

@@ -244,7 +244,8 @@
 #if defined(HL101) \
  || defined(VIP1_V1) \
  || defined(OPT9600) \
- || defined(OPT9600MINI)
+ || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA)
 #include <linux/version.h>
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,23)
 #  include <linux/stpio.h>
@@ -262,7 +263,8 @@ typedef int (*proc_write_t)(struct file *file, const char __user *buf, unsigned 
 // For 12V output
 #if defined(HL101) \
  || defined(VIP1_V1) \
- || defined(OPT9600MINI)
+ || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA)
 struct stpio_pin *_12v_pin;
 #endif
 
@@ -375,6 +377,8 @@ static int info_model_read(char *page, char **start, off_t off, int count, int *
 	int len = sprintf(page, "opt9600\n");
 #elif defined(OPT9600MINI)
 	int len = sprintf(page, "opt9600mini\n");
+#elif defined(OPT9600PRIMA)
+	int len = sprintf(page, "opt9600prima\n");
 #elif defined(ADB_2850)
 	int len = sprintf(page, "adb_2850\n");
 #elif defined(QBOXHD)
@@ -710,7 +714,8 @@ static int info_chipset_read(char *page, char **start, off_t off, int count, int
 #elif defined(ATEVIO7500) \
  || defined(UFS913) \
  || defined(SAGEMCOM88) \
- || defined(PACE7241)
+ || defined(PACE7241) \
+ || defined(OPT9600PRIMA)
 	int len = sprintf(page, "STi7105\n");
 #elif defined(FORTIS_HDBOX) \
  || defined(HL101) \
@@ -1192,7 +1197,8 @@ struct ProcStructure_s e2Proc[] =
  && !defined(ATEMIO520) \
  && !defined(ATEMIO530) \
  && !defined(OPT9600) \
- && !defined(OPT9600MINI)
+ && !defined(OPT9600MINI) \
+ && !defined(OPT9600PRIMA)
 	{cProcEntry, "stb/fp/oled_brightness",                                           NULL, NULL, NULL, NULL, ""},
 #endif
 	{cProcEntry, "stb/fp/rtc",                                                       NULL, zero_read, default_write_proc, NULL, ""},
@@ -1332,6 +1338,8 @@ struct ProcStructure_s e2Proc[] =
  || defined(SAGEMCOM88) \
  || defined(VITAMIN_HD5000) \
  || defined(OPT9600) \
+ || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
  || defined(DP7001) \

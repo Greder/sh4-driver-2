@@ -1,4 +1,5 @@
-/*
+/****************************************************************************
+ *
  * @brief avl2108.c
  *
  * @author Pedro Aguilar <pedro@duolabs.com>
@@ -7,10 +8,11 @@
  *        Sharp IX2470VA tuner connected to I2C repeater as present
  *        in Sharp BS2F7VZ7700 frontend
  *
- *        Version for Opticum HD (TS) 9600 series.
+ *        Version for Opticum HD (TS) 9600 and HD (TS) 9600 PRIMA series.
  *
  * 	Copyright (C) 2009-2010 Duolabs Spa
- *                2020-2021 adapted by Audioniek for use with Opticum HD 9600 series
+ *                2020-2021 adapted by Audioniek for use with Opticum
+ *                          HD 9600 and HD 9600 PRIMA series
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,6 +27,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ ****************************************************************************
+ *
+ * This version only supports a Sharp IX2470VA DVBS(2) tuner. The DVB-T tuner
+ * present in TS models is not supported due to:
+ * 1. Its driver code is closed source;
+ * 2. At the time writing DVB-T is (being) phased out in many areas in favour
+ *    of DVB-T2.
  */
 
 #include <linux/slab.h>
@@ -721,7 +731,7 @@ static u16 avl2108_channel_lock(struct dvb_frontend *fe, struct avl2108_tuning *
 		{
 			if (tuning->lock_mode == LOCK_MODE_ADAPTIVE)
 			{
-				/* fixme: atevio7500 sets here 0. Nevertheless 1 is the correct
+				/* fixme: atevio7500 sets 0 here. Nevertheless 1 is the correct
 				 * value and seems to work.
 				 */
 				ret |= avl2108_i2c_write16(state, REG_LOCK_MODE, 1);
@@ -2068,7 +2078,8 @@ static struct dvb_frontend_ops avl2108_ops =
 	.read_ucblocks           = avl2108_read_ucblocks,
 	.set_tone                = avl2108_set_tone,
 	.set_voltage             = avl2108_set_voltage,
-#if defined(OPT9600)
+#if defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	.enable_high_lnb_voltage = avl2108_set_high_lnb_voltage,
 #endif
 	.diseqc_send_master_cmd  = avl2108_send_diseqc_msg,
@@ -2093,6 +2104,7 @@ void avl2108_register_frontend(struct dvb_adapter *dvb_adap)
 
 	dprintk(150, "%s >\n", __func__);
 
+#if defined(OPT9600)
 	/* Opticum HD 9600 uses three PIO pins to further control the front end:
 	 *
 	 * DVBTPWREN#  : PIO 2.5 (power enable for DVB-T part, active low) -> driver initializes this to high, does not bother any further
@@ -2110,7 +2122,25 @@ void avl2108_register_frontend(struct dvb_adapter *dvb_adap)
 //	dprintk(70, "Initialize PIO 3.3 (DVB-S OE#) to 0 (enabled)\n");
 	pin = stpio_request_pin(3, 3, "DVBS2OE#", STPIO_OUT);
 	stpio_set_pin(pin, 0);  // ?
-
+#elif defined(OPT9600PRIMA)  // TODO: find PIO pins
+	/* Opticum HD 9600 PRIMA uses three PIO pins to further control the front end:
+	 *
+	 * DVBTPWREN#  : PIO 2.5 (power enable for DVB-T part, active low) -> driver initializes this to high, does not bother any further
+	 * DVBS2OE#    : PIO 3.3 (output enable for parallel stream out) -> driver initializes this to low, does not bother any further
+	 * DVBS2PWREN# : PIO 4.6 (power enable for DVB-S(2) part, active low) -> driver initializes this to low, does not bother any further
+	 *
+	 * Net result is that the tuner is always set to DVB-S(2), even on TS models
+	 */
+//	dprintk(70, "Initialize PIO 2.5 (DVB-T power) to 1 (off)\n");
+	pin = stpio_request_pin(2, 5, "DVBT_PWR", STPIO_OUT);
+	stpio_set_pin(pin, 1);  // switch DVB-T power off
+//	dprintk(70, "Initialize PIO 4.6 (DVB-S(2) power) to 0 (on)\n");
+	pin = stpio_request_pin(4, 6, "DVBS_PWR", STPIO_OUT);
+	stpio_set_pin(pin, 0);  // switch DVB-S(2) power on
+//	dprintk(70, "Initialize PIO 3.3 (DVB-S OE#) to 0 (enabled)\n");
+	pin = stpio_request_pin(3, 3, "DVBS2OE#", STPIO_OUT);
+	stpio_set_pin(pin, 0);  // ?
+#endif
 	for (i = 0; i < numFrontends; i++)
 	{
 		struct avl_private_data_s *priv = (struct avl_private_data_s *) frontendList[i].private;
@@ -2256,9 +2286,9 @@ module_init(avl2108_init);
 module_exit(avl2108_cleanup);
 
 module_param(paramDebug, short, 0644);
-MODULE_PARM_DESC(paramDebug, "Activates frontend debugging (default:0)");
+MODULE_PARM_DESC(paramDebug, "Activates frontend debugging (default: 0=off)");
 
-MODULE_DESCRIPTION("DVB Frontend module for demodulator Availink AVL2108 and tuner STV6306, STV6110A or IX2470VA");
+MODULE_DESCRIPTION("DVB Frontend module for demodulator Availink AVL2108 and tuner IX2470VA");
 
 MODULE_AUTHOR("Pedro Aguilar");
 MODULE_LICENSE("GPL");

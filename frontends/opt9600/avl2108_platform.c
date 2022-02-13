@@ -1,4 +1,5 @@
-/*
+/****************************************************************************
+ *
  * @brief avl2108_platform.c
  *
  * @author konfetti
@@ -20,6 +21,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ ****************************************************************************
+ *
+ * This version only supports a Sharp IX2470VA DVBS(2) tuner. The DVB-T tuner
+ * present in TS models is not supported due to:
+ * 1. Its driver code is closed source;
+ * 2. At the time writing DVB-T is (being) phased out in many areas in favour
+ *    of DVB-T2.
  */
 
 #include <linux/platform_device.h>
@@ -84,12 +93,17 @@ static struct platform_frontend_s avl2108_config =
 		{
 			.name         = "avl2108",
 
+#if defined(OPT9600)
 			.tuner_enable = { 5, 3, 1 },  // group, bit, state for active
 			.lnb          = { 5, 2, 1, 2, 2, 0 },  // enable (group, bit, state for on), voltage select (group, bit, state for 13V)
 			.i2c_bus      = 1,
-
+#elif defined(OPT9600PRIMA)  // TODO: find PIO pins and I2C bus number
+			.tuner_enable = { 5, 3, 1 },  // group, bit, state for active
+			.lnb          = { 5, 2, 1, 2, 2, 0 },  // enable (group, bit, state for on), voltage select (group, bit, state for 13V)
+			.i2c_bus      = 1,
+#endif
 			.demod_i2c    = 0x0C, // 0x18 >> 1
-//			NOTE: I2C address used for the IX2470 determines tthe value of its ADR input
+//			NOTE: I2C address used for the IX2470VA tuner determines the value of its ADR input
 			.tuner_i2c    = 0xC0, // ADR input voltage < 0.1 * Vcc
 //			.tuner_i2c    = 0xC2, // ADR input open
 //			.tuner_i2c    = 0xC4, // 0.4 * Vcc < ADR input voltage < 0.6 * Vcc

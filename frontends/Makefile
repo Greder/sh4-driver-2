@@ -484,3 +484,12 @@ stv090x-objs += stv090x/core.o
 obj-m += stv090x.o
 obj-y += lnb/
 endif
+
+ifdef OPT9600PRIMA
+opt9600_frontend-objs += opt9600/avl2108.o
+opt9600_frontend-objs += opt9600/ix2470.o
+opt9600_frontend-objs += opt9600/lnbp12.o
+obj-m += opt9600_frontend.o
+opt9600_platform-objs += opt9600/avl2108_platform.o
+obj-m += opt9600_platform.o
+endif

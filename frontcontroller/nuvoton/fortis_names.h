@@ -1,7 +1,7 @@
 #ifndef __fortis_names__
 #define __fortis_names__
 
-unsigned char *FS9000_brand_table[24] =
+unsigned char *FORTIS_HDBOX_brand_table[24] =
 {
 	"Fortis",     // 00
 	"Rebox",      // 01
@@ -29,9 +29,9 @@ unsigned char *FS9000_brand_table[24] =
 	"Dynavision"  // 23
 };
 
-unsigned char *FS9000_name_table[24] =
+unsigned char *FORTIS_HDBOX_name_table[24] =
 {
-	"FS9000 HD PVR",        //00
+	"FORTIS_HDBOX HD PVR",        //00
 	"RE-9000HD PVR",        //01
 	"SF 1018 HD Alliance",  //02
 	"FS-9300 HD",           //03
@@ -151,7 +151,7 @@ unsigned char *FS9200_01_name_table[15] =  // 20XX0101
 	"Twin HD-9200 DIVX II"  // 14
 };
 
-unsigned char *FS9000_06_brand_table[29] =  // 20XX06XX (FS9000 with HS9510 VFD)
+unsigned char *FORTIS_HDBOX_06_brand_table[29] =  // 20XX06XX (FORTIS_HDBOX with OCTAGON1008 VFD)
 {
 	"Unknown",             // 00
 	"Unknown",             // 01
@@ -184,7 +184,7 @@ unsigned char *FS9000_06_brand_table[29] =  // 20XX06XX (FS9000 with HS9510 VFD)
 	"MaxFly"               // 28
 };
 
-unsigned char *FS9000_06_name_table[29] =  // 20XX06XX (FS9000 with HS9510 VFD)
+unsigned char *FORTIS_HDBOX_06_name_table[29] =  // 20XX06XX (FORTIS_HDBOX with OCTAGON1008 VFD)
 {
 	"",                 // 00
 	"",                 // 01
@@ -217,7 +217,7 @@ unsigned char *FS9000_06_name_table[29] =  // 20XX06XX (FS9000 with HS9510 VFD)
 	"9500 HD"           // 28
 };
 
-unsigned char *HS9510_00_brand_table[17] =  // 20XX0300
+unsigned char *OCTAGON1008_00_brand_table[17] =  // 20XX0300
 {
 	"Fortis",     // 00
 	"Rebox",      // 01
@@ -238,7 +238,7 @@ unsigned char *HS9510_00_brand_table[17] =  // 20XX0300
 	"XCruiser"    // 16
 };
 
-unsigned char *HS9510_00_name_table[17] =  // 20XX0300
+unsigned char *OCTAGON1008_00_name_table[17] =  // 20XX0300
 {
 	"HS-9510 HD PVR",           // 00
 	"RE-4000HD PVR",            // 01
@@ -259,7 +259,7 @@ unsigned char *HS9510_00_name_table[17] =  // 20XX0300
 	"XDSR 400 HD"               // 16
 };
 
-unsigned char *HS9510_01_brand_table[32] =  // 20XX0301
+unsigned char *OCTAGON1008_01_brand_table[32] =  // 20XX0301
 {
 	"Unknown",     // 00
 	"Unknown",     // 01
@@ -295,7 +295,7 @@ unsigned char *HS9510_01_brand_table[32] =  // 20XX0301
 	"Elcomax"      // 31
 };
 
-unsigned char *HS9510_01_name_table[32] =  // 20XX0301
+unsigned char *OCTAGON1008_01_name_table[32] =  // 20XX0301
 {
 	"",                // 00
 	"",                // 01
@@ -331,7 +331,7 @@ unsigned char *HS9510_01_name_table[32] =  // 20XX0301
 	"Elux I"           // 31
 };
 
-unsigned char *HS9510_02_brand_table[31] =  // 20XX0302
+unsigned char *OCTAGON1008_02_brand_table[31] =  // 20XX0302
 {
 	"Unknown",     // 00
 	"Unknown",     // 01
@@ -366,7 +366,7 @@ unsigned char *HS9510_02_brand_table[31] =  // 20XX0302
 	"SuperBox"     // 30
 };
 
-unsigned char *HS9510_02_name_table[31] =  // 20XX0302
+unsigned char *OCTAGON1008_02_name_table[31] =  // 20XX0302
 {
 	"",                       // 00
 	"",                       // 01
@@ -401,7 +401,7 @@ unsigned char *HS9510_02_name_table[31] =  // 20XX0302
 	"SX 9518 HD"              // 30
 };
 
-unsigned char *HS9510_03_brand_table[24] =  // 20XX0303
+unsigned char *OCTAGON1008_03_brand_table[24] =  // 20XX0303
 {
 	"Unknown",    // 00
 	"Unknown",    // 01
@@ -429,7 +429,7 @@ unsigned char *HS9510_03_brand_table[24] =  // 20XX0303
 	"Dynavision"  // 23
 };
 
-unsigned char *HS9510_03_name_table[24] =  // 20XX0303
+unsigned char *OCTAGON1008_03_name_table[24] =  // 20XX0303
 {
 	"",                            // 00
 	"",                            // 01
@@ -457,7 +457,7 @@ unsigned char *HS9510_03_name_table[24] =  // 20XX0303
 	"DV-9500 HD PVR"               // 23
 };
 
-unsigned char *HS8200_brand_table[28] =  // 23XX00X0
+unsigned char *ATEVIO7500_brand_table[28] =  // 23XX00X0
 {
 	"Fortis",             // 00
 	"Rebox",              // 01
@@ -489,7 +489,7 @@ unsigned char *HS8200_brand_table[28] =  // 23XX00X0
 	"Mediastar (Powers)"  // 27
 };
 
-unsigned char *HS8200_name_table[28] =  // 23XX00X0
+unsigned char *ATEVIO7500_name_table[28] =  // 23XX00X0
 {
 	"HX-8200 HD PVR",        // 00
 	"RE-8500HD PVR",         // 01

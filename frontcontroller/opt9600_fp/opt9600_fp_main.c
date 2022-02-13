@@ -2,14 +2,14 @@
  *
  * opt9600_fp_main.c
  *
- * Opticum HD 9600 (TS) Frontpanel driver.
+ * Opticum HD (TS) 9600 Frontpanel driver.
  *
  *
  * (c) 2009 Dagobert@teamducktales
  * (c) 2010 Schischu & konfetti: Add irq handling
- * (c) 2020 Audioniek: ported to Opticum HD 9600 (TS)
+ * (c) 2020 Audioniek: ported to Opticum HD (TS) 9600
  *
- * Largely based on cn_micom, enhanced and ported to Opticum HD 9600 (TS)
+ * Largely based on cn_micom, enhanced and ported to Opticum HD (TS) 9600
  * by Audioniek.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -663,7 +663,7 @@ static int __init mcom_init_module(void)
 	unsigned int *ASC_X_CTRL   = (unsigned int *)(ASCXBaseAddress + ASC_CTRL);
 
 	dprintk(150, "%s >\n", __func__);
-	printk("Opticum HD 9600 frontcontroller module\n");
+	printk("Opticum HD (TS) 9600 frontcontroller module\n");
 
 	// Disable all ASC 3 interrupts
 	*ASC_X_INT_EN = *ASC_X_INT_EN & ~0x000001ff;
@@ -717,7 +717,7 @@ static int __init mcom_init_module(void)
 
 static void __exit mcom_cleanup_module(void)
 {
-	printk("Opticum HD 9600 frontcontroller module unloading\n");
+	printk("Opticum HD (TS) 9600 frontcontroller module unloading\n");
 
 	remove_proc_fp();
 	unregister_chrdev(VFD_MAJOR, "VFD");
@@ -729,7 +729,7 @@ static void __exit mcom_cleanup_module(void)
 module_init(mcom_init_module);
 module_exit(mcom_cleanup_module);
 
-MODULE_DESCRIPTION("Opticum HD 9600 frontcontroller module");
+MODULE_DESCRIPTION("Opticum HD (TS) 9600 frontcontroller module");
 MODULE_AUTHOR("Open Vision developers");
 MODULE_LICENSE("GPL");
 

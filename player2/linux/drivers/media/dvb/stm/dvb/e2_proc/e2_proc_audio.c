@@ -52,19 +52,22 @@ static int avs_command_kernel(unsigned int cmd, void *arg) { return 0; }
 #else
 int avs_command_kernel(unsigned int cmd, void *arg);
 #endif
+
 #if defined(ADB_BOX)
 int proc_audio_delay_pcm_write(struct file *file, const char __user *buf, unsigned long count, void *data)
 {
 	char *page;
 	char *myString;
 	ssize_t ret = -ENOMEM;
-	printk("%s %d - ", __FUNCTION__, (int) count);
+	printk("%s %d - ", __func__, (int) count);
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
 		ret = -EFAULT;
 		if (copy_from_user(page, buf, count))
+		{
 			goto out;
+		}
 		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
 		strncpy(myString, page, count);
 		myString[count] = '\0';
@@ -81,7 +84,7 @@ out:
 int proc_audio_delay_pcm_read(char *page, char **start, off_t off, int count, int *eof, void *data_unused)
 {
 	int len = 0;
-	printk("%s %d\n", __FUNCTION__, count);
+	printk("%s %d\n", __func__, count);
 	return len;
 }
 #endif
@@ -93,7 +96,7 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
 	char *myString;
 	ssize_t ret = -ENOMEM;
 #ifdef VERY_VERBOSE
-	printk("%s %ld - ", __FUNCTION__, count);
+	printk("%s %ld - ", __func__, count);
 #endif
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
@@ -105,11 +108,15 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
 		int delay = 0;
 		ret = -EFAULT;
 		if (file == NULL && data == NULL)
+		{
 			strncpy(page, buf, count);
+		}
 		else
 		{
 			if (copy_from_user(page, buf, count))
+			{
 				goto out;
+			}
 		}
 		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
 		strncpy(myString, page, count);
@@ -119,7 +126,9 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
 #endif
 		sscanf(myString, "%x", &delay);
 		if (delay != 0)
+		{
 			delay /= 90;
+		}
 		for (vLoop = 0; vLoop < number; vLoop++)
 		{
 			if (kcontrol[vLoop]->private_value == PSEUDO_ADDR(master_latency))
@@ -202,6 +211,7 @@ static void WriteRegister(volatile unsigned long *reg, unsigned long val)
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
  || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA) \
  || defined(UFS913) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
@@ -241,6 +251,7 @@ void spdif_out_mute(int mute)
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
  || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA) \
  || defined(UFS913) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
@@ -268,6 +279,7 @@ void spdif_out_mute(int mute)
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
  || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA) \
  || defined(UFS913) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
@@ -298,6 +310,7 @@ void spdif_out_mute(int mute)
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
  || defined(OPT9600MINI) \
+ || defined(OPT9600PRIMA) \
  || defined(UFS913) \
  || defined(VITAMIN_HD5000) \
  || defined(SAGEMCOM88) \
@@ -324,7 +337,7 @@ int proc_audio_j1_mute_write(struct file *file, const char __user *buf,
 	ssize_t ret = -ENOMEM;
 	unsigned int State;
 #ifdef VERY_VERBOSE
-	printk("%s %d - ", __FUNCTION__, (int) count);
+	printk("%s %d - ", __func__, (int) count);
 #endif
 	mutex_lock(&(ProcDeviceContext->DvbContext->Lock));
 	page = (char *)__get_free_page(GFP_KERNEL);
@@ -332,7 +345,9 @@ int proc_audio_j1_mute_write(struct file *file, const char __user *buf,
 	{
 		ret = -EFAULT;
 		if (copy_from_user(page, buf, count))
+		{
 			goto out;
+		}
 		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
 		strncpy(myString, page, count);
 		myString[count] = '\0';
@@ -456,9 +471,13 @@ int proc_audio_j1_mute_read(char *page, char **start, off_t off, int count,
 		struct snd_ctl_elem_value ucontrol;
 		snd_pseudo_integer_get(single_control, &ucontrol);
 		if (ucontrol.value.integer.value[0] > -63)
+		{	
 			len = sprintf(page, "0\n");
+		}
 		else
+		{
 			len = sprintf(page, "1\n");
+		}
 	}
 	else
 	{
@@ -485,14 +504,16 @@ int proc_audio_ac3_write(struct file *file, const char __user *buf,
 	char *myString;
 	ssize_t ret = -ENOMEM;
 #ifdef VERY_VERBOSE
-	printk("%s %d - ", __FUNCTION__, (int) count);
+	printk("%s %d - ", __func__, (int) count);
 #endif
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
 		ret = -EFAULT;
 		if (copy_from_user(page, buf, count))
+		{
 			goto out;
+		}
 		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
 		strncpy(myString, page, count);
 		myString[count] = '\0';
@@ -563,7 +584,7 @@ int proc_audio_ac3_read(char *page, char **start, off_t off, int count,
 {
 	int len = 0;
 #ifdef VERY_VERBOSE
-	printk("%s %d\n", __FUNCTION__, count);
+	printk("%s %d\n", __func__, count);
 #endif
 	if (passthrough == 1)
 	{
@@ -581,8 +602,9 @@ int proc_audio_ac3_choices_read(char *page, char **start, off_t off, int count,
 {
 	int len = 0;
 #ifdef VERY_VERBOSE
-	printk("%s %d\n", __FUNCTION__, count);
+	printk("%s %d\n", __func__, count);
 #endif
 	len = sprintf(page, "downmix passthrough\n");
 	return len;
 }
+// vim:ts=4

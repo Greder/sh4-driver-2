@@ -220,141 +220,141 @@ extern tIconState icon_state;
  */
 static const unsigned char seven_seg[128] =
 {
-	0x00,  //0x00,
-	0x00,  //0x01,
-	0x00,  //0x02,
-	0x00,  //0x03,
-	0x00,  //0x04,
-	0x00,  //0x05,
-	0x00,  //0x06,
-	0x00,  //0x07,
-	0x00,  //0x08,
-	0x00,  //0x09,
-	0x00,  //0x0a,
-	0x00,  //0x0b,
-	0x00,  //0x0c,
-	0x00,  //0x0d,
-	0x00,  //0x0e,
-	0x00,  //0x0f,
+	0x00,  // 0x00,
+	0x00,  // 0x01,
+	0x00,  // 0x02,
+	0x00,  // 0x03,
+	0x00,  // 0x04,
+	0x00,  // 0x05,
+	0x00,  // 0x06,
+	0x00,  // 0x07,
+	0x00,  // 0x08,
+	0x00,  // 0x09,
+	0x00,  // 0x0a,
+	0x00,  // 0x0b,
+	0x00,  // 0x0c,
+	0x00,  // 0x0d,
+	0x00,  // 0x0e,
+	0x00,  // 0x0f,
 
-	0x00,  //0x10,
-	0x00,  //0x11,
-	0x00,  //0x12,
-	0x00,  //0x13,
-	0x00,  //0x14,
-	0x00,  //0x15,
-	0x00,  //0x16,
-	0x00,  //0x17,
-	0x00,  //0x18,
-	0x00,  //0x19,
-	0x00,  //0x1a,
-	0x00,  //0x1b,
-	0x00,  //0x1c,
-	0x00,  //0x1d,
-	0x00,  //0x1e,
-	0x00,  //0x1f,
+	0x00,  // 0x10,
+	0x00,  // 0x11,
+	0x00,  // 0x12,
+	0x00,  // 0x13,
+	0x00,  // 0x14,
+	0x00,  // 0x15,
+	0x00,  // 0x16,
+	0x00,  // 0x17,
+	0x00,  // 0x18,
+	0x00,  // 0x19,
+	0x00,  // 0x1a,
+	0x00,  // 0x1b,
+	0x00,  // 0x1c,
+	0x00,  // 0x1d,
+	0x00,  // 0x1e,
+	0x00,  // 0x1f,
 
-	0x00,  //0x20, <space>
-	0x86,  //0x21, !
-	0x22,  //0x22, "
-	0x76,  //0x23, #
-	0x6d,  //0x24, $
-	0x52,  //0x25, %
-	0x7d,  //0x26, &
-	0x02,  //0x27, '
-	0x39,  //0x28, (
-	0x0f,  //0x29, )
-	0x76,  //0x2a, *
-	0x46,  //0x2b, +
-	0x84,  //0x2c, ,
-	0x40,  //0x2d, -
-	0x80,  //0x2e, .
-	0x52,  //0x2f, /
+	0x00,  // 0x20, <space>
+	0x86,  // 0x21, !
+	0x22,  // 0x22, "
+	0x76,  // 0x23, #
+	0x6d,  // 0x24, $
+	0x52,  // 0x25, %
+	0x7d,  // 0x26, &
+	0x02,  // 0x27, '
+	0x39,  // 0x28, (
+	0x0f,  // 0x29, )
+	0x76,  // 0x2a, *
+	0x46,  // 0x2b, +
+	0x84,  // 0x2c, ,
+	0x40,  // 0x2d, -
+	0x80,  // 0x2e, .
+	0x52,  // 0x2f, /
 
-	0x3f,  //0x30, 0
-	0x06,  //0x31, 1
-	0x5b,  //0x32, 2
-	0x4f,  //0x33, 3
-	0x66,  //0x34, 4
-	0x6d,  //0x35, 5
-	0x7d,  //0x36, 6
-	0x07,  //0x37, 7
-	0x7f,  //0x38, 8
-	0x6f,  //0x39, 9
-	0x06,  //0x3a, :
-	0x86,  //0x3b, ;
-	0x58,  //0x3c, <
-	0x48,  //0x3d, =
-	0x4c,  //0x3e, >
-	0xd3,  //0x3f, ?
+	0x3f,  // 0x30, 0
+	0x06,  // 0x31, 1
+	0x5b,  // 0x32, 2
+	0x4f,  // 0x33, 3
+	0x66,  // 0x34, 4
+	0x6d,  // 0x35, 5
+	0x7d,  // 0x36, 6
+	0x07,  // 0x37, 7
+	0x7f,  // 0x38, 8
+	0x6f,  // 0x39, 9
+	0x06,  // 0x3a, :
+	0x86,  // 0x3b, ;
+	0x58,  // 0x3c, <
+	0x48,  // 0x3d, =
+	0x4c,  // 0x3e, >
+	0xd3,  // 0x3f, ?
 
-	0x7b,  //0x40, @
-	0x77,  //0x41, A
-	0x7c,  //0x42, B
-	0x39,  //0x43, C
-	0x5e,  //0x44, D
-	0x79,  //0x45, E
-	0x71,  //0x46, F
-	0x3d,  //0x47, G
-	0x76,  //0x48, H
-	0x06,  //0x49, I
-	0x0e,  //0x4a, J
-	0x74,  //0x4b, K
-	0x38,  //0x4c, L
-	0x37,  //0x4d, M
-	0x37,  //0x4e, N
-	0x3f,  //0x4f, O
+	0x7b,  // 0x40, @
+	0x77,  // 0x41, A
+	0x7c,  // 0x42, B
+	0x39,  // 0x43, C
+	0x5e,  // 0x44, D
+	0x79,  // 0x45, E
+	0x71,  // 0x46, F
+	0x3d,  // 0x47, G
+	0x76,  // 0x48, H
+	0x06,  // 0x49, I
+	0x0e,  // 0x4a, J
+	0x74,  // 0x4b, K
+	0x38,  // 0x4c, L
+	0x37,  // 0x4d, M
+	0x37,  // 0x4e, N
+	0x3f,  // 0x4f, O
 
-	0x73,  //0x50, P
-	0xbf,  //0x51, Q
-	0x50,  //0x52, R
-	0x6d,  //0x53, S
-	0x78,  //0x54, T
-	0x3e,  //0x55, U
-	0x3e,  //0x56, V
-	0x3e,  //0x57, W
-	0x76,  //0x58, X
-	0x6e,  //0x59, Y
-	0x5b,  //0x5a, Z
-	0x39,  //0x5b  [
-	0x30,  //0x5c, |
-	0x0f,  //0x5d, ]
-	0x23,  //0x5e, ^
-	0x08,  //0x5f, _
+	0x73,  // 0x50, P
+	0xbf,  // 0x51, Q
+	0x50,  // 0x52, R
+	0x6d,  // 0x53, S
+	0x78,  // 0x54, T
+	0x3e,  // 0x55, U
+	0x3e,  // 0x56, V
+	0x3e,  // 0x57, W
+	0x76,  // 0x58, X
+	0x6e,  // 0x59, Y
+	0x5b,  // 0x5a, Z
+	0x39,  // 0x5b  [
+	0x30,  // 0x5c, |
+	0x0f,  // 0x5d, ]
+	0x23,  // 0x5e, ^
+	0x08,  // 0x5f, _
 
-	0x20,  //0x60, `
-	0x5f,  //0x61, a
-	0x7c,  //0x62, b
-	0x58,  //0x63, c
-	0x5e,  //0x64, d
-	0x7b,  //0x65, e
-	0x71,  //0x66, f
-	0x6f,  //0x67, g
-	0x74,  //0x68, h
-	0x04,  //0x69, i
-	0x0e,  //0x6a, j
-	0x74,  //0x6b, k
-	0x06,  //0x6c, l
-	0x54,  //0x6d, m
-	0x54,  //0x6e, n
-	0x5c,  //0x6f, o
+	0x20,  // 0x60, `
+	0x5f,  // 0x61, a
+	0x7c,  // 0x62, b
+	0x58,  // 0x63, c
+	0x5e,  // 0x64, d
+	0x7b,  // 0x65, e
+	0x71,  // 0x66, f
+	0x6f,  // 0x67, g
+	0x74,  // 0x68, h
+	0x04,  // 0x69, i
+	0x0e,  // 0x6a, j
+	0x74,  // 0x6b, k
+	0x06,  // 0x6c, l
+	0x54,  // 0x6d, m
+	0x54,  // 0x6e, n
+	0x5c,  // 0x6f, o
 
-	0x73,  //0x70, p
-	0x67,  //0x71, q
-	0x50,  //0x72, r
-	0x6d,  //0x73, s
-	0x78,  //0x74, t
-	0x1c,  //0x75, u
-	0x1c,  //0x76, v
-	0x1c,  //0x77, w
-	0x76,  //0x78, x
-	0x6e,  //0x79, y
-	0x5b,  //0x7a, z
-	0x39,  //0x7b, {
-	0x64,  //0x7c, backslash
-	0x0f,  //0x7d, }
-	0x40,  //0x7e, ~
-	0x7f,  //0x7f, <DEL>--> all segments on
+	0x73,  // 0x70, p
+	0x67,  // 0x71, q
+	0x50,  // 0x72, r
+	0x6d,  // 0x73, s
+	0x78,  // 0x74, t
+	0x1c,  // 0x75, u
+	0x1c,  // 0x76, v
+	0x1c,  // 0x77, w
+	0x76,  // 0x78, x
+	0x6e,  // 0x79, y
+	0x5b,  // 0x7a, z
+	0x39,  // 0x7b, {
+	0x64,  // 0x7c, backslash
+	0x0f,  // 0x7d, }
+	0x40,  // 0x7e, ~
+	0x7f,  // 0x7f, <DEL>--> all segments on
 
 //	0x80 onwards not used; taken care of by UTF8 support
 };
@@ -500,7 +500,7 @@ static unsigned char pt6xxx_init_pio_pins(void)
 		pt6302_cs = stpio_request_pin(PORT_CS, PIN_CS, "PT6302_CS", STPIO_OUT);
 		if (pt6302_cs == NULL)
 		{
-			dprintk(1, "Request for STPIO cs failed; abort\n");
+			dprintk(1, "%s: Request for STPIO cs failed; abort\n", __func__);
 			goto pt_init_fail;
 		}
 	}
@@ -509,7 +509,7 @@ static unsigned char pt6xxx_init_pio_pins(void)
 	pt6958_stb = stpio_request_pin(PORT_STB, PIN_STB, "PT6958_STB", STPIO_OUT);
 	if (pt6958_stb == NULL)
 	{
-		dprintk(1, "Request for STB STPIO failed; abort\n");
+		dprintk(1, "%s: Request for STB STPIO failed; abort\n", __func__);
 		goto pt_init_fail;
 	}
 // PT6302 & PT6958 Clock
@@ -517,7 +517,7 @@ static unsigned char pt6xxx_init_pio_pins(void)
 	pt6xxx_clk = stpio_request_pin(PORT_CLK, PIN_CLK, "PT6958_CLK", STPIO_OUT);
 	if (pt6xxx_clk == NULL)
 	{
-		dprintk(1, "Request for CLK STPIO failed; abort\n");
+		dprintk(1, "%s: Request for CLK STPIO failed; abort\n", __func__);
 		goto pt_init_fail;
 	}
 // PT6302 & PT6958 Data in
@@ -525,7 +525,7 @@ static unsigned char pt6xxx_init_pio_pins(void)
 	pt6xxx_din = stpio_request_pin(PORT_DIN, PIN_DIN, "PT6958_DIN", STPIO_BIDIR);
 	if (pt6xxx_din == NULL)
 	{
-		dprintk(1, "Request for DIN STPIO failed; abort\n");
+		dprintk(1, "%s: Request for DIN STPIO failed; abort\n", __func__);
 		goto pt_init_fail;
 	}
   // set all involved PIO pins high
@@ -958,42 +958,44 @@ int pt6958_ShowBuf(unsigned char *data, unsigned char len, int utf8_flag)
 	PT6958_Show(z1, z2, z3, z4, k1, k2, k3, k4); // display text & decimal points
 #else
 	k1 = k2 = k3 = k4 = 0x00;  // clear decimal point flags
-//	z1 = z2 = z3 = z4 = 0x00;  // set non used positions to space (blank)
-// determine the decimal points: if character is period, single quote or colon, replace it by a decimal point
-//	if ((wlen >= 2) && (text[1] == '.' || text[1] == 0x27 || text[1] == ':'))
-//	{
-//		k1 = 1;  // flag period at position 1
-//	}
-//	if ((wlen >= 3) && (text[2] == '.' || text[2] == 0x27 || text[2] == ':'))
-//	{
-//		k2 = 1;  // flag period at position 2
-//	}
-//	if ((wlen >= 4) && (text[3] == '.' || text[3] == 0x27 || text[3] == ':'))
-//	{
-//		k3 = 1;  // flag period at position 3
-//	}
-//	if ((wlen >= 5) && (text[4] == '.' || text[4] == 0x27 || text[4] == ':'))
-//	{
-//		k4 = 1;  // flag period at position 4
-//	}
+#if 0 // do not use handling of periods and colons
+	z1 = z2 = z3 = z4 = 0x00;  // set non used positions to space (blank)
+//	determine the decimal points: if character is period, single quote or colon, replace it by a decimal point
+	if ((wlen >= 2) && (text[1] == '.' || text[1] == 0x27 || text[1] == ':'))
+	{
+		k1 = 1;  // flag period at position 1
+	}
+	if ((wlen >= 3) && (text[2] == '.' || text[2] == 0x27 || text[2] == ':'))
+	{
+		k2 = 1;  // flag period at position 2
+	}
+	if ((wlen >= 4) && (text[3] == '.' || text[3] == 0x27 || text[3] == ':'))
+	{
+		k3 = 1;  // flag period at position 3
+	}
+	if ((wlen >= 5) && (text[4] == '.' || text[4] == 0x27 || text[4] == ':'))
+	{
+		k4 = 1;  // flag period at position 4
+	}
 // assigning segment data
-//	if (wlen >= 1)
-//	{
-//		z1 = seven_seg[kbuf[0]];
-//	}
-//	if (wlen >= 2)
-//	{
-//		z2 = seven_seg[kbuf[1 + k1]];
-//	}
-//	if (wlen >= 3)
-//	{
-//		z3 = seven_seg[kbuf[2 + k1 + k2]];
-//	}
-//	if (wlen >= 4)
-//	{
-//		z4 = seven_seg[kbuf[3 + k1 + k2 + k3]];
-//	}
+	if (wlen >= 1)
+	{
+		z1 = seven_seg[kbuf[0]];
+	}
+	if (wlen >= 2)
+	{
+		z2 = seven_seg[kbuf[1 + k1]];
+	}
+	if (wlen >= 3)
+	{
+		z3 = seven_seg[kbuf[2 + k1 + k2]];
+	}
+	if (wlen >= 4)
+	{
+		z4 = seven_seg[kbuf[3 + k1 + k2 + k3]];
+	}
 //	PT6958_Show(z1, z2, z3, z4, k1, k2, k3, k4); // display text & decimal points
+#endif
 	PT6958_Show(kbuf[0], kbuf[1], kbuf[2], kbuf[3], k1, k2, k3, k4); // display text & decimal points
 #endif
 	dprintk(150, "%s <\n", __func__);
@@ -1016,7 +1018,7 @@ static void pt6958_set_icon(unsigned char *kbuf, unsigned char len)
 	{
 		pos = kbuf[0];  // 1st character is position 1 = power LED, 
 		on  = kbuf[4];  // last character is state
-		on  = (on == 0 ? 0 : 1);  // normalize on value
+		on  = (on ? 1 : 0);  // normalize on value
 
 		switch (pos)
 		{
@@ -1027,7 +1029,7 @@ static void pt6958_set_icon(unsigned char *kbuf, unsigned char len)
 			}
 			case 2:  // led power, green
 			{
-				if (on == 1)
+				if (on)
 				{
 					led1 = 2;  // select green
 					on = 2;
@@ -1085,7 +1087,7 @@ void pt6958_set_led(int led_nr, int level)
 		{
 				if (level < 0 || level > 3)
 				{
-					dprintk(1, "Illegal LED state value; must be 0..3, default to off\n");
+					dprintk(1, "%s: Illegal LED state value; must be 0..3, default to off\n", __func__);
 					level = 0;
 				}
 				led1 = level;
@@ -1235,7 +1237,7 @@ int pt6302_write_dcram(unsigned char addr, unsigned char *data, unsigned char le
 	}
 	if (len + addr > VFD_DISP_SIZE + ICON_WIDTH)
 	{
-		dprintk(1, "%s len (%d) too large, adjusting to %d\n", len, VFD_DISP_SIZE + ICON_WIDTH - addr);
+		dprintk(1, "%s: len (%d) too large, adjusting to %d\n", __func__, len, VFD_DISP_SIZE + ICON_WIDTH - addr);
 		len = VFD_DISP_SIZE + ICON_WIDTH - addr;
 	}
 	spin_lock(&mr_lock);
@@ -2068,6 +2070,7 @@ int adb_5800_fp_init_func(void)
 			}
 			break;
 		}
+		case 5:  // cable TODO
 		default:
 		{
 			// Receiver variant unknown, default to LED display and MENU/EPG/RES key layout
@@ -2467,7 +2470,7 @@ static ssize_t vfd_write(struct file *filp, const char *buff, size_t len, loff_t
 
 	if (kernel_buf == NULL)
 	{
-		printk("%s returns no memory <\n", __func__);
+		dprintk(1, "%s returns no memory <\n", __func__);
 		return -ENOMEM;
 	}
 	copy_from_user(kernel_buf, buff, len);
@@ -2530,7 +2533,7 @@ static int vfd_open(struct inode *inode, struct file *file)
 	}
 	if (fp.opencount > 0)
 	{
-		dprintk(1, "Device already opened\n");
+		dprintk(1, "%s: Device already opened\n", __func__);
 		up(&(fp.sem));
 		return -EUSERS;
 	}
@@ -2795,7 +2798,7 @@ static int vfd_ioctl(struct inode *inode, struct file *file, unsigned int cmd, u
 					{
 						if (on > 1 || on < 0)
 						{
-							dprintk(1, "Illegal state for icon %d\n", ICON_MAX);
+							dprintk(1, "%s: Illegal state for icon %d\n", __func__, ICON_MAX);
 						}
 						if (on)
 						{
@@ -2833,7 +2836,7 @@ static int vfd_ioctl(struct inode *inode, struct file *file, unsigned int cmd, u
 								while (icon_state.status != THREAD_STATUS_HALTED && i < 128);
 								if (i == 128)
 								{
-									dprintk(1, "%s Time out stopping icon thread!\n", __func__);
+									dprintk(1, "%s: Time out stopping icon thread!\n", __func__);
 								}
 //								dprintk(50, "%s Icon thread stopped\n", __func__);
 								
@@ -2856,7 +2859,7 @@ static int vfd_ioctl(struct inode *inode, struct file *file, unsigned int cmd, u
 					{
 						if (on > 1 || on < 0)
 						{
-							dprintk(1, "Illegal state for icon %d\n", icon_nr);
+							dprintk(1, "%s: Illegal state for icon %d\n", __func__, icon_nr);
 						}
 						ret |= pt6302_set_icon(icon_nr, on);
 						if (((icon_state.state == 0) && on) && lastdata.icon_count > 1)  // if no icon thread yet but > 1 icons on
@@ -2878,7 +2881,7 @@ static int vfd_ioctl(struct inode *inode, struct file *file, unsigned int cmd, u
 							while (icon_state.status != THREAD_STATUS_HALTED && i < 120);
 							if (i == 120)
 							{
-								dprintk(1, "%s Time out stopping icon thread!\n", __func__);
+								dprintk(1, "%s: Time out stopping icon thread!\n", __func__);
 							}
 //							dprintk(50, "%s Icon thread stopped\n", __func__);
 						}
@@ -2974,7 +2977,7 @@ icon_exit:
 		}
 		default:
 		{
-			dprintk(1, "Unknown IOCTL %08x\n", cmd);
+			dprintk(1, "%s: Unknown IOCTL %08x\n", __func__, cmd);
 			mode = 0;
 			break;
 		}

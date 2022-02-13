@@ -4,11 +4,11 @@
  *
  * (c) 2009 Dagobert@teamducktales
  * (c) 2010 Schischu & konfetti: Add irq handling
- * (c) 2020 Audioniek: ported to Opticum HD 9600 (TS)
+ * (c) 2020 Audioniek: ported to Opticum HD (TS) 9600
  *
  * UART setup for communication with the front processor.
  *
- * Largely based on cn_micom, enhanced and ported to Opticum HD 9600 (TS)
+ * Largely based on cn_micom, enhanced and ported to Opticum HD (TS) 9600
  * by Audioniek.
  *
  * This program is free software; you can redistribute it and/or modify

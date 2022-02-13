@@ -236,3 +236,7 @@ obj-m += cnbox_cic.o
 cnbox_cic-objs:= cnbox_cic/cnbox_cic.o
 endif
 
+ifdef OPT9600PRIMA
+obj-m += starci.o
+starci-objs:= opt9600/starci2win.o
+endif

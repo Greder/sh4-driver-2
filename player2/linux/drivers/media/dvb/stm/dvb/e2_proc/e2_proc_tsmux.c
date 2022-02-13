@@ -31,7 +31,7 @@ int proc_tsmux_input0_write(struct file *file, const char __user *buf,
 {
 	char *page;
 	ssize_t ret = -ENOMEM;
-	printk("%s %ld ", __FUNCTION__, count);
+	printk("%s %ld ", __func__, count);
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
@@ -71,7 +71,7 @@ int proc_tsmux_input0_read(char *page, char **start, off_t off, int count,
 			   int *eof, void *data_unused)
 {
 	int len = 0;
-	printk("%s %d\n", __FUNCTION__, count);
+	printk("%s %d\n", __func__, count);
 	return len;
 }
 
@@ -80,7 +80,7 @@ int proc_tsmux_input1_write(struct file *file, const char __user *buf,
 {
 	char *page;
 	ssize_t ret = -ENOMEM;
-	printk("%s %ld ", __FUNCTION__, count);
+	printk("%s %ld ", __func__, count);
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
@@ -121,7 +121,7 @@ int proc_tsmux_input1_read(char *page, char **start, off_t off, int count,
 			   int *eof, void *data_unused)
 {
 	int len = 0;
-	printk("%s %d\n", __FUNCTION__, count);
+	printk("%s %d\n", __func__, count);
 	return len;
 }
 
@@ -130,7 +130,8 @@ int proc_tsmux_lnb_b_input_write(struct file *file, const char __user *buf,
 {
 	char *page;
 	ssize_t ret = -ENOMEM;
-	printk("%s %ld\n", __FUNCTION__, count);
+
+	printk("%s %ld\n", __func__, count);
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
@@ -150,7 +151,8 @@ int proc_tsmux_lnb_b_input_read(char *page, char **start, off_t off, int count,
 				int *eof, void *data_unused)
 {
 	int len = 0;
-	printk("%s %d\n", __FUNCTION__, count);
+
+	printk("%s %d\n", __func__, count);
 	return len;
 }
 
@@ -159,7 +161,8 @@ int proc_tsmux_ci0_input_write(struct file *file, const char __user *buf,
 {
 	char *page;
 	ssize_t ret = -ENOMEM;
-	printk("%s %ld ", __FUNCTION__, count);
+
+	printk("%s %ld ", __func__, count);
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
@@ -188,7 +191,8 @@ int proc_tsmux_ci0_input_write(struct file *file, const char __user *buf,
  || defined(IPBOX99) \
  || defined(IPBOX55) \
  || defined(UFS913) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		if (strcmp(page, "A") == 0)
 		{
 			setCiSource(0, 0);
@@ -212,7 +216,7 @@ int proc_tsmux_ci0_input_read(char *page, char **start, off_t off, int count,
 			      int *eof, void *data_unused)
 {
 	int len = 0;
-	printk("%s\n", __FUNCTION__);
+	printk("%s\n", __func__);
 #if defined(TF7700) \
  || defined(UFS922) \
  || defined(UFC960) \
@@ -230,7 +234,8 @@ int proc_tsmux_ci0_input_read(char *page, char **start, off_t off, int count,
  || defined(IPBOX99) \
  || defined(IPBOX55) \
  || defined(UFS913) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	{
 		int source = 0;
 		getCiSource(0, &source);
@@ -252,7 +257,7 @@ int proc_tsmux_ci1_input_write(struct file *file, const char __user *buf,
 {
 	char *page;
 	ssize_t ret = -ENOMEM;
-	printk("%s %ld ", __FUNCTION__, count);
+	printk("%s %ld ", __func__, count);
 	page = (char *)__get_free_page(GFP_KERNEL);
 	if (page)
 	{
@@ -281,7 +286,8 @@ int proc_tsmux_ci1_input_write(struct file *file, const char __user *buf,
  || defined(IPBOX99) \
  || defined(IPBOX55) \
  || defined(UFS913) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		if (strcmp(page, "A") == 0)
 		{
 			setCiSource(1, 0);
@@ -305,7 +311,7 @@ int proc_tsmux_ci1_input_read(char *page, char **start, off_t off, int count,
 			      int *eof, void *data_unused)
 {
 	int len = 0;
-	printk("%s\n", __FUNCTION__);
+	printk("%s\n", __func__);
 #if defined(TF7700) \
  || defined(UFS922) \
  || defined(UFC960) \
@@ -323,7 +329,8 @@ int proc_tsmux_ci1_input_read(char *page, char **start, off_t off, int count,
  || defined(IPBOX99) \
  || defined(IPBOX55) \
  || defined(UFS913) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	{
 		int source = 0;
 		getCiSource(1, &source);

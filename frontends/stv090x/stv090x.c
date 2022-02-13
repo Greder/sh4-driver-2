@@ -5,7 +5,7 @@
  * Copyright (C) ST Microelectronics
  *
  * Version for:
- * Fortis FS9000/9200    (STV0903) Tuner STV6110X
+ * Fortis FORTIS_HDBOX/9200    (STV0903) Tuner STV6110X
  * Fortis HS7110         (STX7111) Tuner STV6110X
  * Fortis HS7119         (STX7111) Tuner STV6110X
  * Fortis HS7420         (STX7111) Tuner STV6110X

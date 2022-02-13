@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  *
  *
- * Fortis HDBOX / 9200 / HS8200 / HS9510 / HS8200 / HS7XXX Front panel driver.
+ * Fortis HDBOX / 9200 / ATEVIO7500 / OCTAGON1008 / ATEVIO7500 / HS7XXX Front panel driver.
  *
  * Devices:
  *  - /dev/vfd (vfd ioctls and read/write function)
@@ -35,9 +35,9 @@
  * 20130929 Audioniek       Initial version.
  * 20160523 Audioniek       procfs added.
  * 20170115 Audioniek       Response on getFrontInfo added.
- * 20170120 Audioniek       Spinner thread for FS9000/9200 added.
- * 20170128 Audioniek       Spinner thread for HS8200 added.
- * 20170202 Audioniek       Icon thread for HS8200 added.
+ * 20170120 Audioniek       Spinner thread for FORTIS_HDBOX/9200 added.
+ * 20170128 Audioniek       Spinner thread for ATEVIO7500 added.
+ * 20170202 Audioniek       Icon thread for ATEVIO7500 added.
  * 20170417 Audioniek       GMT offset parameter added, default plus one hour.
  * 20190406 Audioniek       HDbox: spinner had inner circle missing.
  *
@@ -637,7 +637,7 @@ int nuvotonTask(void *dummy)
 #if defined(FORTIS_HDBOX)
 /*********************************************************************
  *
- * spinner_thread: Thread to display the spinner on FS9000/9200.
+ * spinner_thread: Thread to display the spinner on FORTIS_HDBOX/9200.
  *
  */
 static int spinner_thread(void *arg)
@@ -796,7 +796,7 @@ static int spinner_thread(void *arg)
 #if defined(ATEVIO7500)
 /*********************************************************************
  *
- * spinner_thread: Thread to display the spinner on HS8200.
+ * spinner_thread: Thread to display the spinner on ATEVIO7500.
  *
  */
 static int spinner_thread(void *arg)
@@ -965,7 +965,7 @@ stop:
 
 /*********************************************************************
  *
- * icon_thread: Thread to display icons on HS8200.
+ * icon_thread: Thread to display icons on ATEVIO7500.
  * TODO: expand to animated icons
  *
  */

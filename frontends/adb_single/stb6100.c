@@ -658,7 +658,9 @@ static struct dvb_tuner_ops stb6100_ops =
 	.release            = stb6100_release
 };
 
-struct dvb_frontend *stb6100_attach(struct dvb_frontend *fe, struct stb6100_config *config, struct i2c_adapter *i2c)
+struct dvb_frontend *stb6100_attach(struct dvb_frontend *fe,
+				    struct stb6100_config *config,
+				    struct i2c_adapter *i2c)
 {
 	struct stb6100_state *state = NULL;
 

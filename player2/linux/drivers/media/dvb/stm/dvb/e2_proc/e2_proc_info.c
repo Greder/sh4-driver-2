@@ -114,6 +114,10 @@ int proc_info_model_read(char *page, char **start, off_t off, int count,
 	len = sprintf(page, "pace7241\n");
 #elif defined(OPT9600)
 	len = sprintf(page, "opt9600\n");
+#elif defined(OPT9600MINI)
+	len = sprintf(page, "opt9600mini\n");
+#elif defined(OPT9600PRIMA)
+	len = sprintf(page, "opt9600prima\n");
 #else
 	len = sprintf(page, "unknown\n");
 #endif

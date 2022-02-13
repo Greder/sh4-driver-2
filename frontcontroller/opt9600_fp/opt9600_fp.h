@@ -4,9 +4,9 @@
  *
  * (c) 2009 Dagobert@teamducktales
  * (c) 2010 Schischu & konfetti: Add irq handling
- * (c) 2020 Audioniek: ported to Opticum HD 9600 (TS)
+ * (c) 2020 Audioniek: ported to Opticum HD (TS) 9600
  *
- * Largely based on cn_micom, enhanced and ported to Opticum HD 9600 (TS)
+ * Largely based on cn_micom, enhanced and ported to Opticum HD (TS) 9600
  * by Audioniek.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -70,32 +70,16 @@ typedef struct
 
 } tFrontPanelOpen;
 
-#define FRONTPANEL_MINOR_RC      1
-#define LASTMINOR                2
+#define FRONTPANEL_MINOR_RC   1
+#define LASTMINOR             2
 
 extern tFrontPanelOpen FrontPanelOpen[LASTMINOR];
 
-#define VFD_MAJOR                147
+#define VFD_MAJOR             147
 
-#define MAX_MCOM_MSG             30
+#define MAX_MCOM_MSG          30
 
-#define MCU_COMM_PORT            UART_1
-#define MCU_COMM_TIMEOUT         1000
-
-typedef enum
-{
-	_VFD_OLD,
-	_VFD,
-	_7SEG,
-	_UNKNOWN
-} DISPLAYTYPE;
-
-#if defined(OPT9600) \
- || defined(OPT9600PRIMA)
-#define DISPLAY_WIDTH            8  // VFD models
-#else
-#define DISPLAY_WIDTH            4  // LED model
-#endif
+#define DISPLAY_WIDTH         8
 
 /* ioctl numbers ->hacky */
 #define VFDDISPLAYCHARS       0xc0425a00
@@ -207,7 +191,6 @@ extern struct saved_data_s lastdata;
 extern int mcom_init_func(void);
 extern void copyData(unsigned char *data, int len);
 extern int mcom_WriteCommand(char *buffer, int len, int needAck);
-//extern int mcom_SendResponse(char *buf, int needAck);
 extern int mcom_SendResponse(char *buf);
 extern void getRCData(unsigned char *data, int *len);
 void dumpValues(void);

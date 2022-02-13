@@ -4,9 +4,9 @@
  *
  * (c) 2009 Dagobert@teamducktales
  * (c) 2010 Schischu & konfetti: Add irq handling
- * (c) 2020 Audioniek: ported to Opticum HD 9600 (TS)
+ * (c) 2020 Audioniek: ported to Opticum HD (TS) 9600
  *
- * Largely based on cn_micom, enhanced and ported to Opticum HD 9600 (TS)
+ * Largely based on cn_micom, enhanced and ported to Opticum HD (TS) 9600
  * by Audioniek.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -80,27 +80,27 @@
 
 //-------------------------------------
 
-#define PIO5BaseAddress  0xb8025000
+//#define PIO5BaseAddress  0xb8025000
 
-#define PIO_CLR_PnC0     0x28
-#define PIO_CLR_PnC1     0x38
-#define PIO_CLR_PnC2     0x48
-#define PIO_CLR_PnCOMP   0x58
-#define PIO_CLR_PnMASK   0x68
-#define PIO_CLR_PnOUT    0x08
-#define PIO_PnC0         0x20
-#define PIO_PnC1         0x30
-#define PIO_PnC2         0x40
-#define PIO_PnCOMP       0x50
-#define PIO_PnIN         0x10
-#define PIO_PnMASK       0x60
-#define PIO_PnOUT        0x00
-#define PIO_SET_PnC0     0x24
-#define PIO_SET_PnC1     0x34
-#define PIO_SET_PnC2     0x44
-#define PIO_SET_PnCOMP   0x54
-#define PIO_SET_PnMASK   0x64
-#define PIO_SET_PnOUT    0x04
+//#define PIO_CLR_PnC0     0x28
+//#define PIO_CLR_PnC1     0x38
+//#define PIO_CLR_PnC2     0x48
+//#define PIO_CLR_PnCOMP   0x58
+//#define PIO_CLR_PnMASK   0x68
+//#define PIO_CLR_PnOUT    0x08
+//#define PIO_PnC0         0x20
+//#define PIO_PnC1         0x30
+//#define PIO_PnC2         0x40
+//#define PIO_PnCOMP       0x50
+//#define PIO_PnIN         0x10
+//#define PIO_PnMASK       0x60
+//#define PIO_PnOUT        0x00
+//#define PIO_SET_PnC0     0x24
+//#define PIO_SET_PnC1     0x34
+//#define PIO_SET_PnC2     0x44
+//#define PIO_SET_PnCOMP   0x54
+//#define PIO_SET_PnMASK   0x64
+//#define PIO_SET_PnOUT    0x04
 
 int serial_putc(char Data);
 void serial_init(void);

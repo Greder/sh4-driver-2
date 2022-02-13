@@ -187,11 +187,9 @@ enum
 #endif
 
 extern int highSR;
-
 #if defined(QBOXHD) || defined(QBOXHD_MINI)
 void paceSwtsByPti(void);
 #endif
-
 extern void paceSwtsByPti(void);
 
 /* ****************************************
@@ -274,12 +272,18 @@ void extern_inject_data(u32 *data, off_t size)
 			udelay(0);
 		}
 		if (count > 128)
+		{
 			words = 128 / 4;
+		}
 		else
+		{
 			words = count / 4;
+		}
 		count -= words * 4;
 		for (m = 0; m < words; m++)
+		{
 			*addr = *p++;
+		}
 	}
 }
 EXPORT_SYMBOL(extern_inject_data);
@@ -305,12 +309,18 @@ void stm_tsm_inject_data(struct stm_tsm_handle *handle, u32 *data, off_t size)
 			msleep(10);
 		}
 		if (count > 128)
+		{
 			words = 128 / 4;
+		}
 		else
+		{
 			words = count / 4;
+		}
 		count -= words * 4;
 		for (m = 0; m < words; m++)
+		{
 			*addr = *p++;
+		}
 	}
 	dprintk("%s < \n", __FUNCTION__);
 }
@@ -383,6 +393,7 @@ int stm_tsm_inject_user_data(const char __user *data, off_t size)
 	for (n = 0; n < sg_count; n++)
 	{
 		unsigned long naddr, nlen;
+
 		dma_params_addrs(in_param, taddr, 0x1a300000, tlen);
 		dma_params_link(in_param, in_param + 1);
 		curr_sg++;
@@ -422,7 +433,9 @@ int stm_tsm_inject_user_data(const char __user *data, off_t size)
 	}
 out_unmap:
 	for (n = 0; n < nr_pages; n++)
+	{
 		page_cache_release(handle->swts_pages[n]);
+	}
 	dprintk("%s < ret = %d\n", __FUNCTION__, ret);
 	return ret;
 }
@@ -454,7 +467,9 @@ void spark_stm_tsm_init(void)
 	* blows up badly */
 	int reinit = 0;
 	if (tsm_io)
+	{
 		reinit = 1;
+	}
 	if (reinit)
 	{
 		printk("[Spark] reinit stream routing...\n");
@@ -591,7 +606,9 @@ void spark_stm_tsm_init(void)
 	ctrl_outl((ret & TSM_RAM_ALLOC_START(0xff)) | TSM_PRIORITY(0x7) | TSM_STREAM_ON | TSM_ADD_TAG_BYTES | TSM_SYNC_NOT_ASYNC | TSM_ASYNC_SOP_TOKEN, tsm_io + TSM_STREAM3_CFG);
 	/* don't touch the DMA engine -- seems unnecessary on reinit */
 	if (reinit)
+	{
 		return;
+	}
 	tsm_handle.swts_channel = 3;
 	tsm_handle.tsm_swts = (unsigned long)ioremap(0x1A300000, 0x1000);
 	/* Now lets get the SWTS info and setup an FDMA channel */
@@ -642,6 +659,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(CUBEREVO_3000HD) \
  && !defined(VITAMIN_HD5000) \
  && !defined(OPT9600) \
+ && !defined(OPT9600PRIMA) \
  && !defined(FOREVER_NANOSMART) \
  && !defined(FOREVER_9898HD) \
  && !defined(FOREVER_3434HD) \
@@ -674,7 +692,9 @@ void stm_tsm_init(int use_cimax)
 	 * blows up badly
 	 */
 	if (tsm_io)
+	{
 		reinit = 1;
+	}
 	if (reinit)
 	{
 		printk("[TSM] reinit stream routing...\n");
@@ -922,6 +942,7 @@ void stm_tsm_init(int use_cimax)
  || defined(ARIVALINK200) \
  || defined(VITAMIN_HD5000) \
  || defined(OPT9600) \
+ || defined(OPT9600PRIMA) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
  || defined(FOREVER_3434HD) \
@@ -1004,8 +1025,8 @@ void stm_tsm_init(int use_cimax)
 		ctrl_outl(0x0, tsm_io + TSM_STREAM5_CFG2);
 		ctrl_outl(0x0, tsm_io + TSM_STREAM6_CFG2);
 		ctrl_outl(0x0, tsm_io + TSM_STREAM7_CFG2);
-#elif defined(ATEVIO7500)
-		/* RAM partitioning of streams */
+#elif defined(ATEVIO7500) \
+ || defined(OPT9600PRIMA)		/* RAM partitioning of streams */
 		ctrl_outl(0x0, tsm_io + TSM_STREAM0_CFG);
 		ctrl_outl(0x400, tsm_io + TSM_STREAM1_CFG);
 		ctrl_outl(0x800, tsm_io + TSM_STREAM2_CFG);
@@ -1066,7 +1087,8 @@ void stm_tsm_init(int use_cimax)
 		ctrl_outl(ret | (0x40020), tsm_io + TSM_STREAM4_CFG);
 		ret = ctrl_inl(tsm_io + TSM_STREAM5_CFG);
 		ctrl_outl(ret | (0x40020), tsm_io + TSM_STREAM5_CFG);
-#elif defined(ATEVIO7500)
+#elif defined(ATEVIO7500) \
+ || defined(OPT9600PRIMA)
 		/* add tag bytes to stream + stream priority */
 		ret = ctrl_inl(tsm_io + TSM_STREAM0_CFG);
 		ctrl_outl(ret | (0x40020), tsm_io + TSM_STREAM0_CFG);
@@ -1185,6 +1207,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(ARIVALINK200) \
  && !defined(VITAMIN_HD5000) \
  && !defined(OPT9600) \
+ && !defined(OPT9600PRIMA) \
  && !defined(FOREVER_NANOSMART) \
  && !defined(FOREVER_9898HD) \
  && !defined(FOREVER_3434HD) \
@@ -1202,7 +1225,7 @@ void stm_tsm_init(int use_cimax)
  || defined(HS7819) \
  || defined(ATEMIO520) \
  || defined(ATEMIO530) \
- ||   defined(OPT9600MINI) \
+ || defined(OPT9600MINI) \
  || defined(VITAMIN_HD5000) \
  || defined(FOREVER_NANOSMART) \
  || defined(FOREVER_9898HD) \
@@ -1256,6 +1279,7 @@ void stm_tsm_init(int use_cimax)
  && !defined(ARIVALINK200) \
  && !defined(VITAMIN_HD5000) \
  && !defined(OPT9600) \
+ && !defined(OPT9600PRIMA) \
  && !defined(FOREVER_NANOSMART) \
  && !defined(FOREVER_9898HD) \
  && !defined(FOREVER_3434HD) \
@@ -1280,9 +1304,13 @@ void stm_tsm_init(int use_cimax)
 		 */
 #ifdef FW1XX
 		if (highSR)
+		{
 			ctrl_outl(0x7000f, tsm_io + TS_1394_CFG);
+		}
 		else
+		{
 			ctrl_outl(0x70014, tsm_io + TS_1394_CFG);
+		}
 #elif defined(UFS910)
 		if (camRouting == 1) // CamRouting ufs910
 		{
@@ -1414,7 +1442,8 @@ void stm_tsm_init(int use_cimax)
 		ctrl_outl(ret | 0x1, tsm_io + TSM_PTI_SEL);
 		ret = ctrl_inl(tsm_io + TSM_1394_DEST);
 		ctrl_outl(ret | 0x38, tsm_io + TSM_1394_DEST);
-#elif defined(ATEVIO7500)
+#elif defined(ATEVIO7500) \
+ || defined(OPT9600PRIMA)
 		/* set stream 1 on */
 		ret = ctrl_inl(tsm_io + TSM_STREAM1_CFG);
 		ctrl_outl(ret | 0x80, tsm_io + TSM_STREAM1_CFG);
@@ -1535,7 +1564,9 @@ void stm_tsm_init(int use_cimax)
 			  , tsm_io + TSM_STREAM3_CFG);
 		/* don't touch the DMA engine -- seems unnecessary on reinit */
 		if (reinit)
+		{
 			return;
+		}
 		tsm_handle.swts_channel = 3;
 		tsm_handle.tsm_swts = (unsigned long)ioremap(0x1A300000, 0x1000);
 		/* Now lets get the SWTS info and setup an FDMA channel */
@@ -1652,7 +1683,8 @@ void stm_tsm_init(int use_cimax)
 		/* >>> DVBT-USB
 		 j00zek: when tuner hangs starting streaming from DVB-T USB, something wrong is with this section */
 #if defined(SAGEMCOM88) \
- || defined(SPARK7162)
+ || defined(SPARK7162) \
+ || defined(OPT9600PRIMA)
 		printk(">>Init st7105 DVBT-USB\n");
 		// STi7105
 		// 0-3 - 4xTS
@@ -1700,8 +1732,10 @@ void stm_tsm_init(int use_cimax)
 		tsm_handle.fdma_req = dma_req_config(tsm_handle.fdma_channel, tsm_handle.fdma_reqline, &fdma_req_config);
 		/*
 		// Initilise the parameters for the FDMA SWTS data injection
-		for (n=0;n<3;n++) {
-		//for (n=0;n<MAX_SWTS_PAGES;n++) {
+		for (n=0;n<3;n++)
+		{
+		//for (n=0;n<MAX_SWTS_PAGES;n++)
+		{
 		 dma_params_init(&tsm_handle.swts_params[n], MODE_PACED, STM_DMA_LIST_OPEN);
 		 dma_params_DIM_1_x_0(&tsm_handle.swts_params[n]);
 		 dma_params_req(&tsm_handle.swts_params[n],tsm_handle.fdma_req);
@@ -1857,3 +1891,4 @@ void stm_tsm_release(void)
 {
 	iounmap(tsm_io);
 }
+// vim:ts=4

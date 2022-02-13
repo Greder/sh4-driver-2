@@ -924,7 +924,7 @@ static void stmhdmi_vsync_cb(stm_vsync_context_handle_t context, stm_field_t fie
  || defined(VIP2) \
  || defined(SPARK) \
  || defined(SPARK7162) \
- || defined(ADB_BOX) 
+ || defined(ADB_BOX)
 		if (hdmi_status == STM_DISPLAY_DISCONNECTED)
 		{
 			/*

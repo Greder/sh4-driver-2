@@ -332,22 +332,22 @@ static void __exit cleanup_fan_module(void)
 struct iconToInternal spinnerIcons[] =
 {
 	/*- Name ---------- icon# ----- data0 data1 data2 data3 data4-----*/
-	{ "SPINNER_00"    , SPINNER_00, {0x00, 0x00, 0x0e, 0x00, 0x00}},  // 00
-	{ "SPINNER_01"    , SPINNER_01, {0x00, 0x00, 0x0e, 0x04, 0x02}},  // 01
-	{ "SPINNER_02"    , SPINNER_02, {0x00, 0x00, 0x0e, 0x0c, 0x0a}},  // 02
-	{ "SPINNER_03"    , SPINNER_03, {0x00, 0x00, 0x0e, 0x1c, 0x2a}},  // 03
-	{ "SPINNER_04"    , SPINNER_04, {0x00, 0x00, 0x3e, 0x1c, 0x2a}},  // 04
-	{ "SPINNER_05"    , SPINNER_05, {0x20, 0x10, 0x3e, 0x1c, 0x2a}},  // 05
-	{ "SPINNER_06"    , SPINNER_06, {0x28, 0x18, 0x3e, 0x1c, 0x2a}},  // 06
-	{ "SPINNER_07"    , SPINNER_07, {0x2a, 0x1c, 0x3e, 0x1c, 0x2a}},  // 07
-	{ "SPINNER_08"    , SPINNER_08, {0x2a, 0x1c, 0x38, 0x1c, 0x2a}},  // 08
-	{ "SPINNER_09"    , SPINNER_09, {0x2a, 0x1c, 0x38, 0x18, 0x28}},  // 09
-	{ "SPINNER_10"    , SPINNER_10, {0x2a, 0x1c, 0x38, 0x10, 0x20}},  // 10
-	{ "SPINNER_11"    , SPINNER_11, {0x2a, 0x1c, 0x38, 0x00, 0x00}},  // 11
-	{ "SPINNER_12"    , SPINNER_12, {0x2a, 0x1c, 0x08, 0x00, 0x00}},  // 12
-	{ "SPINNER_13"    , SPINNER_13, {0x0a, 0x0c, 0x08, 0x00, 0x00}},  // 13
-	{ "SPINNER_14"    , SPINNER_14, {0x02, 0x04, 0x08, 0x00, 0x00}},  // 14
-	{ "SPINNER_15"    , SPINNER_15, {0x00, 0x00, 0x08, 0x00, 0x00}},  // 15
+	{ "SPINNER_00", SPINNER_00, { 0x00, 0x00, 0x0e, 0x00, 0x00 } },  // 00
+	{ "SPINNER_01", SPINNER_01, { 0x00, 0x00, 0x0e, 0x04, 0x02 } },  // 01
+	{ "SPINNER_02", SPINNER_02, { 0x00, 0x00, 0x0e, 0x0c, 0x0a } },  // 02
+	{ "SPINNER_03", SPINNER_03, { 0x00, 0x00, 0x0e, 0x1c, 0x2a } },  // 03
+	{ "SPINNER_04", SPINNER_04, { 0x00, 0x00, 0x3e, 0x1c, 0x2a } },  // 04
+	{ "SPINNER_05", SPINNER_05, { 0x20, 0x10, 0x3e, 0x1c, 0x2a } },  // 05
+	{ "SPINNER_06", SPINNER_06, { 0x28, 0x18, 0x3e, 0x1c, 0x2a } },  // 06
+	{ "SPINNER_07", SPINNER_07, { 0x2a, 0x1c, 0x3e, 0x1c, 0x2a } },  // 07
+	{ "SPINNER_08", SPINNER_08, { 0x2a, 0x1c, 0x38, 0x1c, 0x2a } },  // 08
+	{ "SPINNER_09", SPINNER_09, { 0x2a, 0x1c, 0x38, 0x18, 0x28 } },  // 09
+	{ "SPINNER_10", SPINNER_10, { 0x2a, 0x1c, 0x38, 0x10, 0x20 } },  // 10
+	{ "SPINNER_11", SPINNER_11, { 0x2a, 0x1c, 0x38, 0x00, 0x00 } },  // 11
+	{ "SPINNER_12", SPINNER_12, { 0x2a, 0x1c, 0x08, 0x00, 0x00 } },  // 12
+	{ "SPINNER_13", SPINNER_13, { 0x0a, 0x0c, 0x08, 0x00, 0x00 } },  // 13
+	{ "SPINNER_14", SPINNER_14, { 0x02, 0x04, 0x08, 0x00, 0x00 } },  // 14
+	{ "SPINNER_15", SPINNER_15, { 0x00, 0x00, 0x08, 0x00, 0x00 } }   // 15
 };
 
 /*********************************************************************
@@ -462,6 +462,7 @@ int load_icon_patterns(int offset)
 	}
 	return res;
 }
+
 /*********************************************************************
  *
  * icon_thread: Thread to display multiple icons on VFD.
@@ -628,7 +629,7 @@ static int __init fp_module_init(void)
 	dprintk(50, "Register character device %d\n", VFD_MAJOR);
 	if (register_chrdev(VFD_MAJOR, "vfd", &vfd_fops))
 	{
-		dprintk(1, "Unable to get major %d for adb_5800_fp driver\n", VFD_MAJOR);
+		dprintk(1, "%s: Unable to get major %d for adb_5800_fp driver\n", __func__, VFD_MAJOR);
 		goto fp_module_init_fail;
 	}
 
@@ -643,7 +644,7 @@ static int __init fp_module_init(void)
 
 	if (key_int == NULL)
 	{
-		dprintk(1, "Request STPIO for key_int failed; abort\n");
+		dprintk(1, "%s: Request STPIO for key_int failed; abort\n", __func__);
 		goto fp_module_init_fail;
 	}
 	stpio_set_pin(key_int, 1);
@@ -677,7 +678,7 @@ static int __init fp_module_init(void)
 	if (error)
 	{
 		input_free_device(button_dev);
-		dprintk(1, "Request input_register_device failed; abort\n");
+		dprintk(1, "%s: Request input_register_device failed; abort\n", __func__);
 		goto fp_module_init_fail;
 	}
 
@@ -688,7 +689,7 @@ static int __init fp_module_init(void)
 		spinner_state.period = 0;
 		spinner_state.status = THREAD_STATUS_STOPPED;
 		sema_init(&spinner_state.sem, 0);
-		spinner_state.task = kthread_run(spinner_thread, (void *) ICON_SPINNER, "spinner_thread");
+		spinner_state.task = kthread_run(spinner_thread, (void *)ICON_SPINNER, "spinner_thread");
 		icon_state.state = 0;
 		icon_state.period = 0;
 		icon_state.status = THREAD_STATUS_STOPPED;

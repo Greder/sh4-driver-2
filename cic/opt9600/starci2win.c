@@ -3,8 +3,8 @@
  * StarCI2Win driver for TF7700, Fortis, Opticum HD (TS) 9600
  *
  * CI slot driver for the following receivers:
- * Fortis FS9000 (StarCI2Win)
- * Fortis HS8200 (StarCI2Win)
+ * Fortis FORTIS_HDBOX (StarCI2Win)
+ * Fortis ATEVIO7500 (StarCI2Win)
  * Fortis HS7420 (Coreriver CIcore10)
  * Fortis HS7429 (Coreriver CIcore10)
  * Fortis HS7810A (Coreriver CIcore10)
@@ -19,6 +19,7 @@
  * CubeRevo 250HD (StarCI2Win)
  * Topfield TF77X0 HDPVR (StarCI2Win)
  * Opticum HD (TS) 9600 (StarCI)
+ * Opticum HD (TS) 9600 Prima (StarCI)
  *
  * It should be noted that this driver is used for both the StarCI2Win
  * and the StarCI/CIcore10, although these devices are not entirely
@@ -89,13 +90,14 @@ static int extmoduldetect = 0;
 } while (0)
 #endif
 
-#if defined(FS9000) \
- || defined(HS8200) \
+#if defined(FORTIS_HDBOX) \
+ || defined(ATEVIO7500) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
  || defined(HS7819) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 struct stpio_pin *cic_enable_pin = NULL;
 struct stpio_pin *module_A_pin = NULL;
 struct stpio_pin *module_B_pin = NULL;
@@ -115,8 +117,8 @@ struct stpio_pin *module_B_pin = NULL;
 #endif
 
 /* I2C addressing */
-#if defined(FS9000) \
- || defined(HS8200)
+#if defined(FORTIS_HDBOX) \
+ || defined(ATEVIO7500)
 #define STARCI2_I2C_BUS 2
 #elif defined(HS7420) \
  ||   defined(HS7429) \
@@ -169,6 +171,17 @@ struct stpio_pin *module_B_pin = NULL;
 #define STARCI_MODB_PIN      4  /* hardware specific register values */
 #endif
 
+#if defined(OPT9600PRIMA)  // TODO: get values
+#define STARCI_INT_PORT      2
+#define STARCI_INT_PIN       4
+#define STARCI_RESET_PORT    5
+#define STARCI_RESET_PIN     5
+#define STARCI_MODA_PORT     4
+#define STARCI_MODA_PIN      7
+#define STARCI_MODB_PORT     5
+#define STARCI_MODB_PIN      4  /* hardware specific register values */
+#endif
+
 #if defined(TF7700)
 unsigned char default_values[33] =
 {
@@ -191,7 +204,7 @@ unsigned char default_values[33] =
 /*	0x18  0x19  0x1a  0x1b  0x1c  0x1d  0x1e  0x1f */
 	0xc0, 0x00, 0x00, 0x00, 0x00, 0x02, 0x03, 0x00
  };
-#elif defined (FS9000)
+#elif defined (FORTIS_HDBOX)
 unsigned char default_values[33] =
 {
 	0x00, /* register address for block transfer */
@@ -200,7 +213,7 @@ unsigned char default_values[33] =
 	0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
 	0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x03, 0x01
 };
-#elif defined (HS8200)
+#elif defined (ATEVIO7500)
 unsigned char default_values[33] =
 {
 	0x00,
@@ -258,13 +271,50 @@ unsigned char default_values[33] =
 	0x03,  // register 0x1e (UP_INTERFACE_WAITACK_REG)
 	0x01   // register 0x1f (STARCI_CTRL_REG)
 };
+#elif defined(OPT9600PRIMA)
+unsigned char default_values[33] =
+{
+	0x00,  // start register number
+	0x00,  // register 0x00 (MODA_CTRL_REG)
+	0x00,  // register 0x01 (MODA_MASK_HIGH_REG)
+	0x02,  // register 0x02 (MODA_MASK_LOW_REG)
+	0x00,  // register 0x03 (MODA_PATTERN_HIGH_REG)
+	0x00,  // register 0x04 (MODA_PATTERN_LOW_REG)
+	0x44,  // register 0x05 (MODA_TIMING_REG)
+	0x00,  // register 0x06 (MODA_INVERT_INPUT_MASK_REG), reserved on StarCI2Win
+	0x00,  // register 0x07 (reserved)
+	0x00,  // register 0x08 (reserved)
+	0x00,  // register 0x09 (MODB_CTRL_REG)
+	0x00,  // register 0x0a (MODB_MASK_HIGH_REG)
+	0x02,  // register 0x0b (MODB_MASK_LOW_REG)
+	0x00,  // register 0x0c (MODB_PATTERN_HIGH_REG)
+	0x02,  // register 0x0d (MODB_PATTERN_LOW_REG)
+	0x44,  // register 0x0e (MODB_TIMING_REG)
+	0x00,  // register 0x0f (MODB_INVERT_INPUT_MASK_REG), reserved on StarCI2Win
+	0x00,  // register 0x10 (SINGLE_MODE_CTRL_REG), reserved on StarCI & CIcore1.0
+	0x80,  // register 0x11 (TWIN_MODE_CTRL_REG), reserved on StarCI & CIcore1.0
+	0x00,  // register 0x12 (EXT_ACCESS_MASK_HIGH_REG)
+	0x00,  // register 0x13 (EXT_ACCESS_MASK_LOW_REG)
+	0x00,  // register 0x14 (EXT_ACCESS_PATTERN_HIGH_REG)
+	0x00,  // register 0x15 (EXT_ACCESS_PATTERN_LOW_REG)
+	0x00,  // register 0x16 (reserved)
+	0x01,  // register 0x17 (DEST_SEL_REG)
+	0x00,  // register 0x18 (POWER_CTRL_REG)
+	0x00,  // register 0x19 (reserved)
+	0x00,  // register 0x1a (INT_STATUS_REG)
+	0x03,  // register 0x1b (INT_MASK_REG)
+	0x06,  // register 0x1c (INT_CONFIG_REG)
+	0x00,  // register 0x1d (UP_INTERFACE_CONFIG_REG)
+	0x03,  // register 0x1e (UP_INTERFACE_WAITACK_REG)
+	0x01   // register 0x1f (STARCI_CTRL_REG)
+};
 #endif
 
 /* EMI configuration */
 unsigned long reg_config = 0;
 unsigned long reg_buffer = 0;
 
-#if defined(HS8200) \
+#if defined(ATEVIO7500) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
@@ -272,13 +322,14 @@ unsigned long reg_buffer = 0;
 unsigned long reg_sysconfig = 0;
 #endif
 
-#if defined(FS9000) \
- || defined(HS8200) \
+#if defined(FORTIS_HDBOX) \
+ || defined(ATEVIO7500) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
  || defined(HS7819) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 static unsigned char *slot_membase[2];
 #else
 /* for whatever reason the access has to be done though a short pointer */
@@ -314,7 +365,7 @@ static unsigned short *slot_membase[2];
 #define EMI_DATA2_BEE1_WRITE(a)   (a << 4)
 #define EMI_DATA2_BEE2_WRITE(a)   (a << 0)
 
-#if defined(HS8200) \
+#if defined(ATEVIO7500) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
@@ -517,7 +568,7 @@ int starci_detect(struct dvb_ca_state* state)
 */
 void getCiSource(int slot, int* source)
 {
-#if !defined(HS8200) \
+#if !defined(ATEVIO7500) \
  && !defined(HS7429) \
  && !defined(HS7810A) \
  && !defined(HS7119) \
@@ -611,9 +662,10 @@ int setCiSource(int slot, int source)
 	{
 		/* send stream A through module B and stream B through module A */
 #if defined(TF7700) \
- || defined(HS8200) \
- || defined(FS9000) \
- || defined(OPT9600)
+ || defined(ATEVIO7500) \
+ || defined(FORTIS_HDBOX) \
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		val |= 0x20;
 #else
 		val &= ~0x20;
@@ -624,9 +676,10 @@ int setCiSource(int slot, int source)
 		/* enforce direct mapping */
 		/* send stream A through module A and stream B through module B */
 #if defined(TF7700) \
- || defined(HS8200) \
- || defined(FS9000) \
- || defined(OPT9600)
+ || defined(ATEVIO7500) \
+ || defined(FORTIS_HDBOX) \
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		val &= ~0x20;
 #else
 		val |= 0x20;
@@ -711,9 +764,10 @@ static int starci_poll_slot_status(struct dvb_ca_en50221 *ca, int slot, int open
 		}
 		else if (state->module_status[slot] & SLOTSTATUS_NONE)
 		{
-#if defined(HS8200) \
- || defined(FS9000) \
- || defined(OPT9600)
+#if defined(ATEVIO7500) \
+ || defined(FORTIS_HDBOX) \
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 			dprintk(50, "%s: SLOTSTATUS_NONE -> set PIO pin to 1\n", __func__);
 			if (slot == 0)
 			{
@@ -733,9 +787,10 @@ static int starci_poll_slot_status(struct dvb_ca_en50221 *ca, int slot, int open
 	{
 		  if (!(state->module_status[slot] & SLOTSTATUS_NONE))
 		  {
-#if defined(HS8200) \
- || defined(FS9000) \
- || defined(OPT9600)
+#if defined(ATEVIO7500) \
+ || defined(FORTIS_HDBOX) \
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 			if (slot == 0)
 			{
 				stpio_set_pin(module_A_pin, 0);
@@ -801,13 +856,14 @@ static int starci_slot_reset(struct dvb_ca_en50221 *ca, int slot)
 		starci_writereg(state, reg[slot], result | 0x80);
 
 		starci_writereg(state, DEST_SEL_REG, 0x0);
-#if defined(HS8200) \
- || defined(FS9000) \
+#if defined(ATEVIO7500) \
+ || defined(FORTIS_HDBOX) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
  || defined(HS7819) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 		msleep(200);
 #else
 		msleep(60);
@@ -990,14 +1046,15 @@ static int starci_slot_ts_enable(struct dvb_ca_en50221 *ca, int slot)
 	}
 	result = starci_readreg(state, reg[slot]);  // read CTRL register
 
-#if !defined(HS8200) \
- && !defined(FS9000) \
+#if !defined(ATEVIO7500) \
+ && !defined(FORTIS_HDBOX) \
  && !defined(HS7420) \
  && !defined(HS7429) \
  && !defined(HS7810A) \
  && !defined(HS7819) \
  && !defined(CUBEBOX) \
- && !defined(OPT9600)
+ && !defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	starci_writereg(state, reg[slot], 0x23);  // write CTRL register: MPEG stream enabled, module inserted, auto mode
 #else
 	starci_writereg(state, reg[slot], 0x21);  // write CTRL register: MPEG stream enabled, module inserted, no auto mode
@@ -1063,7 +1120,7 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 
 	reg_config = (unsigned long)ioremap(EMIConfigBaseAddress, 0x7ff);
 
-#if !defined(HS8200) \
+#if !defined(ATEVIO7500) \
  && !defined(HS7420) \
  && !defined(HS7429) \
  && !defined(HS7810A) \
@@ -1071,7 +1128,7 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 	reg_buffer = (unsigned long)ioremap(EMIBufferBaseAddress, 0x40);
 #endif
 
-#if defined(HS8200) \
+#if defined(ATEVIO7500) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
@@ -1081,7 +1138,7 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 
 	dprintk(20, "ioremap 0x%.8x -> 0x%.8lx\n", EMIConfigBaseAddress, reg_config);
 
-#if !defined(HS8200) \
+#if !defined(ATEVIO7500) \
  && !defined(HS7420) \
  && !defined(HS7429) \
  && !defined(HS7810A) \
@@ -1089,7 +1146,7 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 	dprintk(20, "ioremap 0x%.8x -> 0x%.8lx\n", EMIBufferBaseAddress, reg_buffer);
 #endif
 
-#if defined(FS9000)
+#if defined(FORTIS_HDBOX)
 	cic_enable_pin = stpio_request_pin (3, 6, "StarCI", STPIO_OUT);
 	stpio_set_pin (cic_enable_pin, 1);
 	msleep(250);
@@ -1101,7 +1158,7 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 
 	stpio_set_pin (module_A_pin, 0);
 	stpio_set_pin (module_B_pin, 0);
-#elif defined(HS8200)
+#elif defined(ATEVIO7500)
 	/* the magic potion - some clkb settings */
 	ctrl_outl(0x0000c0de, 0xfe000010);
 	ctrl_outl(0x00000008, 0xfe0000b4);
@@ -1135,7 +1192,8 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 	msleep(250);
 	stpio_set_pin (cic_enable_pin, 0);
 	msleep(250);
-#elif defined(OPT9600)
+#elif defined(OPT9600) \
+ ||   defined(OPT9600PRIMA)
 	cic_enable_pin = stpio_request_pin (STARCI_RESET_PORT, STARCI_RESET_PIN, "StarCI_RST", STPIO_OUT);
 	if (cic_enable_pin == NULL)
 	{
@@ -1180,32 +1238,34 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 	/* power on (only possible with LOCK = 1)
 		 other bits cannot be set when LOCK is = 1 */
 
-#if defined(HS8200) \
- || defined(FS9000) \
+#if defined(ATEVIO7500) \
+ || defined(FORTIS_HDBOX) \
  || defined(HS7420) \
  || defined(HS7429) \
  || defined(HS7810A) \
  || defined(HS7819) \
  || defined(CUBEBOX) \
- || defined(OPT9600)
+ || defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	starci_writereg(state, POWER_CTRL_REG, 0x21);  // ?? data sheet says bit 5 is don't care
 #else
 	starci_writereg(state, POWER_CTRL_REG, 0x01);
 #endif
 
-#if !defined(HS8200) \
- && !defined(FS9000) \
+#if !defined(ATEVIO7500) \
+ && !defined(FORTIS_HDBOX) \
  && !defined(HS7420) \
  && !defined(HS7429) \
  && !defined(HS7810A) \
  && !defined(HS7819) \
- && !defined(OPT9600)
+ && !defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	ctrl_outl(0x0, reg_config + EMI_LCK);
 	ctrl_outl(0x0, reg_config + EMI_GEN_CFG);
 #endif
 
-#if defined(FS9000)
-/* fixme: this is mysterious on FS9000! there is no lock setting EMI_LCK and there is
+#if defined(FORTIS_HDBOX)
+/* fixme: this is mysterious on FORTIS_HDBOX! there is no lock setting EMI_LCK and there is
  * no EMI_CLK_EN, so the settings cant get into effect?
  */
 	ctrl_outl(0x008486d9,reg_config + EMIBank1 + EMI_CFG_DATA0);
@@ -1213,7 +1273,7 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 	ctrl_outl(0x9d220000,reg_config + EMIBank1 + EMI_CFG_DATA2);
 	ctrl_outl(0x00000008,reg_config + EMIBank1 + EMI_CFG_DATA3);
 
-#elif defined(HS8200) \
+#elif defined(ATEVIO7500) \
  ||   defined(HS7420) \
  ||   defined(HS7429) \
  ||   defined(HS7810A) \
@@ -1260,20 +1320,21 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 
 #endif
 
-#if !defined(HS8200) \
- && !defined(FS9000) \
+#if !defined(ATEVIO7500) \
+ && !defined(FORTIS_HDBOX) \
  && !defined(HS7110) \
  && !defined(HS7119) \
  && !defined(HS7810A) \
  && !defined(HS7819) \
- && !defined(OPT9600)
+ && !defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	ctrl_outl(0x1, reg_config + EMI_CLK_EN);
 #endif
 
-#if defined(FS9000)
+#if defined(FORTIS_HDBOX)
 //is [0] = top slot?
 	slot_membase[0] = ioremap(0xa2000000, 0x1000);
-#elif defined(HS8200)
+#elif defined(ATEVIO7500)
 	slot_membase[0] = ioremap(0x06800000, 0x1000);
 #elif defined(HS7420) \
  ||   defined(HS7429) \
@@ -1283,7 +1344,8 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 #elif defined(CUBEBOX)
 	slot_membase[0] = ioremap(0x3000000, 0x1000);
 	printk("membase-0 0x%08x\n", slot_membase[0]);
-#elif defined(OPT9600)
+#elif defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 //is [0] = top slot?
 	slot_membase[0] = ioremap(0x3000000, 0x1000);
 #else
@@ -1296,10 +1358,10 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 	}
 #if defined(TF7700)
 	slot_membase[1] = ioremap(0xa3400000, 0x1000);
-#elif defined(FS9000)
+#elif defined(FORTIS_HDBOX)
 //is [1] = bottom slot?
 	slot_membase[1] = ioremap(0xa2010000, 0x1000);
-#elif defined(HS8200)
+#elif defined(ATEVIO7500)
 	slot_membase[1] = ioremap(0x06810000, 0x1000);
 #elif defined(HS7420) \
  ||   defined(HS7429) \
@@ -1309,7 +1371,8 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 #elif defined(CUBEBOX)
 	slot_membase[1] = ioremap( 0x3010000, 0x1000 );
 	printk("membase-1 0x%08x\n", slot_membase[1]);
-#elif defined(OP9600)
+#elif defined(OP9600) \
+ || defined(OPT9600PRIMA)
 //is [1] = bottom slot?
 	slot_membase[1] = ioremap(0x3010000, 0x1000);
 #else
@@ -1322,13 +1385,14 @@ int init_ci_controller(struct dvb_adapter* dvb_adap)
 		goto error;
 	}
 
-#if !defined(HS8200) \
- && !defined(FS9000) \
+#if !defined(ATEVIO7500) \
+ && !defined(FORTIS_HDBOX) \
  && !defined(HS7420) \
  && !defined(HS7429) \
  && !defined(HS7810A) \
  && !defined(HS7819) \
- && !defined(OPT9600)
+ && !defined(OPT9600) \
+ || defined(OPT9600PRIMA)
 	slot_membase[1] = ioremap(0xa2010000, 0x1000);
 	ctrl_outl(0x1F, reg_config + EMI_LCK);
 #endif

@@ -9,7 +9,7 @@
  *            (C) 2020 Audioniek: adapted to STM LNBP12
  *
  *  Driver for STM LNBP12 LNB PIO driven power controller as
- *  used in the Opticum HD (TS) 9600 series
+ *  used in the Opticum HD (TS) 9600 and HD (TS) 9600 PRIMA series
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -66,17 +66,17 @@ struct lnb_state
  * The LNBP12 LNB power controller as used in the Opticum HD 9600 and
  * HD 9600 PRIMA series is connected as follows:
  *
- * Vsel (pin 4): sets the LNB voltage to 13/14V or 18/19V -> PIO2.2
- * EN   (pin 5): switches LNB voltage on (H) or off (L)   -> PIO5.2
+ * Vsel (pin 4): sets the LNB voltage to 13/14V or 18/19V -> PIO2.2 on opt9600
+ * EN   (pin 5): switches LNB voltage on (H) or off (L)   -> PIO5.2 on opt9600
  *               when off, LNB voltage is that on the
  *               MI input (pin 10), that is grounded in
- *               the Opticum HD 9600 series; EN acts
+ *               the Opticum HD 9600 (PRIMA) series; EN acts
  *               therefore as LNB voltage on/off input
- * ENT  (pin 7): switch 22kHz tone on (H) or off (L)      -> PIO2.3
+ * ENT  (pin 7): switch 22kHz tone on (H) or off (L)      -> PIO2.3 on opt9600
  *               The driver initializes this pin to L
  *               (tone off) and does not bother with
  *               this pin any further
- * LLC  (pin 9): Elevates LNB voltage by 1V when high     -> PIO2.6
+ * LLC  (pin 9): Elevates LNB voltage by 1V when high     -> PIO2.6 on opt9600
  *               The driver initializes this pin to L
  *               (+1V off) and does not bother with
  *               this pin any further
@@ -85,10 +85,17 @@ struct lnb_state
  * The LNBP12 does not provide any pins to monitor its status,
  * e.g. LNB overcurrent.
  */
+#if defined(OPT9600)
 #define LNBP12_ENT_PORT 2
 #define LNBP12_ENT_PIN  3
 #define LNBP12_LLC_PORT 2
 #define LNBP12_LLC_PIN  6
+#elif defined(OPT9600PRIMA)  // TODO: find PIO pins
+#define LNBP12_ENT_PORT 2
+#define LNBP12_ENT_PIN  3
+#define LNBP12_LLC_PORT 2
+#define LNBP12_LLC_PIN  6
+#endif
 
 u16 lnbp12_set_high_lnb_voltage(void *_state, struct dvb_frontend *fe, long arg)
 {
@@ -160,7 +167,6 @@ void *lnbp12_attach(u32 *lnb, struct avl2108_equipment_s *equipment)
 	equipment->set_high_lnb_voltage = lnbp12_set_high_lnb_voltage;
 
 //	Allocate PIO pins
-#if defined(OPT9600)
 //	Switch 22kHz tone of LNBP12 off
 	dprintk(70, "Initializing PIO %1d.%d (LNBP12_ENT)\n", LNBP12_ENT_PORT, LNBP12_ENT_PIN);
 	state->lnb_tone_enable_pin = stpio_request_pin(LNBP12_ENT_PORT, LNBP12_ENT_PIN, "LNBP12_ENT", STPIO_OUT);
@@ -170,7 +176,6 @@ void *lnbp12_attach(u32 *lnb, struct avl2108_equipment_s *equipment)
 	dprintk(70, "Initializing PIO %1d.%d (LNBP12_LLC)\n", LNBP12_LLC_PORT, LNBP12_LLC_PIN);
 	state->lnb_llc_pin = stpio_request_pin(LNBP12_LLC_PORT, LNBP12_LLC_PIN, "LNBP12_LLC", STPIO_OUT);
 	stpio_set_pin(state->lnb_llc_pin, 0);
-#endif
 
 	dprintk(70, "Initializing PIO %1d.%d (LNBP12_EN)\n", lnb[0], lnb[1]);
 	state->lnb_enable_pin = stpio_request_pin(lnb[0], lnb[1], "LNBP12_EN", STPIO_OUT);

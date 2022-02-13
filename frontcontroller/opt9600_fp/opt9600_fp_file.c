@@ -32,8 +32,8 @@
  * Date     By              Description
  * --------------------------------------------------------------------------
  * 20201222 Audioniek       Initial version, based on cn_micom.
- * 20201228 Audioniek       Add Opticum HD 9600 specifics.
- * 20201230 Audioniek       Fix Opticum HD 9600 startup sequence.
+ * 20201228 Audioniek       Add Opticum HD (TS) 9600 specifics.
+ * 20201230 Audioniek       Fix Opticum HD (TS) 9600 startup sequence.
  * 20210110 Audioniek       VFDTEST added, conditionally compiled.
  * 20210929 Audioniek       procfs added.
  * 20210929 Audioniek       Writing a text to /dev/vfd scrolls once if
@@ -48,7 +48,7 @@
  * 20210930 Audioniek       Add module parameters waitTime and gmt_offset.
  * 20210930 Audioniek       Deep standby and reboot at given time fixed.
  * 20210930 Audioniek       VFDDISPLAYWRITEONOFF made functional.
- * 20211002 Audioniek       UTF-8 support on HD 9600 models added.
+ * 20211002 Audioniek       UTF-8 support on HD (TS) 9600 models added.
  * 20211003 Audioniek       Deep standby/reboot at given time further
  *                          debugged and take prviously specified FP clock
  *                          and wake uptimes into account; also improved
@@ -78,7 +78,7 @@
 #include "opt9600_fp.h"
 #include "opt9600_fp_asc.h"
 #include "opt9600_fp_utf.h"
-#include "opt9600_fp_char.h"
+//#include "opt9600_fp_char.h"
 
 extern void ack_sem_up(void);
 extern int  ack_sem_down(void);
@@ -114,160 +114,36 @@ unsigned char mcom_version[4];
  *
  * Character tables
  *
- * Unfortunately all frontprocessors of the various
- * modelsdo not allow direct control of the
- * characters displayed and effectively only
- * support for digits and uppercase letters.
+ ****************************************************************************
  *
- */
-
-/**************************************************
+ * Character mapping of the Opticum HD (TS) 9600 models
  *
- * Character table for LED models
+ * Unfortunately the frontprocessor of these models does not allow direct
+ * control of the characters displayed and effectively only supports digits
+ * and uppercase letters.
+ * The front processor of these models cannot control individual display
+ * segments, but has a fixed data to character assignment as follows
+ * (thnx to corev for this info,
+ * see https://www.aaf-digital.info/forum/node/76786):
  *
- * Order is ASCII.
+ * 0x00 = ' '  | 0x10 = 'E'  | 0x20 = 'U'  | 0x30 =      |
+ * 0x01 =      | 0x11 = 'F'  | 0x21 = 'V'  | 0x31 =      |
+ * 0x02 = '0'  | 0x12 = 'G'  | 0x22 = 'W'  | 0x32 =      |
+ * 0x03 = '1'  | 0x13 = 'H'  | 0x23 = 'X'  | 0x33 =      |
+ * 0x04 = '2'  | 0x14 = 'I'  | 0x24 = 'Y'  | 0x34 =      |
+ * 0x05 = '3'  | 0x15 = 'J'  | 0x25 = 'Z'  | 0x35 =      |
+ * 0x06 = '4'  | 0x16 = 'K'  | 0x26 =      | 0x36 =      |
+ * 0x07 = '5'  | 0x17 = 'L'  | 0x27 =      | 0x37 =      |
+ * 0x08 = '6'  | 0x18 = 'M'  | 0x28 =      | 0x38 =      |
+ * 0x09 = '7'  | 0x19 = 'N'  | 0x29 =      | 0x39 =      |
+ * 0x0a = '8'  | 0x1a = 'O'  | 0x2a =      | 0x3a =      |
+ * 0x0b = '9'  | 0x1b = 'P'  | 0x2b =      | 0x3b =      |
+ * 0x0c = 'A'  | 0x1c = 'Q'  | 0x2c =      | 0x3c =      |
+ * 0x0d = 'B'  | 0x1d = 'R'  | 0x2d =      | 0x3d =      |
+ * 0x0e = 'C'  | 0x1e = 'S'  | 0x2e =      | 0x3e =      |
+ * 0x0f = 'D'  | 0x1f = 'T'  | 0x2f =      | 0x3f =      |
  *
- * NOTE: lower case letters are displayed in the
- * same way as uppercase
- */
-static char *mcom_ascii_char_7seg[] =
-{
-	_7SEG_NULL,   // 0x00, unprintable control character
-	_7SEG_NULL,   // 0x01, unprintable control character
-	_7SEG_NULL,   // 0x02, unprintable control character
-	_7SEG_NULL,   // 0x03, unprintable control character
-	_7SEG_NULL,   // 0x04, unprintable control character
-	_7SEG_NULL,   // 0x05, unprintable control character
-	_7SEG_NULL,   // 0x06, unprintable control character
-	_7SEG_NULL,   // 0x07, unprintable control character
-	_7SEG_NULL,   // 0x08, unprintable control character
-	_7SEG_NULL,   // 0x09, unprintable control character
-	_7SEG_NULL,   // 0x0a, unprintable control character
-	_7SEG_NULL,   // 0x0b, unprintable control character
-	_7SEG_NULL,   // 0x0c, unprintable control character
-	_7SEG_NULL,   // 0x0d, unprintable control character
-	_7SEG_NULL,   // 0x0e, unprintable control character
-	_7SEG_NULL,   // 0x0f, unprintable control character
-
-	_7SEG_NULL,   // 0x10, unprintable control character
-	_7SEG_NULL,   // 0x11, unprintable control character
-	_7SEG_NULL,   // 0x12, unprintable control character
-	_7SEG_NULL,   // 0x13, unprintable control character
-	_7SEG_NULL,   // 0x14, unprintable control character
-	_7SEG_NULL,   // 0x15, unprintable control character
-	_7SEG_NULL,   // 0x16, unprintable control character
-	_7SEG_NULL,   // 0x17, unprintable control character
-	_7SEG_NULL,   // 0x18, unprintable control character
-	_7SEG_NULL,   // 0x19, unprintable control character
-	_7SEG_NULL,   // 0x1a, unprintable control character
-	_7SEG_NULL,   // 0x1b, unprintable control character
-	_7SEG_NULL,   // 0x1c, unprintable control character
-	_7SEG_NULL,   // 0x1d, unprintable control character
-	_7SEG_NULL,   // 0x1e, unprintable control character
-	_7SEG_NULL,   // 0x1f, unprintable control character
-
-	_7SEG_NULL,   // 0x20, <space>
-	_7SEG_NULL,   // 0x21, !
-	_7SEG_NULL,   // 0x22, "
-	_7SEG_NULL,   // 0x23, #
-	_7SEG_NULL,   // 0x24, $
-	_7SEG_NULL,   // 0x25, %
-	_7SEG_NULL,   // 0x26, &
-	_7SEG_NULL,   // 0x27, '
-	_7SEG_NULL,   // 0x28, (
-	_7SEG_NULL,   // 0x29, )
-	_7SEG_NULL,   // 0x2a, *
-	_7SEG_NULL,   // 0x2b, +
-	_7SEG_NULL,   // 0x2c, ,
-	_7SEG_NULL,   // 0x2d, -
-	_7SEG_NULL,   // 0x2e, .
-	_7SEG_NULL,   // 0x2f, /
-
-	_7SEG_NUM_0,  // 0x30, 0,
-	_7SEG_NUM_1,  // 0x31, 1,
-	_7SEG_NUM_2,  // 0x32, 2,
-	_7SEG_NUM_3,  // 0x33, 3,
-	_7SEG_NUM_4,  // 0x34, 4,
-	_7SEG_NUM_5,  // 0x35, 5,
-	_7SEG_NUM_6,  // 0x36, 6,
-	_7SEG_NUM_7,  // 0x37, 7,
-	_7SEG_NUM_8,  // 0x38, 8,
-	_7SEG_NUM_9,  // 0x39, 9,
-	_7SEG_NULL,   // 0x3a, :
-	_7SEG_NULL,   // 0x3b, ;
-	_7SEG_NULL,   // 0x3c, <
-	_7SEG_NULL,   // 0x3d, =
-	_7SEG_NULL,   // 0x3e, >
-	_7SEG_NULL,   // 0x3f, ?
-
-	_7SEG_NULL,   // 0x40, @
-	_7SEG_CH_A,   // 0x41, A
-	_7SEG_CH_B,   // 0x42, B
-	_7SEG_CH_C,   // 0x43, C
-	_7SEG_CH_D,   // 0x44, D
-	_7SEG_CH_E,   // 0x45, E
-	_7SEG_CH_F,   // 0x46, F
-	_7SEG_CH_G,   // 0x47, G
-	_7SEG_CH_H,   // 0x48, H
-	_7SEG_CH_I,   // 0x49, I
-	_7SEG_CH_J,   // 0x4a, J
-	_7SEG_CH_K,   // 0x4b, K
-	_7SEG_CH_L,   // 0x4c, L
-	_7SEG_CH_M,   // 0x4d, M
-	_7SEG_CH_N,   // 0x4e, N
-	_7SEG_CH_O,   // 0x4f, O
-
-	_7SEG_CH_P,   // 0x50, P
-	_7SEG_CH_Q,   // 0x51, Q
-	_7SEG_CH_R,   // 0x52, R
-	_7SEG_CH_S,   // 0x53, S
-	_7SEG_CH_T,   // 0x54, T
-	_7SEG_CH_U,   // 0x55, U
-	_7SEG_CH_V,   // 0x56, V
-	_7SEG_CH_W,   // 0x57, W
-	_7SEG_CH_X,   // 0x58, X
-	_7SEG_CH_Y,   // 0x59, Y
-	_7SEG_CH_Z,   // 0x5a, Z
-	_7SEG_NULL,   // 0x5b  [
-	_7SEG_NULL,   // 0x5c, |
-	_7SEG_NULL,   // 0x5d, ]
-	_7SEG_NULL,   // 0x5e, ^
-	_7SEG_NULL,   // 0x5f, _
-
-	_7SEG_NULL,   // 0x60, `
-	_7SEG_CH_A,   // 0x61, a
-	_7SEG_CH_B,   // 0x62, b
-	_7SEG_CH_C,   // 0x63, c
-	_7SEG_CH_D,   // 0x64, d
-	_7SEG_CH_E,   // 0x65, e
-	_7SEG_CH_F,   // 0x66, f
-	_7SEG_CH_G,   // 0x67, g
-	_7SEG_CH_H,   // 0x68, h
-	_7SEG_CH_I,   // 0x69, i
-	_7SEG_CH_J,   // 0x6a, j
-	_7SEG_CH_K,   // 0x6b, k
-	_7SEG_CH_L,   // 0x6c, l
-	_7SEG_CH_M,   // 0x6d, m
-	_7SEG_CH_N,   // 0x6e, n
-	_7SEG_CH_O,   // 0x6f, o
-
-	_7SEG_CH_P,   // 0x70, p
-	_7SEG_CH_Q,   // 0x71, q
-	_7SEG_CH_R,   // 0x72, r
-	_7SEG_CH_S,   // 0x73, s
-	_7SEG_CH_T,   // 0x74, t
-	_7SEG_CH_U,   // 0x75, u
-	_7SEG_CH_V,   // 0x76, v
-	_7SEG_CH_W,   // 0x77, w
-	_7SEG_CH_X,   // 0x78, x
-	_7SEG_CH_Y,   // 0x79, y
-	_7SEG_CH_Z,   // 0x7a, z
-	_7SEG_NULL,   // 0x7b, {
-	_7SEG_NULL,   // 0x7c, backslash
-	_7SEG_NULL,   // 0x7d, }
-	_7SEG_NULL,   // 0x7e, ~
-	_7SEG_NULL    // 0x7f, <DEL>--> all segments on
-};
+ ****************************************************************************/
 
 /**************************************************
  *
@@ -417,153 +293,6 @@ static unsigned char mcom_ascii_char_14seg[] =
 	0x00,  // 0x7f, <DEL>
 };
 
-/**************************************************
- *
- * Character table for late VFD models
- *
- * Order is ASCII.
- *
- * NOTE: lower case letters are translated
- * to uppercase
- */
-static char *mcom_ascii_char_14seg_new[] =
-{
-	_14SEG_NULL,   // 0x00, unprintable control character
-	_14SEG_NULL,   // 0x01, unprintable control character
-	_14SEG_NULL,   // 0x02, unprintable control character
-	_14SEG_NULL,   // 0x03, unprintable control character
-	_14SEG_NULL,   // 0x04, unprintable control character
-	_14SEG_NULL,   // 0x05, unprintable control character
-	_14SEG_NULL,   // 0x06, unprintable control character
-	_14SEG_NULL,   // 0x07, unprintable control character
-	_14SEG_NULL,   // 0x08, unprintable control character
-	_14SEG_NULL,   // 0x09, unprintable control character
-	_14SEG_NULL,   // 0x0a, unprintable control character
-	_14SEG_NULL,   // 0x0b, unprintable control character
-	_14SEG_NULL,   // 0x0c, unprintable control character
-	_14SEG_NULL,   // 0x0d, unprintable control character
-	_14SEG_NULL,   // 0x0e, unprintable control character
-	_14SEG_NULL,   // 0x0f, unprintable control character
-
-	_14SEG_NULL,   // 0x10, unprintable control character
-	_14SEG_NULL,   // 0x11, unprintable control character
-	_14SEG_NULL,   // 0x12, unprintable control character
-	_14SEG_NULL,   // 0x13, unprintable control character
-	_14SEG_NULL,   // 0x14, unprintable control character
-	_14SEG_NULL,   // 0x15, unprintable control character
-	_14SEG_NULL,   // 0x16, unprintable control character
-	_14SEG_NULL,   // 0x17, unprintable control character
-	_14SEG_NULL,   // 0x18, unprintable control character
-	_14SEG_NULL,   // 0x19, unprintable control character
-	_14SEG_NULL,   // 0x1a, unprintable control character
-	_14SEG_NULL,   // 0x1b, unprintable control character
-	_14SEG_NULL,   // 0x1c, unprintable control character
-	_14SEG_NULL,   // 0x1d, unprintable control character
-	_14SEG_NULL,   // 0x1e, unprintable control character
-	_14SEG_NULL,   // 0x1f, unprintable control character
-
-	_14SEG_NULL,   // 0x20, <space>
-	_14SEG_NULL,   // 0x21, !
-	_14SEG_NULL,   // 0x22, "
-	_14SEG_NULL,   // 0x23, #
-	_14SEG_NULL,   // 0x24, $
-	_14SEG_NULL,   // 0x25, %
-	_14SEG_NULL,   // 0x26, &
-	_14SEG_NULL,   // 0x27, '
-	_14SEG_NULL,   // 0x28, (
-	_14SEG_NULL,   // 0x29, )
-	_14SEG_NULL,   // 0x2a, *
-	_14SEG_NULL,   // 0x2b, +
-	_14SEG_NULL,   // 0x2c, ,
-	_14SEG_NULL,   // 0x2d, -
-	_14SEG_NULL,   // 0x2e, .
-	_14SEG_NULL,   // 0x2f, /
-
-	_14SEG_NUM_0,  // 0x30, 0
-	_14SEG_NUM_1,  // 0x31, 1
-	_14SEG_NUM_2,  // 0x32, 2
-	_14SEG_NUM_3,  // 0x33, 3
-	_14SEG_NUM_4,  // 0x34, 4
-	_14SEG_NUM_5,  // 0x35, 5
-	_14SEG_NUM_6,  // 0x36, 6
-	_14SEG_NUM_7,  // 0x37, 7
-	_14SEG_NUM_8,  // 0x38, 8
-	_14SEG_NUM_9,  // 0x39, 9
-	_14SEG_NULL,   // 0x3a, :
-	_14SEG_NULL,   // 0x3b, ;
-	_14SEG_NULL,   // 0x3c, <
-	_14SEG_NULL,   // 0x3d, =
-	_14SEG_NULL,   // 0x3e, >
-	_14SEG_NULL,   // 0x3f, ?
-
-	_14SEG_NULL,   // 0x40, @
-	_14SEG_CH_A,   // 0x41, A
-	_14SEG_CH_B,   // 0x42, B
-	_14SEG_CH_C,   // 0x43, C
-	_14SEG_CH_D,   // 0x44, D
-	_14SEG_CH_E,   // 0x45, E
-	_14SEG_CH_F,   // 0x46, F
-	_14SEG_CH_G,   // 0x47, G
-	_14SEG_CH_H,   // 0x48, H
-	_14SEG_CH_I,   // 0x49, I
-	_14SEG_CH_J,   // 0x4a, J
-	_14SEG_CH_K,   // 0x4b, K
-	_14SEG_CH_L,   // 0x4c, L
-	_14SEG_CH_M,   // 0x4d, M
-	_14SEG_CH_N,   // 0x4e, N
-	_14SEG_CH_O,   // 0x4f, O
-
-	_14SEG_CH_P,   // 0x50, P
-	_14SEG_CH_Q,   // 0x51, Q
-	_14SEG_CH_R,   // 0x52, R
-	_14SEG_CH_S,   // 0x53, S
-	_14SEG_CH_T,   // 0x54, T
-	_14SEG_CH_U,   // 0x55, U
-	_14SEG_CH_V,   // 0x56, V
-	_14SEG_CH_W,   // 0x57, W
-	_14SEG_CH_X,   // 0x58, X
-	_14SEG_CH_Y,   // 0x59, Y
-	_14SEG_CH_Z,   // 0x5a, Z
-	_14SEG_NULL,   // 0x5b  [
-	_14SEG_NULL,   // 0x5c, |
-	_14SEG_NULL,   // 0x5d, ]
-	_14SEG_NULL,   // 0x5e, ^
-	_14SEG_NULL,   // 0x5f, _
-
-	_14SEG_NULL,   // 0x60, `
-	_14SEG_CH_A,   // 0x61, a
-	_14SEG_CH_B,   // 0x62, b
-	_14SEG_CH_C,   // 0x63, c
-	_14SEG_CH_D,   // 0x64, d
-	_14SEG_CH_E,   // 0x65, e
-	_14SEG_CH_F,   // 0x66, f
-	_14SEG_CH_G,   // 0x67, g
-	_14SEG_CH_H,   // 0x68, h
-	_14SEG_CH_I,   // 0x69, i
-	_14SEG_CH_J,   // 0x6a, j
-	_14SEG_CH_K,   // 0x6b, k
-	_14SEG_CH_L,   // 0x6c, l
-	_14SEG_CH_M,   // 0x6d, m
-	_14SEG_CH_N,   // 0x6e, n
-	_14SEG_CH_O,   // 0x6f, o
-
-	_14SEG_CH_P,   // 0x70, p
-	_14SEG_CH_Q,   // 0x71, q
-	_14SEG_CH_R,   // 0x72, r
-	_14SEG_CH_S,   // 0x73, s
-	_14SEG_CH_T,   // 0x74, t
-	_14SEG_CH_U,   // 0x75, u
-	_14SEG_CH_V,   // 0x76, v
-	_14SEG_CH_W,   // 0x77, w
-	_14SEG_CH_X,   // 0x78, x
-	_14SEG_CH_Y,   // 0x79, y
-	_14SEG_CH_Z,   // 0x7a, z
-	_14SEG_NULL,   // 0x7b, {
-	_14SEG_NULL,   // 0x7c, backslash
-	_14SEG_NULL,   // 0x7d, }
-	_14SEG_NULL,   // 0x7e, ~
-	_14SEG_NULL    // 0x7f, <DEL>--> all segments on
-};
 
 /****************************************************************************
  *
@@ -725,23 +454,6 @@ int mcom_SendResponse(char *buf)
 	return res;
 }
 
-/*****************************************************************
- *
- * mcom_GetDisplayType: Return type of frontpanel display.
- *
- */
-static DISPLAYTYPE mcom_GetDisplayType(void)
-{
-	if (mcom_version[0] == 4)
-	{
-		return _7SEG;
-	}
-	if (mcom_version[0] == 5)
-	{
-		return _VFD;
-	}
-	return _VFD_OLD;
-}
 
 /*******************************************************
  *
@@ -822,14 +534,7 @@ int mcom_SetStandby(char *time, int showTime, int twentyfour)
 	dprintk(150, "%s >\n", __func__);
 
 #if 0
-	if (mcom_GetDisplayType() == _VFD_OLD || mcom_GetDisplayType() == _VFD)
-	{
-		res = mcom_WriteString("Bye bye", strlen("Bye bye"));
-	}
-	else
-	{
-		res = mcom_WriteString("WAIT", strlen("WAIT"));
-	}
+	res = mcom_WriteString("Bye bye", strlen("Bye bye"));
 #endif
 
 	// Step one: determine system time
@@ -896,7 +601,7 @@ int mcom_SetStandby(char *time, int showTime, int twentyfour)
 	memset(comm_buf, 0, sizeof(comm_buf));
 
 	// Step three: send "STANDBY"
-	if (mcom_GetDisplayType() == _VFD_OLD)
+//	if (mcom_GetDisplayType() == _VFD_OLD)
 	{
 		comm_buf[_TAG] = FP_CMD_STANDBY;  // 0xe5
 		comm_buf[_LEN] = 3;
@@ -907,6 +612,7 @@ int mcom_SetStandby(char *time, int showTime, int twentyfour)
 		mcom_Dump("@@@ SEND STANDBY @@@", comm_buf, 2 + comm_buf[_LEN]);
 		res = mcom_WriteCommand(comm_buf, comm_buf[_LEN] + _VAL, 1);  // wait for ACK
 	}
+#if 0
 	else //if (mcom_GetDisplayType() == _VFD)
 	{
 		comm_buf[_TAG] = FP_CMD_STANDBY;  // 0xe5
@@ -919,6 +625,7 @@ int mcom_SetStandby(char *time, int showTime, int twentyfour)
 
 		res = mcom_WriteCommand(comm_buf, 7, 0);
 	}
+#endif
 	if (res != 0)
 	{
 		goto _EXIT_MCOM_STANDBY;
@@ -963,6 +670,7 @@ int mcom_SetStandby(char *time, int showTime, int twentyfour)
 	}
 
 	// Step six: send "PRIVATE" on late VFD models
+#if 0
 	if (mcom_GetDisplayType() == _VFD)
 	{
 		// send "FP_CMD_PRIVATE"
@@ -985,6 +693,7 @@ int mcom_SetStandby(char *time, int showTime, int twentyfour)
 		}
 		msleep(100);
 	}
+#endif
 
 _EXIT_MCOM_STANDBY:
 	dprintk(150, "%s <\n", __func__);
@@ -1497,10 +1206,7 @@ int mcom_WriteString(unsigned char *aBuf, int len)
 	memset(cBuf, 0, sizeof(cBuf));
 	strncpy(cBuf, aBuf, len);
 
-	if (mcom_GetDisplayType() == _VFD_OLD)
-	{
-		len = mcom_utf8conv(cBuf, len);  // process UTF-8
-	}
+	len = mcom_utf8conv(cBuf, len);  // process UTF-8
 
 	if (len > DISPLAY_WIDTH)
 	{
@@ -1515,21 +1221,8 @@ int mcom_WriteString(unsigned char *aBuf, int len)
 	// build command argument
 	for (i = 0; i < len; i++)
 	{
-		if (mcom_GetDisplayType() == _VFD)  // new VFD display (HD 9600 PRIMA models)
-		{
-			memcpy(bBuf + _VAL + payload_len, mcom_ascii_char_14seg_new[cBuf[i]], 2);
-			payload_len += 2;
-		}
-		else if (mcom_GetDisplayType() == _7SEG)  // 4 digit 7 segment display (HD 9600 Mini models)
-		{
-			memcpy(bBuf + _VAL + payload_len, mcom_ascii_char_7seg[cBuf[i]], 1);
-			payload_len++;
-		}
-		else  // default to _VFD_OLD (HD 9600 models)
-		{
-			bBuf[i + _VAL] = mcom_ascii_char_14seg[cBuf[i]];
-			payload_len++;
-		}
+		bBuf[i + _VAL] = mcom_ascii_char_14seg[cBuf[i]];
+		payload_len++;
 	}
 
 	/* complete command write */

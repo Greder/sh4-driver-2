@@ -902,9 +902,9 @@ static int brand_name_read(char *page, char **start, off_t off, int count, int *
 		dprintk(50, "Found resellerID %02x%02x%02x%02x\n", reseller1, reseller2, reseller3, reseller4);
 		switch ((reseller1 << 8) + reseller3)
 		{
-			case 0x2000:  // FS9000
+			case 0x2000:  // FORTIS_HDBOX
 			{
-				table = FS9000_brand_table;
+				table = FORTIS_HDBOX_brand_table;
 				break;
 			}
 			case 0x2001:  // FS9200
@@ -912,35 +912,35 @@ static int brand_name_read(char *page, char **start, off_t off, int count, int *
 				table = FS9200_brand_table;
 				break;
 			}
-			case 0x2003:  // HS9510
+			case 0x2003:  // OCTAGON1008
 			{
 				if (reseller4 == 0x03)  // evaluate 4th reseller byte
 				{
-					table = HS9510_03_brand_table;
+					table = OCTAGON1008_03_brand_table;
 				}
 				else if (reseller4 == 0x02)  // evaluate 4th reseller byte
 				{
-					table = HS9510_02_brand_table;
+					table = OCTAGON1008_02_brand_table;
 				}
 				else if (reseller4 == 0x01)  // evaluate 4th reseller byte
 				{
-					table = HS9510_01_brand_table;
+					table = OCTAGON1008_01_brand_table;
 				}
 				else
 				{
-					table = HS9510_00_brand_table;
+					table = OCTAGON1008_00_brand_table;
 				}
 				break;
 			}
 			case 0x2006:  // ??
 			{
-				table = FS9000_06_brand_table;
+				table = FORTIS_HDBOX_06_brand_table;
 				break;
 			}
-			case 0x2300:  // HS8200
+			case 0x2300:  // ATEVIO7500
 			default:
 			{
-				table = HS8200_brand_table;
+				table = ATEVIO7500_brand_table;
 				break;
 			}
 			case 0x2500:  // HS7420
@@ -1019,9 +1019,9 @@ static int model_name_read(char *page, char **start, off_t off, int count, int *
 		dprintk(50, "Found resellerID %02x%02x%02x%02x\n", reseller1, reseller2, reseller3, reseller4);
 		switch ((reseller1 << 8) + reseller3)
 		{
-			case 0x2000:  // FS9000
+			case 0x2000:  // FORTIS_HDBOX
 			{
-				table = FS9000_name_table;
+				table = FORTIS_HDBOX_name_table;
 				break;
 			}
 			case 0x2001:  // FS9200
@@ -1029,35 +1029,35 @@ static int model_name_read(char *page, char **start, off_t off, int count, int *
 				table = FS9200_name_table;
 				break;
 			}
-			case 0x2003:  // HS9510
+			case 0x2003:  // OCTAGON1008
 			{
 				if (reseller4 == 0x03)  // evaluate 4th reseller byte
 				{
-					table = HS9510_03_name_table;
+					table = OCTAGON1008_03_name_table;
 				}
 				else if (reseller4 == 0x02)  // evaluate 4th reseller byte
 				{
-					table = HS9510_02_name_table;
+					table = OCTAGON1008_02_name_table;
 				}
 				else if (reseller4 == 0x01)  // evaluate 4th reseller byte
 				{
-					table = HS9510_01_name_table;
+					table = OCTAGON1008_01_name_table;
 				}
 				else
 				{
-					table = HS9510_00_name_table;
+					table = OCTAGON1008_00_name_table;
 				}
 				break;
 			}
 			case 0x2006:  // ??
 			{
-				table = FS9000_06_name_table;
+				table = FORTIS_HDBOX_06_name_table;
 				break;
 			}
-			case 0x2300:  // HS8200
+			case 0x2300:  // ATEVIO7500
 			default:
 			{
-				table = HS8200_name_table;
+				table = ATEVIO7500_name_table;
 				break;
 			}
 			case 0x2500:  // HS7420

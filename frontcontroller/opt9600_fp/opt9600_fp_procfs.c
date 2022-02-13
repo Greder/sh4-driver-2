@@ -513,7 +513,7 @@ static int brand_name_read(char *page, char **start, off_t off, int count, int *
 
 	if (NULL != page)
 	{
-		len = sprintf(page, "%s\n", "Opticum/Orton");
+		len = sprintf(page, "%s\n", "Opticum/Orton/Globo");
 	}
 	return len;
 }
@@ -523,7 +523,7 @@ int opt9600_ts_detect(void)
 	int ret;
 	unsigned char buf;
 
-	// DVB-tuner is at address 0x40 on I2C bus 1
+	// DVB-T tuner is at address 0x40 on I2C bus 1
 	struct i2c_msg msg = { .addr = 0x40, I2C_M_RD, .buf = &buf, .len = 1 };
 	struct i2c_adapter *i2c_adap = i2c_get_adapter(1);
 

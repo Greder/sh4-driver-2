@@ -137,7 +137,7 @@ extern tFrontPanelOpen FrontPanelOpen[LASTMINOR];
  *
  ***************************************************************************/
 #if defined(OCTAGON1008)
-enum  // HS9510 icon numbers and their names
+enum  // OCTAGON1008 icon numbers and their names
 {
 	ICON_MIN,     // 00
 	ICON_DOLBY,   // 01
@@ -221,7 +221,7 @@ enum //HS7810A/7819 icon numbers and their names
 #elif defined(FORTIS_HDBOX)
 /***************************************************************************
  *
- * Icons for FS9000/9200
+ * Icons for FORTIS_HDBOX/9200
  *
  */
 enum //FS9X00 icon numbers and their names
@@ -273,10 +273,10 @@ enum //FS9X00 icon numbers and their names
 #elif defined(ATEVIO7500)
 /***************************************************************
  *
- * Icons for HS8200
+ * Icons for ATEVIO7500
  *
  */
-enum //HS8200 icon numbers and their names
+enum //ATEVIO7500 icon numbers and their names
 {
 	ICON_MIN,       // 00
 	ICON_STANDBY,   // 01
