@@ -217,7 +217,7 @@ static int CaIoctl(struct inode *Inode, struct file *File, unsigned int IoctlCod
 			return 0;
 			break;
 		}
-//#if defined(POWER_VU_DES)
+#if defined(POWER_VU_DES)
 		case CA_SET_DESCR_MODE:
 		{
 			ca_descr_mode_t *descr_mode = (ca_descr_mode_t*) Parameter;
@@ -259,7 +259,7 @@ static int CaIoctl(struct inode *Inode, struct file *File, unsigned int IoctlCod
 			return 0;
 			break;
 		}
-//#endif
+#endif
 		case CA_SET_DESCR:
 		{
 			ca_descr_t *descr = (ca_descr_t *) Parameter;
