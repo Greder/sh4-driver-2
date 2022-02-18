@@ -8,11 +8,11 @@
 	so we need to reduce the number of descramblers,
 	maybe other boxes have the same problems*/
 	#define NUMBER_OF_DESCRAMBLERS 4
-#elif defined(FORTIS_HDBOX) || defined(OCTAGON1008)
+#elif defined(POWER_VU_DES)
+	#define NUMBER_OF_DESCRAMBLERS 9  // needed for power VU DES
+#else
 	/*quack: 6 is the max for FORTIS_HDBOX maybe other values have to be chosen for other boxes*/
 	#define NUMBER_OF_DESCRAMBLERS 6
-#else
-	#define NUMBER_OF_DESCRAMBLERS 9  // needed for power VU DES
 #endif
 
 struct PtiSession 
@@ -32,7 +32,9 @@ struct PtiSession
 	int       descramblers[NUMBER_OF_DESCRAMBLERS];
 	int       descramblerindex[32];
 	int       source;
+#if defined(POWER_VU_DES)
 	int       algo[NUMBER_OF_DESCRAMBLERS];
+#endif
 };
 
 typedef enum 

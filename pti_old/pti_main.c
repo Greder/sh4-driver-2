@@ -40,7 +40,9 @@ struct StreamContext_s;
 #include "dvb_demux.h"
 #include "dvb_net.h"
 #include <linux/dvb/dmx.h>
+#if defined(POWER_VU_DES)
 #include <linux/dvb/ca.h>
+#endif
 
 #include <linux/dvb/frontend.h>
 #include <linux/dvb/dmx.h>
@@ -292,27 +294,27 @@ static void stpti_reset_dma(struct pti_internal *pti)
 /*
 
 0x10   ----------------- <--- PTI_DMA_x_BASE
-   |               |   |
-   |               |  \|/
-   |               | <--- PTI_DMA_x_READ  (Last address sent to ADSC)
-   |               |
-   |               |
-   |               | <--- PTI_DMA_x_WRITE (Last address written by PTI)
-   |               |   ^
-   |               |   |  (free space)
-   |               |   |
+       |               |   |
+       |               |  \|/
+       |               | <--- PTI_DMA_x_READ  (Last address sent to ADSC)
+       |               |
+       |               |
+       |               | <--- PTI_DMA_x_WRITE (Last address written by PTI)
+       |               |   ^
+       |               |   |  (free space)
+       |               |   |
 0x1000 ----------------- <--- PTI_DMA_x_TOP
 
 0x10   ----------------- <--- PTI_DMA_x_BASE
-         |               |
-         |               |
-         |               | <--- PTI_DMA_x_WRITE (Last address written by PTI)
-         |               |   |
-         |               |   | (free space)
-         |               | <--- PTI_DMA_x_READ  (Last address sent to ADSC)
-         |               |
-         |               |
-         |               |
+       |               |
+       |               |
+       |               | <--- PTI_DMA_x_WRITE (Last address written by PTI)
+       |               |   |
+       |               |   | (free space)
+       |               | <--- PTI_DMA_x_READ  (Last address sent to ADSC)
+       |               |
+       |               |
+       |               |
 0x1000 ----------------- <--- PTI_DMA_x_TOP
 
 */
@@ -381,7 +383,7 @@ static int stream_injector(void *user_data)
 
 #ifdef STREAMCHECK
 		/* The first bytes of the packet after the header should
-		   always be a 0x47 if not we got problems */
+		   always be a 0x47; if not, we've got problems */
 		if (internal->back_buffer[offset + HEADER_SIZE] != 0x47)
 		{
 			printk("\n!0x47\n");
@@ -463,7 +465,7 @@ static int stream_injector(void *user_data)
 					}
 				}
 
-				// check count of the choised audiostream
+				// check count of the chosen audiostream
 				if ((pFrom[7] & 0x1f) == apidhigh
 				&&   pFrom[8] == apidlow)
 				{
@@ -705,7 +707,7 @@ static void process_pti_dma(unsigned long data)
 
 		/* If we get to the bottom of the buffer wrap the pointer back to the top */
 		if ((pti_rp & ~0xf) == (pti_top & ~0xf))
-		{ 
+		{
 			pti_rp = pti_base;
 		}
 		/* Calculate the amount of bytes used in the buffer */
@@ -937,11 +939,13 @@ int pti_hal_descrambler_set ( int session_handle, int descrambler_handle,
 	return 0;
 }
 
+#if defined(POWER_VU_DES)
 int pti_hal_descrambler_set_mode ( int session_handle, int descrambler_handle,
 		enum ca_descr_algo algo )
 {
 	return 0;
 }
+#endif
 
 int pti_hal_descrambler_unlink ( int session_handle, int descrambler_handle )
 {
@@ -1166,7 +1170,9 @@ EXPORT_SYMBOL(paceSwtsByPti);
 
 EXPORT_SYMBOL(pti_hal_descrambler_set);
 EXPORT_SYMBOL(pti_hal_descrambler_set_aes);
+#if defined(POWER_VU_DES)
 EXPORT_SYMBOL(pti_hal_descrambler_set_mode);
+#endif
 EXPORT_SYMBOL(pti_hal_descrambler_unlink);
 EXPORT_SYMBOL(pti_hal_descrambler_link);
 EXPORT_SYMBOL(pti_hal_get_new_descrambler);
